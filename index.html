@@ -692,7 +692,7 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
       <div style="background:var(--card-bg);border-radius:15px;padding:14px 20px;margin-bottom:18px;box-shadow:0 4px 20px rgba(0,0,0,.08);display:flex;align-items:center;gap:14px;flex-wrap:wrap">
         <span style="font-size:26px">🤖</span>
         <div style="flex:1;min-width:180px">
-          <div style="font-size:13px;font-weight:700;color:var(--dark)">Análise Inteligente — Gemini</div>
+          <div style="font-size:13px;font-weight:700;color:var(--dark)">Análise Inteligente — Groq</div>
           <div id="aiStatus" style="font-size:12px;color:var(--text-light);margin-top:2px">Pronto para analisar.</div>
         </div>
         <button class="btn btn-secondary" onclick="App.runAIAnalysis()" id="btnAI">✨ Gerar Análise IA</button>
@@ -701,7 +701,7 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
       <div id="aiResult" style="display:none" class="chart-container">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
           <div>
-            <h3 class="chart-title">✨ Análise Inteligente — Gemini</h3>
+            <h3 class="chart-title">✨ Análise Inteligente — Groq</h3>
             <p class="chart-subtitle" id="aiTimestamp"></p>
           </div>
           <button class="btn btn-ghost" onclick="App.runAIAnalysis()" id="btnAIRefresh">🔄 Reanalisar</button>
@@ -2854,38 +2854,43 @@ const RL = {
   },
 
 
-  /* ── TAB 3 — Alertas (regras) + dados para IA ── */
+  /* ── TAB 3 — Alertas automáticos + Rankings + snapshot para IA ── */
   renderPlanoAcoes(rows){
-    const today=new Date();today.setHours(0,0,0,0);
-    const criacao=rows.filter(r=>DL.isCriacao(r));
-    const aprovados=rows.filter(r=>DL.isCriacao(r)&&DL.isAprovado(r));
-    const total=criacao.length;
+    const snap=buildSnapshot(rows);
+    RL._lastRows=rows;
+    RL._lastSnap=snap;
 
-    const vA={};aprovados.forEach(r=>{if(!r.vendedor)return;if(!vA[r.vendedor])vA[r.vendedor]={total:0,zero:0,critico:0,altTotal:0};vA[r.vendedor].total++;if(r.qtdeAlteracoes===0)vA[r.vendedor].zero++;if(r.qtdeAlteracoes>=4)vA[r.vendedor].critico++;vA[r.vendedor].altTotal+=r.qtdeAlteracoes;});
-    const dS={};criacao.forEach(r=>{if(!r.designer)return;if(!dS[r.designer])dS[r.designer]={total:0,tempos:[],critico:0,altTotal:0};dS[r.designer].total++;dS[r.designer].altTotal+=r.qtdeAlteracoes;if(r.qtdeAlteracoes>=4)dS[r.designer].critico++;if(r._tempoUtil!=null)dS[r.designer].tempos.push(r._tempoUtil);});
-    const allT=Object.values(dS).flatMap(d=>d.tempos);const mG=this.median(allT);
+    const el=document.getElementById('actionPlan');
+    if(!el)return;
 
-    const garg=[];
-    Object.entries(vA).forEach(([nome,d])=>{if(d.total<3)return;const p=d.zero/d.total*100,med=d.altTotal/d.total;if(p<40)garg.push({priority:'high',title:`⛔ Briefing crítico — ${nome}`,description:`${nome} tem apenas <strong>${p.toFixed(0)}%</strong> de artes aprovadas sem alteração. Revisar urgentemente o processo de briefing.`,metrics:`${d.zero}/${d.total} sem alt. · ${d.critico} críticas · média ${med.toFixed(2)}/arte`});else if(p<60)garg.push({priority:'high',title:`⚠️ Briefing fraco — ${nome}`,description:`<strong>${nome}</strong> tem ${p.toFixed(0)}% de artes sem alteração entre aprovadas (meta: 70%+).`,metrics:`${d.zero}/${d.total} sem alt. · média ${med.toFixed(2)}/arte`});else if(p<70)garg.push({priority:'medium',title:`🔶 Abaixo da meta — ${nome}`,description:`<strong>${nome}</strong> em ${p.toFixed(0)}% de artes sem alteração. Um ajuste no checklist de briefing pode resolver.`,metrics:`${d.zero}/${d.total} aprovadas sem alt.`});if(p>=90&&d.total>=5)garg.push({priority:'positive',title:`🌟 Excelente briefing — ${nome}`,description:`<strong>${nome}</strong> tem ${p.toFixed(0)}% de aprovadas sem alteração — acima da meta de 80%.`,metrics:`${d.zero}/${d.total} aprovadas sem alt.`});});
+    const badgeScore=s=>s>=6?`<span class="badge badge-danger">Crítico ${s}</span>`:s>=3?`<span class="badge badge-warning">Atenção ${s}</span>`:`<span class="badge badge-success">OK ${s}</span>`;
+    const stBadge=st=>st==='critico'?'<span class="badge badge-danger">Crítico</span>':st==='atencao'?'<span class="badge badge-warning">Atenção</span>':'<span class="badge badge-success">OK</span>';
+    const sec=(title,icon,cls,body,cnt='')=>`<div class="alert-section"><div class="alert-section-header ${cls}">${icon} ${title}${cnt?`<span class="alert-count-badge">${cnt}</span>`:''}</div><div class="alert-section-body">${body}</div></div>`;
 
-    const prazos=[];
-    rows.filter(r=>r._dueDateObj instanceof Date&&!isNaN(r._dueDateObj)).forEach(r=>{const due=new Date(r._dueDateObj);due.setHours(0,0,0,0);const dias=Math.round((due-today)/86400000);const lbl=DL.pedidoLinkHTML(r);if(dias<0)prazos.push({priority:'high',title:`🔴 Entrega vencida — ${lbl}`,description:`Prazo era <strong>${DL.fmtDate(due)}</strong>. ${Math.abs(dias)} dia(s) em atraso.`,metrics:`Designer: ${r.designer||'—'} · Vendedor: ${r.vendedor||'—'}`});else if(dias<=3)prazos.push({priority:'high',title:`🟠 Prazo urgente (${dias===0?'hoje':dias+'d'}) — ${lbl}`,description:`Entrega em <strong>${DL.fmtDate(due)}</strong>. Confirme status.`,metrics:`Vence em ${dias} dia(s) · Designer: ${r.designer||'—'}`});else if(dias<=7)prazos.push({priority:'medium',title:`🟡 Prazo em ${dias} dias — ${lbl}`,description:`Entrega prevista para <strong>${DL.fmtDate(due)}</strong>.`,metrics:`${dias} dia(s) restantes`});});
-    prazos.sort((a,b)=>(['high','medium','low','positive'].indexOf(a.priority))-(['high','medium','low','positive'].indexOf(b.priority)));
+    // Seção 1: Gargalos top 3 fases por p90*count
+    const gargPhases=Object.entries(snap.byPhase).map(([ph,d])=>({ph,scoreG:d.p90Hours*d.count,...d})).sort((a,b)=>b.scoreG-a.scoreG).slice(0,3);
+    const gargHtml=gargPhases.length?gargPhases.map(g=>`<div class="action-item priority-${g.p90Hours>48?'high':g.p90Hours>24?'medium':'low'}"><div class="action-header"><div class="action-title">🚧 ${g.ph}</div><span class="badge badge-${g.p90Hours>48?'danger':g.p90Hours>24?'warning':'info'}">${g.p90Hours.toFixed(0)}h p90</span></div><div class="action-description">${g.count} cards · mediana ${g.medianHours.toFixed(1)}h · p90 ${g.p90Hours.toFixed(1)}h</div></div>`).join(''):'<div class="alert-section-empty">Sem dados de fase.</div>';
 
-    const qual=[];
-    Object.entries(dS).forEach(([nome,d])=>{if(d.total<3)return;const med=d.altTotal/d.total,tMed=d.tempos.length>0?this.median(d.tempos):0,tCas=d.tempos.length>0?this.pct(d.tempos,90):0;if(d.critico>=3)qual.push({priority:'high',title:`🎨 Retrabalho crítico — ${nome}`,description:`<strong>${nome}</strong> tem <strong>${d.critico}</strong> arte(s) com 4+ alterações.`,metrics:`${d.critico} críticas de ${d.total} · média ${med.toFixed(2)}/arte`});else if(d.critico>0)qual.push({priority:'medium',title:`🖌️ Atenção retrabalho — ${nome}`,description:`${d.critico} arte(s) com 4+ alterações para <strong>${nome}</strong>.`,metrics:`${d.critico} críticas de ${d.total}`});if(mG>0&&tMed>mG*1.8&&d.tempos.length>=3)qual.push({priority:'medium',title:`⏱️ Tempo acima da média — ${nome}`,description:`Tempo mediano de <strong>${nome}</strong> (${DL.fmtMin(tMed)}) está acima do time (${DL.fmtMin(mG)}).`,metrics:`Mediano: ${DL.fmtMin(tMed)} · Demorados: ${DL.fmtMin(tCas)} · Time: ${DL.fmtMin(mG)}`});if(d.critico===0&&med<0.3&&d.total>=5)qual.push({priority:'positive',title:`⭐ Designer consistente — ${nome}`,description:`<strong>${nome}</strong> com média de <strong>${med.toFixed(2)} alt./arte</strong> e zero retrabalho crítico.`,metrics:`${d.total} artes · ${DL.fmtMin(tMed)}`});});
-    const urgAlt=criacao.filter(r=>r.urgencia==='ALTA'&&r.qtdeAlteracoes>=2);if(urgAlt.length>0)qual.push({priority:'high',title:`🔴 Pedidos urgentes com retrabalho`,description:`${urgAlt.length} pedido(s) com urgência <strong>ALTA</strong> e 2+ alterações.`,metrics:`${urgAlt.length} pedidos`});
+    // Seção 2: Alertas críticos (score ≥ 6)
+    const critHtml=snap.alertasCriticos.length?snap.alertasCriticos.map(r=>`<div class="action-item priority-high"><div class="action-header"><div class="action-title">${DL.pedidoLinkHTML(r)}</div>${badgeScore(r._riskScore)}</div><div class="action-description">Fase: ${r._fase||'—'} · Urgência: ${r.urgencia||'—'} · ${r.qtdeAlteracoes} alt. · Designer: ${r.designer||'—'}</div></div>`).join(''):'<div class="alert-section-empty">✅ Nenhum card em estado crítico.</div>';
 
-    const op=[];const repos=rows.filter(r=>r.tipoPedido==='REPOSIÇÃO'),repets=rows.filter(r=>r.tipoPedido==='REPETIÇÃO'),tR=rows.length;const pR=tR>0?repos.length/tR*100:0,pRt=tR>0?repets.length/tR*100:0;
-    if(pR>20)op.push({priority:'high',title:`🏭 Volume crítico de reposições`,description:`<strong>${repos.length}</strong> pedidos (${pR.toFixed(0)}%) são reposições — sinal de erros de produção.`,metrics:`${repos.length} de ${tR}`});else if(pR>10)op.push({priority:'medium',title:`⚙️ Reposições acima do ideal`,description:`${repos.length} pedidos (${pR.toFixed(0)}%) são reposições.`,metrics:`${repos.length} · ${pR.toFixed(1)}%`});else if(repos.length>0)op.push({priority:'low',title:`✅ Reposições dentro do limite`,description:`${repos.length} pedido(s) (${pR.toFixed(1)}%) dentro da faixa normal.`,metrics:`${repos.length} · ${pR.toFixed(1)}%`});
-    if(repets.length>0)op.push({priority:'low',title:`🔁 Repetições registradas`,description:`${repets.length} pedidos (${pRt.toFixed(0)}%) são repetições. Não entram nas métricas de qualidade.`,metrics:`${repets.length} · ${pRt.toFixed(1)}%`});
-    const altPct=total>0?criacao.filter(r=>r.urgencia==='ALTA').length/total*100:0;if(altPct>40)op.push({priority:'medium',title:`🚨 Alta proporção de urgentes`,description:`${altPct.toFixed(0)}% das artes têm urgência ALTA. Volume elevado compromete o planejamento.`,metrics:`${criacao.filter(r=>r.urgencia==='ALTA').length} de ${total} com urgência ALTA`});
+    // Seção 3: Atenção (score 3–5)
+    const atHtml=snap.alertasAtencao.length?snap.alertasAtencao.slice(0,10).map(r=>`<div class="action-item priority-medium"><div class="action-header"><div class="action-title">${DL.pedidoLinkHTML(r)}</div>${badgeScore(r._riskScore)}</div><div class="action-description">Fase: ${r._fase||'—'} · ${r.qtdeAlteracoes} alt. · Designer: ${r.designer||'—'}</div></div>`).join(''):'<div class="alert-section-empty">✅ Nenhum card em atenção.</div>';
 
-    const rSec=(title,icon,cls,items,empty)=>{const sorted=[...items].sort((a,b)=>{const o={high:0,medium:1,low:2,positive:3};return(o[a.priority]||4)-(o[b.priority]||4);});const body=sorted.length>0?sorted.map(a=>`<div class="action-item priority-${a.priority}"><div class="action-header"><div class="action-title">${a.title}</div><span class="badge badge-${a.priority==='high'?'danger':a.priority==='medium'?'warning':a.priority==='positive'?'success':'info'}">${a.priority==='high'?'Urgente':a.priority==='medium'?'Atenção':a.priority==='positive'?'Destaque':'Info'}</span></div><div class="action-description">${a.description}</div>${a.metrics?`<div class="action-metrics">📊 ${a.metrics}</div>`:''}</div>`).join(''):`<div class="alert-section-empty">✅ ${empty}</div>`;const cnt=sorted.length>0?`<span class="alert-count-badge">${sorted.length}</span>`:'';return`<div class="alert-section"><div class="alert-section-header ${cls}">${icon} ${title}${cnt}</div><div class="alert-section-body">${body}</div></div>`;};
-    const _apEl=document.getElementById('actionPlan'); if(_apEl) _apEl.innerHTML=rSec('Gargalos Comerciais','💼','comercial',garg,'Nenhum vendedor abaixo da meta.')+rSec('Alertas de Prazo','📅','prazo',prazos.slice(0,12),'Nenhum pedido vencido ou urgente.')+rSec('Qualidade do Design','🎨','qualidade',qual,'Nenhum designer com retrabalho crítico.')+rSec('Erros Operacionais','🏭','operacional',op,'Reposições e repetições dentro do esperado.');
+    // Seção 4: Ranking designers
+    const desRank=Object.entries(snap.byDesigner).sort((a,b)=>b[1].revisionsAvg-a[1].revisionsAvg);
+    const desHtml=desRank.length?desRank.map(([n,d])=>{const st=d.revisionsAvg>=2?'critico':d.revisionsAvg>=1?'atencao':'ok';return`<div class="action-item priority-${st==='critico'?'high':st==='atencao'?'medium':'low'}"><div class="action-header"><div class="action-title">🎨 ${n}</div>${stBadge(st)}</div><div class="action-description">${d.cards} cards · ${d.revisionsAvg.toFixed(2)} alt/arte · mediana ${d.medianCycleHours.toFixed(1)}h ciclo · ${d.stuckHigh} urgAlta parados</div></div>`;}).join(''):'<div class="alert-section-empty">Sem dados de designers.</div>';
 
-    // Salva snapshot dos dados para a IA usar quando chamada
-    RL._lastRows = rows;
+    // Seção 5: Ranking vendedores
+    const vendRank=Object.entries(snap.byVendor).sort((a,b)=>b[1].revisionsAvg-a[1].revisionsAvg);
+    const vendHtml=vendRank.length?vendRank.map(([n,d])=>{const st=d.revisionsAvg>=2?'critico':d.revisionsAvg>=1?'atencao':'ok';return`<div class="action-item priority-${st==='critico'?'high':st==='atencao'?'medium':'low'}"><div class="action-header"><div class="action-title">👤 ${n}</div>${stBadge(st)}</div><div class="action-description">${d.cards} cards · ${d.revisionsAvg.toFixed(2)} alt/arte · ${d.highUrgency} urgência-alta</div></div>`;}).join(''):'<div class="alert-section-empty">Sem dados de vendedores.</div>';
+
+    el.innerHTML=
+      sec('Gargalos Agora (Top 3 Fases)','🚧','operacional',gargHtml)+
+      sec('Alertas Críticos','🔴','comercial',critHtml,snap.alertasCriticos.length||'')+
+      sec('Alertas de Atenção','🟡','prazo',atHtml,snap.alertasAtencao.length||'')+
+      sec('Ranking Designers','🎨','qualidade',desHtml)+
+      sec('Ranking Vendedores','👤','operacional',vendHtml);
   },
 
   /* ══════ MODAIS DE DETALHE ══════ */
@@ -3133,182 +3138,114 @@ const App = {
   },
   closeDetailModal(){ document.getElementById('modalDetail').classList.remove('active'); },
 
-  /* ── GROQ AI ── */
+  /* ── AI Analysis (Groq) ── */
+  _aiCooldownUntil: 0,
+  _aiCachedResult: null,
+  _aiCachedAt: 0,
+
   async runAIAnalysis(){
-    const rows = RL._lastRows || State.rowsFiltered;
-    if(!rows||!rows.length){ alert('Sincronize os dados do Trello primeiro.'); return; }
+    const rows=RL._lastRows||State.rowsFiltered;
+    if(!rows||!rows.length){alert('Sincronize os dados do Trello primeiro.');return;}
 
-    const btnR = document.getElementById('btnAIRefresh');
-    if(btnR) btnR.disabled = true;
-
-    const resultEl = document.getElementById('aiResult');
-    const contentEl = document.getElementById('aiContent');
-    const tsEl = document.getElementById('aiTimestamp');
-    if(resultEl) resultEl.style.display = 'block';
-    if(contentEl) contentEl.innerHTML = `<div class="ai-loading"><div class="ai-dots"><span></span><span></span><span></span></div> Analisando ${rows.length} pedidos com Gemini…</div>`;
-    if(tsEl) tsEl.textContent = '';
-
-    // Monta resumo compacto dos dados para o prompt
-    const criacao = rows.filter(r=>DL.isCriacao(r));
-    const aprovados = rows.filter(r=>DL.isCriacao(r)&&DL.isAprovado(r));
-    const mediaGeral = criacao.length ? criacao.reduce((s,r)=>s+r.qtdeAlteracoes,0)/criacao.length : 0;
-
-    const byDesigner = {};
-    criacao.forEach(r=>{ if(!r.designer) return;
-      if(!byDesigner[r.designer]) byDesigner[r.designer]={total:0,alt:0,critico:0};
-      byDesigner[r.designer].total++; byDesigner[r.designer].alt+=r.qtdeAlteracoes;
-      if(r.qtdeAlteracoes>=4) byDesigner[r.designer].critico++;
-    });
-    const byVendedor = {};
-    aprovados.forEach(r=>{ if(!r.vendedor) return;
-      if(!byVendedor[r.vendedor]) byVendedor[r.vendedor]={total:0,sem:0,alt:0};
-      byVendedor[r.vendedor].total++; byVendedor[r.vendedor].alt+=r.qtdeAlteracoes;
-      if(r.qtdeAlteracoes===0) byVendedor[r.vendedor].sem++;
-    });
-
-    const designerSummary = Object.entries(byDesigner).map(([n,d])=>
-      `${n}: ${d.total} artes, média ${(d.alt/d.total).toFixed(2)} alt/arte, ${d.critico} com 4+ alt.`
-    ).join('\n');
-    const vendedorSummary = Object.entries(byVendedor).map(([n,d])=>
-      `${n}: ${d.total} aprovadas, ${d.sem} sem alt. (${(d.sem/d.total*100).toFixed(0)}%), ${(d.alt/d.total).toFixed(2)} alt/arte média`
-    ).join('\n');
-
-    const top5criticos = criacao
-      .filter(r=>r.qtdeAlteracoes>=4)
-      .sort((a,b)=>b.qtdeAlteracoes-a.qtdeAlteracoes)
-      .slice(0,5)
-      .map(r=>`"${r.title}" (${r.qtdeAlteracoes} alt., designer: ${r.designer||'?'}, vendedor: ${r.vendedor||'?'}, urgência: ${r.urgencia})`)
-      .join('\n');
-
-    const urgDist = {};
-    criacao.forEach(r=>{ urgDist[r.urgencia]=(urgDist[r.urgencia]||0)+1; });
-
-    const prompt = `Você é um consultor especialista em gestão de design e operações criativas para a empresa Sublime Sports, que produz artes personalizadas para uniformes esportivos.
-
-Analise os dados abaixo do painel de gestão de design e gere um relatório executivo completo em português, com tom profissional mas direto, focado em ações concretas.
-
-## DADOS DO PERÍODO
-- Total de pedidos analisados: ${rows.length}
-- Pedidos de criação (novo/alteração): ${criacao.length}
-- Pedidos aprovados (em produção/entregues): ${aprovados.length}
-- Média geral de alterações por arte: ${mediaGeral.toFixed(2)}
-- Artes com retrabalho (≥1 alt.): ${criacao.filter(r=>r.qtdeAlteracoes>=1).length} (${criacao.length?(criacao.filter(r=>r.qtdeAlteracoes>=1).length/criacao.length*100).toFixed(0):0}%)
-- Artes críticas (4+ alt.): ${criacao.filter(r=>r.qtdeAlteracoes>=4).length}
-- Urgência ALTA: ${urgDist['ALTA']||0} | MÉDIA: ${urgDist['MÉDIA']||0} | BAIXA: ${urgDist['BAIXA']||0}
-
-## PERFORMANCE POR DESIGNER
-${designerSummary || 'Sem dados de designer'}
-
-## QUALIDADE DE BRIEFING POR VENDEDOR (aprovadas)
-${vendedorSummary || 'Sem dados de vendedor'}
-
-## CASOS MAIS CRÍTICOS
-${top5criticos || 'Nenhum caso crítico'}
-
-## INSTRUÇÕES
-Retorne APENAS um objeto JSON válido, sem texto antes ou depois, sem markdown, sem backticks. Use este schema exato:
-{"resumo_executivo":"string","alertas_criticos":[{"titulo":"string","descricao":"string","acao":"string","tipo":"urgente|atencao|info"}],"analise_designers":[{"nome":"string","diagnostico":"string","recomendacao":"string","tipo":"urgente|atencao|positivo"}],"analise_vendedores":[{"nome":"string","diagnostico":"string","recomendacao":"string","tipo":"urgente|atencao|positivo"}],"oportunidades":[{"titulo":"string","descricao":"string","impacto":"string"}],"proximos_passos":["string"]}`;
-
-    try {
-      // Load user AI memory
-      const memKey = 'sb_ai_memory:' + (this._user?.email||'anon');
-      const memory = Store.get(memKey) || { feedback:[], promptAdditions:'' };
-
-      const aiResp = await this._apiFetch('/.netlify/functions/ai', {
-        method: 'POST',
-        body: JSON.stringify({ prompt, memory })
-      });
-      if(aiResp.error) throw new Error(aiResp.error);
-      const parsed = aiResp;
-      if(!parsed || typeof parsed !== 'object') throw new Error('Resposta fora do formato esperado.');
-
-      // Renderiza resultado — cards clicáveis
-      const tipoClass = t => t==='urgente'?'urgente':t==='atencao'?'atencao':t==='positivo'?'positivo':'info';
-      const tipoLabel = t => t==='urgente'?'🔴 Urgente':t==='atencao'?'🟡 Atenção':t==='positivo'?'🟢 Destaque':'🔵 Info';
-
-      // Cria card clicável que abre o modal de aprofundamento
-      if(!window._aidmItems) window._aidmItems = [];
-      const mkCard = (cls, titleHtml, bodyHtml, actionHtml, itemData) => {
-        const idx = window._aidmItems.length;
-        window._aidmItems.push(itemData);
-        return `<div class="ai-card ${cls} clk" onclick="aidm.open(window._aidmItems[${idx}])">
-          <span class="clk-hint">🔍 ver detalhes</span>
-          ${titleHtml ? `<div class="ai-card-title">${titleHtml}</div>` : ''}
-          <div class="ai-card-body">${bodyHtml}</div>
-          ${actionHtml}
-        </div>`;
-      };
-
-      let html = `<div class="ai-section">
-        <div class="ai-section-title">📋 Resumo Executivo</div>
-        ${mkCard('','',''+parsed.resumo_executivo,'',{titulo:'Resumo Executivo',corpo:parsed.resumo_executivo,extra:''})}
-      </div>`;
-
-      if(parsed.alertas_criticos?.length){
-        html += `<div class="ai-section"><div class="ai-section-title">🚨 Alertas Críticos</div>`;
-        parsed.alertas_criticos.forEach(a=>{
-          html += mkCard(tipoClass(a.tipo),
-            tipoLabel(a.tipo)+' '+a.titulo,
-            a.descricao,
-            a.acao?`<div class="ai-card-action">➡ ${a.acao}</div>`:'',
-            {titulo:a.titulo, corpo:a.descricao, extra:a.acao||'', tipo:a.tipo});
-        });
-        html += `</div>`;
-      }
-      if(parsed.analise_designers?.length){
-        html += `<div class="ai-section"><div class="ai-section-title">🎨 Análise por Designer</div>`;
-        parsed.analise_designers.forEach(d=>{
-          html += mkCard(tipoClass(d.tipo),
-            tipoLabel(d.tipo)+' '+d.nome,
-            d.diagnostico,
-            d.recomendacao?`<div class="ai-card-action">➡ ${d.recomendacao}</div>`:'',
-            {titulo:d.nome, corpo:d.diagnostico, extra:d.recomendacao||'', tipo:d.tipo});
-        });
-        html += `</div>`;
-      }
-      if(parsed.analise_vendedores?.length){
-        html += `<div class="ai-section"><div class="ai-section-title">👥 Análise por Vendedor</div>`;
-        parsed.analise_vendedores.forEach(v=>{
-          html += mkCard(tipoClass(v.tipo),
-            tipoLabel(v.tipo)+' '+v.nome,
-            v.diagnostico,
-            v.recomendacao?`<div class="ai-card-action">➡ ${v.recomendacao}</div>`:'',
-            {titulo:v.nome, corpo:v.diagnostico, extra:v.recomendacao||'', tipo:v.tipo});
-        });
-        html += `</div>`;
-      }
-      if(parsed.oportunidades?.length){
-        html += `<div class="ai-section"><div class="ai-section-title">💡 Oportunidades de Melhoria</div>`;
-        parsed.oportunidades.forEach(o=>{
-          html += mkCard('info',
-            '💡 '+o.titulo,
-            o.descricao,
-            o.impacto?`<div class="ai-card-action">📈 Impacto: ${o.impacto}</div>`:'',
-            {titulo:o.titulo, corpo:o.descricao, extra:o.impacto||''});
-        });
-        html += `</div>`;
-      }
-      if(parsed.proximos_passos?.length){
-        const ppHtml = `<ol style="margin:0;padding-left:20px;line-height:2">${parsed.proximos_passos.map(p=>`<li style="font-size:13px;color:var(--text)">${p}</li>`).join('')}</ol>`;
-        html += `<div class="ai-section"><div class="ai-section-title">✅ Próximos Passos Recomendados</div>
-          ${mkCard('','✅ Próximos Passos',ppHtml,'',{titulo:'Próximos Passos',corpo:parsed.proximos_passos.join('\n'),extra:''})}
-        </div>`;
-      }
-
-      if(contentEl) contentEl.innerHTML = html;
-      if(tsEl) tsEl.textContent = `Gerado em ${DL.fmtDT(new Date())} · ${rows.length} pedidos · Gemini`;
-
-    } catch(e){
-      if(contentEl) contentEl.innerHTML = `<div style="background:#fee2e2;border-radius:10px;padding:16px;color:#991b1b;font-size:13px">
-        <strong>❌ Erro ao chamar Gemini:</strong> ${e.message}<br>
-        <span style="font-size:12px;margin-top:4px;display:block">Verifique sua API Key em ⚙️ Configurar e tente novamente.</span>
-      </div>`;
-    } finally {
-      if(btnR) btnR.disabled = false;
-      // Show feedback bar
-      const fb=document.getElementById('aiFeedbackBar');
-      if(fb){ fb.style.display='block'; document.getElementById('feedbackMsg').style.display='none'; }
+    // Cache 2 minutos
+    const now=Date.now();
+    if(this._aiCachedResult&&(now-this._aiCachedAt)<120000){
+      this._renderAIResult(this._aiCachedResult,true);
+      return;
     }
+    // Cooldown anti-spam (30s)
+    if(now<this._aiCooldownUntil){
+      const sec=Math.ceil((this._aiCooldownUntil-now)/1000);
+      this._showToast(`⏳ Aguarde ${sec}s antes de reanalisar.`,true);
+      return;
+    }
+
+    const btnR=document.getElementById('btnAIRefresh');
+    const btnM=document.getElementById('btnAI');
+    if(btnR)btnR.disabled=true;
+    if(btnM)btnM.disabled=true;
+
+    const resultEl=document.getElementById('aiResult');
+    const contentEl=document.getElementById('aiContent');
+    const tsEl=document.getElementById('aiTimestamp');
+    if(resultEl)resultEl.style.display='block';
+    if(contentEl)contentEl.innerHTML=`<div class="ai-loading"><div class="ai-dots"><span></span><span></span><span></span></div> Gerando análise com Groq… (snapshot compacto)</div>`;
+    if(tsEl)tsEl.textContent='';
+    const aiStatus=document.getElementById('aiStatus');
+    if(aiStatus)aiStatus.textContent='Analisando snapshot…';
+
+    try{
+      // Envia snapshot compacto — NÃO envia todos os cards
+      const snapshot=buildSnapshot(rows);
+      const aiResp=await this._apiFetch('/.netlify/functions/ai',{
+        method:'POST',
+        body:JSON.stringify({snapshot})
+      });
+      if(aiResp.error)throw new Error(aiResp.error);
+
+      let parsed;
+      if(typeof aiResp.text==='string'){
+        try{parsed=JSON.parse(aiResp.text);}catch(_){throw new Error('JSON inválido na resposta da IA.');}
+      }else if(typeof aiResp==='object'&&!aiResp.error){
+        parsed=aiResp;
+      }else{
+        throw new Error('Resposta fora do formato esperado.');
+      }
+
+      this._aiCachedResult={parsed,meta:aiResp.meta||{},rowCount:rows.length};
+      this._aiCachedAt=Date.now();
+      this._aiCooldownUntil=Date.now()+30000;
+      this._renderAIResult(this._aiCachedResult,false);
+      if(aiStatus)aiStatus.textContent=`Modelo: ${aiResp.meta?.model||'Groq'} · ${aiResp.meta?.tokens||'?'} tokens`;
+
+    }catch(e){
+      if(contentEl)contentEl.innerHTML=`<div style="background:#fee2e2;border-radius:10px;padding:16px;color:#991b1b;font-size:13px">
+        <strong>❌ Erro ao chamar Groq:</strong> ${e.message}<br>
+        <span style="font-size:12px;margin-top:4px;display:block">Verifique a variável GROQ_API_KEY no Netlify.</span>
+      </div>`;
+      if(aiStatus)aiStatus.textContent='Erro na análise.';
+    }finally{
+      if(btnR)btnR.disabled=false;
+      if(btnM)btnM.disabled=false;
+      const fb=document.getElementById('aiFeedbackBar');
+      if(fb){fb.style.display='block';document.getElementById('feedbackMsg').style.display='none';}
+    }
+  },
+
+  _renderAIResult({parsed,meta,rowCount},fromCache){
+    const contentEl=document.getElementById('aiContent');
+    const tsEl=document.getElementById('aiTimestamp');
+    if(!contentEl)return;
+
+    const stBadge=st=>st==='critico'?'<span class="badge badge-danger">Crítico</span>':st==='atencao'?'<span class="badge badge-warning">Atenção</span>':'<span class="badge badge-success">OK</span>';
+    let html='';
+
+    if(parsed.resumo){
+      html+=`<div class="ai-section"><div class="ai-section-title">📋 Resumo Executivo</div><div class="ai-card">${parsed.resumo}</div></div>`;
+    }
+    if(parsed.gargalos?.length){
+      html+=`<div class="ai-section"><div class="ai-section-title">🚧 Gargalos Identificados</div>`;
+      parsed.gargalos.forEach(g=>{html+=`<div class="ai-card urgente"><div class="ai-card-title">🚧 ${g.fase}</div><div class="ai-card-body">${g.problema}</div><div class="ai-card-action">➡ ${g.acao}</div></div>`;});
+      html+='</div>';
+    }
+    if(parsed.designers?.length){
+      html+=`<div class="ai-section"><div class="ai-section-title">🎨 Análise Designers</div>`;
+      parsed.designers.forEach(d=>{html+=`<div class="ai-card ${d.status==='critico'?'urgente':d.status==='atencao'?'atencao':'positivo'}"><div class="ai-card-title">${stBadge(d.status)} ${d.nome}</div><div class="ai-card-body">${d.obs}</div></div>`;});
+      html+='</div>';
+    }
+    if(parsed.vendedores?.length){
+      html+=`<div class="ai-section"><div class="ai-section-title">👥 Análise Vendedores</div>`;
+      parsed.vendedores.forEach(v=>{html+=`<div class="ai-card ${v.status==='critico'?'urgente':v.status==='atencao'?'atencao':'positivo'}"><div class="ai-card-title">${stBadge(v.status)} ${v.nome}</div><div class="ai-card-body">${v.obs}</div></div>`;});
+      html+='</div>';
+    }
+    if(parsed.proximos_passos?.length){
+      const pp=parsed.proximos_passos.map(p=>`<li style="font-size:13px;line-height:2">${p}</li>`).join('');
+      html+=`<div class="ai-section"><div class="ai-section-title">✅ Próximos Passos</div><div class="ai-card"><ol style="margin:0;padding-left:20px">${pp}</ol></div></div>`;
+    }
+    if(!html)html='<div class="ai-card">Sem dados suficientes para análise.</div>';
+
+    contentEl.innerHTML=html;
+    if(tsEl)tsEl.textContent=`${fromCache?'(cache) ':''}Gerado em ${DL.fmtDT(new Date())} · ${rowCount} pedidos · ${meta?.model||'Groq'}`;
   },
 
   /* ── INIT ── */
@@ -4095,6 +4032,71 @@ window.addEventListener('afterprint', ()=>{
   App._clearPrintSelection();
   App._restoreActiveTabAfterPrint();
 });
+
+// ═══════════════════════════════════════════════════════════════════
+// buildSnapshot — gera JSON compacto para enviar à IA (sem todos os cards)
+// ═══════════════════════════════════════════════════════════════════
+function buildSnapshot(rows){
+  const now=Date.now();
+  function hoursStuck(r){const d=r._createdObj;if(!d||!(d instanceof Date))return 0;return(now-d.getTime())/3600000;}
+  function cycleHours(r){if(r._tempoUtil!=null)return r._tempoUtil/60;return null;}
+
+  const criacao=rows.filter(r=>DL.isCriacao(r));
+  const aprovados=rows.filter(r=>DL.isCriacao(r)&&DL.isAprovado(r));
+
+  // byPhase
+  const phaseGroups={};
+  rows.forEach(r=>{const ph=r._fase||'outro';if(!phaseGroups[ph])phaseGroups[ph]=[];phaseGroups[ph].push(hoursStuck(r));});
+  const byPhase={},p90ByPhase={};
+  Object.entries(phaseGroups).forEach(([ph,hrs])=>{
+    hrs.sort((a,b)=>a-b);
+    byPhase[ph]={count:hrs.length,medianHours:RL.median(hrs),p90Hours:RL.pct(hrs,90)};
+    p90ByPhase[ph]=RL.pct(hrs,90);
+  });
+
+  // scoreCard
+  function scoreCard(r){
+    let s=0;
+    const hrs=hoursStuck(r),p90=p90ByPhase[r._fase||'outro']||999;
+    if(r.urgencia==='ALTA')s+=3;
+    if(hrs>p90)s+=2;
+    if(DL.norm(r.list||'').includes('AGUARDANDO CLIENTE')&&hrs>72)s+=2;
+    if(r.qtdeAlteracoes>=3)s+=1;
+    if(!r.designer)s+=1;
+    return s;
+  }
+
+  // topStuckCards
+  const topStuckCards=[...rows].map(r=>({...r,_hs:hoursStuck(r)}))
+    .sort((a,b)=>b._hs-a._hs).slice(0,10)
+    .map(r=>({title:r.title,hoursStuck:r._hs,phase:r._fase||'?',designer:r.designer||'',urgency:r.urgencia||'',revisions:r.qtdeAlteracoes,score:scoreCard(r)}));
+
+  // byDesigner
+  const dMap2={};
+  criacao.forEach(r=>{if(!r.designer)return;if(!dMap2[r.designer])dMap2[r.designer]={cards:0,cycles:[],rev:0,stuckHigh:0};dMap2[r.designer].cards++;dMap2[r.designer].rev+=r.qtdeAlteracoes;const ch=cycleHours(r);if(ch!=null)dMap2[r.designer].cycles.push(ch);if(r.urgencia==='ALTA'&&!DL.isAprovado(r))dMap2[r.designer].stuckHigh++;});
+  const byDesigner={};
+  Object.entries(dMap2).forEach(([n,d])=>{byDesigner[n]={cards:d.cards,medianCycleHours:RL.median(d.cycles),revisionsAvg:d.cards?d.rev/d.cards:0,stuckHigh:d.stuckHigh};});
+
+  // byVendor
+  const vMap3={};
+  rows.forEach(r=>{if(!r.vendedor)return;if(!vMap3[r.vendedor])vMap3[r.vendedor]={cards:0,highUrgency:0,rev:0};vMap3[r.vendedor].cards++;vMap3[r.vendedor].rev+=r.qtdeAlteracoes;if(r.urgencia==='ALTA')vMap3[r.vendedor].highUrgency++;});
+  const byVendor={};
+  Object.entries(vMap3).forEach(([n,d])=>{byVendor[n]={cards:d.cards,highUrgency:d.highUrgency,revisionsAvg:d.cards?d.rev/d.cards:0};});
+
+  // alertas
+  const scored=rows.map(r=>({r,s:scoreCard(r)}));
+  const alertasCriticos=scored.filter(x=>x.s>=6).sort((a,b)=>b.s-a.s).slice(0,10).map(x=>({...x.r,_riskScore:x.s}));
+  const alertasAtencao=scored.filter(x=>x.s>=3&&x.s<6).sort((a,b)=>b.s-a.s).slice(0,20).map(x=>({...x.r,_riskScore:x.s}));
+  const allScores=scored.map(x=>x.s);
+  const avgRisk=allScores.length?allScores.reduce((a,b)=>a+b,0)/allScores.length:0;
+
+  return{
+    totals:{total:rows.length,criacao:criacao.length,aprovados:aprovados.length,avgRisk},
+    byPhase,topStuckCards,byDesigner,byVendor,
+    riskSummary:{high:alertasCriticos.length,medium:alertasAtencao.length,thresholds:p90ByPhase},
+    alertasCriticos,alertasAtencao,_p90ByPhase:p90ByPhase
+  };
+}
 
 App.init();
 </script>
