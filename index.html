@@ -2202,25 +2202,24 @@ const RL = {
     RL._dailyData = dadosPorDia;
     RL._lastRowsDesigner = rows;
 
-    // ── Busca alterações concluídas via comentários ──
+    // ── Busca alterações concluídas via /.netlify/functions/comments ──
     var altByDay = {};
-    var _altCfg = App._cfg;
-    if(_altCfg && _altCfg.apiKey && _altCfg.boardIds && _altCfg.boardIds.length && dias.length){
+    if(dias.length){
       try {
         var _fromDt = new Date(dias[dias.length - 1]); _fromDt.setHours(0,0,0,0);
         var _toDt   = new Date(dias[0]);               _toDt.setHours(23,59,59,999);
-        // Usar rows completo (não só designer-filtrado) para relacionar comentários
         var _rowsById = {};
         rows.forEach(function(r){ if(r._trelloId) _rowsById[r._trelloId] = r; });
-        var _allAlt = [];
-        for(var _bi = 0; _bi < _altCfg.boardIds.length; _bi++){
-          var _bActs = await DL.fetchBoardCommentActionsInRange(_altCfg, _altCfg.boardIds[_bi], _fromDt.toISOString(), _toDt.toISOString());
-          _allAlt = _allAlt.concat(_bActs);
+        var _resp = await App._apiFetch('/.netlify/functions/comments', {
+          method: 'POST',
+          body: JSON.stringify({ fromISO: _fromDt.toISOString(), toISO: _toDt.toISOString() })
+        });
+        if(_resp && Array.isArray(_resp.actions)){
+          var _idx = DL.indexAlterationDone(_resp.actions, _rowsById);
+          altByDay = _idx.byDay;
+          RL._altIndexedByDay   = _idx.byDay;
+          RL._altIndexedByMonth = _idx.byMonth;
         }
-        var _idx = DL.indexAlterationDone(_allAlt, _rowsById);
-        altByDay = _idx.byDay;
-        RL._altIndexedByDay   = _idx.byDay;
-        RL._altIndexedByMonth = _idx.byMonth;
       } catch(e) {
         console.warn('[AltFetch daily]', e);
         RL._altIndexedByDay = {}; RL._altIndexedByMonth = {};
@@ -2386,26 +2385,23 @@ const RL = {
     // Conta artes finalizadas (FIM CRIAÇÃO) por mês
     const rowsComFim = rows.filter(r => r._fimObj instanceof Date && !isNaN(r._fimObj));
 
-    // Busca alt concluidas dos ultimos 6 meses
+    // Busca alt concluidas dos ultimos 6 meses via /.netlify/functions/comments
     var altByMonth = (RL._altIndexedByMonth) || {};
-    var _mCfg = App._cfg;
-    if(_mCfg && _mCfg.apiKey && _mCfg.boardIds && _mCfg.boardIds.length){
-      try{
-        var _mFrom = new Date(); _mFrom.setMonth(_mFrom.getMonth()-5); _mFrom.setDate(1); _mFrom.setHours(0,0,0,0);
-        var _mTo   = new Date(); _mTo.setHours(23,59,59,999);
-        // _trelloId deve existir em todos os cards vindos do Trello API
-        var _mById = {};
-        rows.forEach(function(r){ if(r._trelloId) _mById[r._trelloId] = r; });
-        var _mAll = [];
-        for(var _mBi = 0; _mBi < _mCfg.boardIds.length; _mBi++){
-          var _mActs = await DL.fetchBoardCommentActionsInRange(_mCfg, _mCfg.boardIds[_mBi], _mFrom.toISOString(), _mTo.toISOString());
-          _mAll = _mAll.concat(_mActs);
-        }
-        var _mIdx = DL.indexAlterationDone(_mAll, _mById);
+    try{
+      var _mFrom = new Date(); _mFrom.setMonth(_mFrom.getMonth()-5); _mFrom.setDate(1); _mFrom.setHours(0,0,0,0);
+      var _mTo   = new Date(); _mTo.setHours(23,59,59,999);
+      var _mById = {};
+      rows.forEach(function(r){ if(r._trelloId) _mById[r._trelloId] = r; });
+      var _mResp = await App._apiFetch('/.netlify/functions/comments', {
+        method: 'POST',
+        body: JSON.stringify({ fromISO: _mFrom.toISOString(), toISO: _mTo.toISOString() })
+      });
+      if(_mResp && Array.isArray(_mResp.actions)){
+        var _mIdx = DL.indexAlterationDone(_mResp.actions, _mById);
         altByMonth = _mIdx.byMonth;
         RL._altIndexedByMonth = altByMonth;
-      } catch(e){ console.warn('[AltFetch monthly]', e); }
-    }
+      }
+    } catch(e){ console.warn('[AltFetch monthly]', e); }
 
     const dados = meses.map(({ano, mes}) => {
       const total = rowsComFim.filter(r => {
