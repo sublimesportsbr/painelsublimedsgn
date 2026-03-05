@@ -4,7 +4,7 @@
 // Retorna: { actions: [{ date, cardId, text, type }] }
 // type: 'start' = "alteração iniciada" | 'end' = "alteração concluída"
 
-const fetch = require('node-fetch');
+
 
 const RE_CONCLUIDA = /altera[cç][aã]o\s+conclu[ií]da!?/i;
 const RE_INICIADA  = /altera[cç][aã]o\s+iniciada/i;
