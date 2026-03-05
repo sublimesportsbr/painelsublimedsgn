@@ -8,21 +8,15 @@
 const TRELLO_API = 'https://api.trello.com/1';
 const FIELDS     = 'id,name,idList,labels,due,dateLastActivity,url,shortLink';
 
-function getUser(event) {
-  const ctx = event.clientContext;
-  if (ctx && ctx.user) return ctx.user;
-  return null;
-}
-
-function getRole(email) {
-  const adminEmails = (process.env.ADMIN_EMAILS || '')
+// Qualquer usuário autenticado tem acesso. ALLOWED_EMAILS removida.
+// role = "admin" se email estiver em ADMIN_EMAILS, senão "viewer".
+function getUserRole(context) {
+  const user = context?.clientContext?.user;
+  if (!user) return null;
+  const email = (user.email || '').toLowerCase();
+  const admins = (process.env.ADMIN_EMAILS || '')
     .split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
-  const allowedEmails = (process.env.ALLOWED_EMAILS || '')
-    .split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
-  const e = (email || '').toLowerCase();
-  if (adminEmails.includes(e)) return 'ADMIN';
-  if (allowedEmails.includes(e)) return 'VIEWER';
-  return null;
+  return admins.includes(email) ? 'admin' : 'viewer';
 }
 
 async function trelloGet(path) {
@@ -126,16 +120,13 @@ function mapCard(card, listMap, cfMap, optMap, boardName) {
   };
 }
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers: corsHeaders(), body: '' };
   }
 
-  const user = getUser(event);
-  if (!user) return json(401, { error: 'Não autenticado.' });
-
-  const role = getRole(user.email || '');
-  if (!role) return json(403, { error: 'Acesso não autorizado.' });
+  const role = getUserRole(context);
+  if (!role) return json(401, { error: 'Não autenticado.' });
 
   const key   = process.env.TRELLO_KEY;
   const token = process.env.TRELLO_TOKEN;

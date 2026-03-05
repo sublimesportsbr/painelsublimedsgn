@@ -1,46 +1,40 @@
 /**
  * /.netlify/functions/config
- * Retorna: { role, email, boards:[{id,name}], colMappingDefault:{} }
+ * Retorna: { role, email, name, boards:[{id,name}], colMappingDefault:{} }
  * Requer: Authorization: Bearer <netlify-identity-jwt>
+ *
+ * Qualquer usuário autenticado tem acesso (role = "viewer" por padrão).
+ * Se o email estiver em ADMIN_EMAILS → role = "admin".
+ * ALLOWED_EMAILS removida — qualquer usuário autenticado acessa (viewer por padrão).
  */
 
 const TRELLO_API = 'https://api.trello.com/1';
 
-function getUser(event) {
-  // Netlify Identity injeta clientContext no context, mas via Authorization header
-  // também podemos checar o JWT manualmente ou confiar no clientContext
-  const ctx = event.clientContext;
-  if (ctx && ctx.user) return ctx.user;
-  return null;
+function getUserRole(context) {
+  const user = context?.clientContext?.user;
+  if (!user) return null;
+  const email = (user.email || '').toLowerCase();
+  const admins = (process.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map(e => e.trim().toLowerCase())
+    .filter(Boolean);
+  return admins.includes(email) ? 'admin' : 'viewer';
 }
 
-function getRole(email) {
-  const adminEmails = (process.env.ADMIN_EMAILS || '')
-    .split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
-  const allowedEmails = (process.env.ALLOWED_EMAILS || '')
-    .split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
-  const e = (email || '').toLowerCase();
-  if (adminEmails.includes(e)) return 'ADMIN';
-  if (allowedEmails.includes(e)) return 'VIEWER';
-  return null;
-}
-
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   // Handle CORS preflight
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers: corsHeaders(), body: '' };
   }
 
-  const user = getUser(event);
-  if (!user) {
+  const role = getUserRole(context);
+  if (!role) {
     return json(401, { error: 'Não autenticado. Faça login para continuar.' });
   }
 
+  const user  = context.clientContext.user;
   const email = user.email || '';
-  const role = getRole(email);
-  if (!role) {
-    return json(403, { error: 'Acesso não autorizado. Seu email não está na lista de acesso.' });
-  }
+  const name  = user.user_metadata?.full_name || user.user_metadata?.name || email;
 
   // Busca boards do Trello
   const key   = process.env.TRELLO_KEY;
@@ -62,7 +56,7 @@ exports.handler = async (event) => {
   return json(200, {
     role,
     email,
-    name: user.user_metadata?.full_name || email,
+    name,
     boards: boards.map(b => ({ id: b.id, name: b.name })),
     colMappingDefault: {}
   });

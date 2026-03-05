@@ -7,24 +7,18 @@
 
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
-function getUser(event) {
-  const ctx = event.clientContext;
-  if (ctx && ctx.user) return ctx.user;
-  return null;
+// Qualquer usuário autenticado tem acesso. ALLOWED_EMAILS removida.
+// role = "admin" se email estiver em ADMIN_EMAILS, senão "viewer".
+function getUserRole(context) {
+  const user = context?.clientContext?.user;
+  if (!user) return null;
+  const email = (user.email || '').toLowerCase();
+  const admins = (process.env.ADMIN_EMAILS || '')
+    .split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+  return admins.includes(email) ? 'admin' : 'viewer';
 }
 
-function getRole(email) {
-  const adminEmails = (process.env.ADMIN_EMAILS || '')
-    .split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
-  const allowedEmails = (process.env.ALLOWED_EMAILS || '')
-    .split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
-  const e = (email || '').toLowerCase();
-  if (adminEmails.includes(e)) return 'ADMIN';
-  if (allowedEmails.includes(e)) return 'VIEWER';
-  return null;
-}
-
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers: corsHeaders(), body: '' };
   }
@@ -33,11 +27,8 @@ exports.handler = async (event) => {
     return json(405, { error: 'Método não permitido.' });
   }
 
-  const user = getUser(event);
-  if (!user) return json(401, { error: 'Não autenticado.' });
-
-  const role = getRole(user.email || '');
-  if (!role) return json(403, { error: 'Acesso não autorizado.' });
+  const role = getUserRole(context);
+  if (!role) return json(401, { error: 'Não autenticado.' });
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return json(500, { error: 'GEMINI_API_KEY não configurada.' });

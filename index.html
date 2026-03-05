@@ -3340,9 +3340,11 @@ Retorne APENAS um objeto JSON válido, sem texto antes ou depois, sem markdown, 
     try{
       const cfg = await this._apiFetch('/.netlify/functions/config');
       if(cfg.error){
-        if(errEl){ errEl.textContent=cfg.error; errEl.style.display='block'; }
-        netlifyIdentity.logout();
-        return;
+        // config error (e.g. Trello keys missing) — show toast but do NOT block user
+        this._showToast('⚠️ Config: ' + cfg.error, true);
+        // Still set a default role so the UI renders
+        cfg.role = cfg.role || 'viewer';
+        cfg.name = cfg.name || (this._user?.email || '');
       }
       this._role = cfg.role;
       this._showDashboard();
@@ -3383,10 +3385,10 @@ Retorne APENAS um objeto JSON válido, sem texto antes ou depois, sem markdown, 
     if(badge)  badge.style.display = 'flex';
     if(nameEl) nameEl.textContent = name;
     if(roleEl){
-      roleEl.textContent = role;
-      roleEl.style.background = role==='ADMIN' ? '#7c3aed' : '#2563eb';
+      roleEl.textContent = role.toUpperCase();
+      roleEl.style.background = role==='admin' ? '#7c3aed' : '#2563eb';
     }
-    if(adminBtn) adminBtn.style.display = role==='ADMIN' ? '' : 'none';
+    if(adminBtn) adminBtn.style.display = role==='admin' ? '' : 'none';
   },
 
   logout(){
@@ -3438,7 +3440,7 @@ Retorne APENAS um objeto JSON válido, sem texto antes ou depois, sem markdown, 
 
   /* ── MODAL ── */
   openAdminModal(){
-    if(this._role !== 'ADMIN'){ this._showToast('Apenas admins podem acessar esta área.',true); return; }
+    if(this._role !== 'admin'){ this._showToast('Apenas admins podem acessar esta área.',true); return; }
     const savedMap = Store.get('sb_col_mapping')||{};
     const mapEl = document.getElementById('adminColMapping');
     if(mapEl) mapEl.value = Object.entries(savedMap).map(([k,v])=>k+'='+v).join('\n');
