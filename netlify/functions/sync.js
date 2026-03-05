@@ -1,7 +1,7 @@
 // netlify/functions/sync.js
 // Sincroniza cards, listas e dados SOMENTE dos boards em TRELLO_ALLOWED_BOARD_IDS
 
-const fetch = require('node-fetch');
+
 
 // ── Helper: fetch com retry simples ─────────────────────────────────────────
 async function trelloGet(url, retries = 3) {
