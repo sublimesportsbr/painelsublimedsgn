@@ -1,7 +1,7 @@
 // netlify/functions/config.js
 // Retorna dados do usuário logado e apenas os boards permitidos via TRELLO_ALLOWED_BOARD_IDS
 
-
+const fetch = require('node-fetch');
 
 exports.handler = async (event, context) => {
   // ── 1. Validar variável de ambiente ──────────────────────────────────────
@@ -28,13 +28,13 @@ exports.handler = async (event, context) => {
   }
 
   // ── 3. Credenciais do Trello ─────────────────────────────────────────────
-  const TRELLO_KEY   = process.env.TRELLO_API_KEY;
+  const TRELLO_KEY   = process.env.TRELLO_API_KEY || process.env.TRELLO_KEY;
   const TRELLO_TOKEN = process.env.TRELLO_TOKEN;
 
   if (!TRELLO_KEY || !TRELLO_TOKEN) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Missing TRELLO_API_KEY or TRELLO_TOKEN env var' }),
+      body: JSON.stringify({ error: 'Missing TRELLO_KEY/TRELLO_API_KEY or TRELLO_TOKEN env var' }),
     };
   }
 

@@ -1,7 +1,7 @@
 // netlify/functions/sync.js
 // Sincroniza cards, listas e dados SOMENTE dos boards em TRELLO_ALLOWED_BOARD_IDS
 
-
+const fetch = require('node-fetch');
 
 // ── Helper: fetch com retry simples ─────────────────────────────────────────
 async function trelloGet(url, retries = 3) {
@@ -45,13 +45,13 @@ exports.handler = async (event, context) => {
   }
 
   // ── 3. Credenciais do Trello ─────────────────────────────────────────────
-  const TRELLO_KEY   = process.env.TRELLO_API_KEY;
+  const TRELLO_KEY   = process.env.TRELLO_API_KEY || process.env.TRELLO_KEY;
   const TRELLO_TOKEN = process.env.TRELLO_TOKEN;
 
   if (!TRELLO_KEY || !TRELLO_TOKEN) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Missing TRELLO_API_KEY or TRELLO_TOKEN env var' }),
+      body: JSON.stringify({ error: 'Missing TRELLO_KEY/TRELLO_API_KEY or TRELLO_TOKEN env var' }),
     };
   }
 
