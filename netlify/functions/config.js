@@ -1,6 +1,7 @@
 // netlify/functions/config.js
 // Retorna dados do usuário logado e apenas os boards permitidos via TRELLO_ALLOWED_BOARD_IDS
 
+const fetch = require('node-fetch');
 
 exports.handler = async (event, context) => {
   // ── 1. Validar variável de ambiente ──────────────────────────────────────
