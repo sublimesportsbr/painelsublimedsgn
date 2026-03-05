@@ -5,7 +5,7 @@
  * Requer: Authorization: Bearer <netlify-identity-jwt>
  */
 
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 // Qualquer usuário autenticado tem acesso. ALLOWED_EMAILS removida.
 // role = "admin" se email estiver em ADMIN_EMAILS, senão "viewer".
