@@ -2,7 +2,7 @@
 // Sincroniza SOMENTE os boards em TRELLO_ALLOWED_BOARD_IDS
 // Retorna { rows: [...] } no formato exato esperado pelo frontend (data.rows)
 
-const fetch = require('node-fetch');
+
 
 // ── Helpers de normalização (espelham DL._n e DL._pickCF do frontend) ────────
 
