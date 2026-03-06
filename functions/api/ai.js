@@ -97,15 +97,21 @@ function cleanJSON(r) { return r.replace(/```json\s*/g,'').replace(/```\s*/g,'')
 
 function buildPrompt(s) {
   const pl = Object.entries(s.byPhase   ||{}).map(([ph,d])=>`  ${ph}: ${d.count} cards | mediana ${(+d.medianHours).toFixed(1)}h | p90 ${(+d.p90Hours).toFixed(1)}h`).join('\n');
-  const sl = (s.topStuckCards||[]).slice(0,10).map(c=>`  "${c.title}" — ${(+c.hoursStuck).toFixed(1)}h | fase:${c.phase} | designer:${c.designer||'?'} | urgência:${c.urgency||'?'}`).join('\n');
-  const dl = Object.entries(s.byDesigner||{}).slice(0,8).map(([n,d])=>`  ${n}: ${d.cards} cards | mediana ${(+d.medianCycleHours).toFixed(1)}h | ${(+d.revisionsAvg).toFixed(2)} alt/arte | ${d.stuckHigh} urgAlta`).join('\n');
+  const sl = (s.topStuckCards||[]).slice(0,10).map(c=>`  "${c.title}" — ${(+c.hoursStuck).toFixed(1)}h | fase:${c.phase} | designer:${c.designer||'?'} | urgência:${c.urgency||'?'} | ${c.revisions} alt.`).join('\n');
+  const dl = Object.entries(s.byDesigner||{}).slice(0,8).map(([n,d])=>`  ${n}: ${d.cards} cards | mediana ${(+d.medianCycleHours).toFixed(1)}h | ${(+d.revisionsAvg).toFixed(2)} alt/arte | ${d.stuckHigh} urgAlta parados`).join('\n');
   const vl = Object.entries(s.byVendor  ||{}).slice(0,8).map(([n,d])=>`  ${n}: ${d.cards} cards | ${d.highUrgency} urgAlta | ${(+d.revisionsAvg).toFixed(2)} alt/arte`).join('\n');
   const rk = s.riskSummary||{};
-  return `Você é consultor sênior de operações criativas para Sublime Sports (artes para uniformes esportivos).
+  const inactive = (s.inactiveFiltered||[]).join(', ') || 'nenhum';
+
+  return `Você é Diretor de Operações analisando a equipe de criação da Sublime Sports (artes para uniformes esportivos).
+
+Seu papel: agir como gestor experiente que interpreta dados, identifica padrões, diagnostica causas, prevê riscos e sugere decisões gerenciais. Nunca apenas descreva métricas — ligue dado → causa → impacto → ação.
 
 ## SNAPSHOT DO PAINEL
-Total: ${s.totals?.total||0} | Em criação: ${s.totals?.criacao||0} | Aprovados: ${s.totals?.aprovados||0}
+Total de pedidos (membros ativos): ${s.totals?.total||0}
+Em criação: ${s.totals?.criacao||0} | Aprovados: ${s.totals?.aprovados||0}
 Score médio de risco: ${(+(s.totals?.avgRisk||0)).toFixed(1)} | Críticos: ${rk.high||0} | Atenção: ${rk.medium||0}
+Membros inativos excluídos da análise: ${inactive}
 
 ## POR FASE (count | mediana h | p90 h)
 ${pl||'  sem dados'}
@@ -119,9 +125,15 @@ ${dl||'  sem dados'}
 ## VENDEDORES (cards | urgAlta | alt/arte)
 ${vl||'  sem dados'}
 
-## INSTRUÇÕES
+## INSTRUÇÕES DE ANÁLISE
+- Identifique gargalos, concentração de problemas, padrões vendedor×designer
+- Diferencie problemas pontuais de sistêmicos
+- Reconheça sinais positivos também
+- Quando houver poucos dados, declare explicitamente
+- Quando houver padrão forte, seja assertivo
+
 Retorne APENAS JSON válido sem markdown, schema exato:
-{"resumo":"string","gargalos":[{"fase":"string","problema":"string","acao":"string"}],"designers":[{"nome":"string","status":"ok|atencao|critico","obs":"string"}],"vendedores":[{"nome":"string","status":"ok|atencao|critico","obs":"string"}],"proximos_passos":["string"]}`;
+{"resumo_executivo":{"visao_geral":"string","principal_risco":"string","principal_oportunidade":"string","nivel_operacao":"estavel|atencao|critico"},"diagnostico_operacional":[{"area":"string","titulo":"string","descricao":"string","tipo":"critica|alta|media|baixa"}],"alertas_criticos":[{"titulo":"string","evidencia":"string","impacto":"string","prioridade":"critica|alta|media|baixa"}],"causas_provaveis":[{"causa":"string","evidencia":"string"}],"acoes_recomendadas":{"imediata":["string"],"curto_prazo":["string"],"estrutural":["string"]},"tendencias":[{"area":"string","titulo":"string","descricao":"string","direcao":"melhora|piora|estavel"}],"perguntas_gestao":["string"]}`;
 }
 
 export const onRequest = async ({ request, env }) => {
