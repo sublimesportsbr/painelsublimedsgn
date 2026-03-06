@@ -227,8 +227,53 @@ textarea.form-input{resize:vertical;min-height:80px;font-family:monospace;font-s
 .modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
 .modal-actions .btn{flex:1;min-width:120px;text-align:center;padding:10px}
 
-/* Print */
-.print-hide{display:none!important}
+.alert-section-header.eficiencia{background:#f0fdf4;color:#166534}
+.alert-section-header.preditivo{background:#faf5ff;color:#6b21a8}
+.alert-section-header.qualidade2{background:#ede9fe;color:#5b21b6}
+/* Equipe member toggle */
+.equipe-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--card-bg);transition:border-color .2s}
+.equipe-item.inativo{opacity:.55;background:var(--light)}
+.equipe-toggle{position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0}
+.equipe-toggle input{opacity:0;width:0;height:0}
+.equipe-slider{position:absolute;inset:0;background:#d1d5db;border-radius:22px;cursor:pointer;transition:.25s}
+.equipe-slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.25s}
+.equipe-toggle input:checked+.equipe-slider{background:var(--secondary)}
+.equipe-toggle input:checked+.equipe-slider:before{transform:translateX(18px)}
+.equipe-nome{flex:1;font-size:14px;font-weight:600;color:var(--dark)}
+.equipe-cargo{font-size:11px;color:var(--text-light);background:var(--border);padding:2px 8px;border-radius:10px;text-transform:uppercase}
+.equipe-del{background:none;border:none;cursor:pointer;color:var(--text-light);font-size:16px;padding:2px 6px;border-radius:5px;transition:color .2s}
+.equipe-del:hover{color:var(--danger)}
+/* AI Director sections */
+.ai-director-section{margin-bottom:22px;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.ai-director-header{padding:12px 18px;font-weight:800;font-size:13px;display:flex;align-items:center;gap:8px;letter-spacing:.3px}
+.ai-director-header.resumo{background:#eff6ff;color:#1e3a8a}
+.ai-director-header.diagnostico{background:#fef3c7;color:#92400e}
+.ai-director-header.alertas{background:#fee2e2;color:#991b1b}
+.ai-director-header.causas{background:#ede9fe;color:#5b21b6}
+.ai-director-header.acoes{background:#d1fae5;color:#065f46}
+.ai-director-header.tendencias{background:#f0f9ff;color:#0369a1}
+.ai-director-header.perguntas{background:#f9fafb;color:#374151}
+.ai-director-body{padding:16px 18px;background:var(--card-bg)}
+.ai-director-item{padding:10px 14px;border-radius:8px;margin-bottom:8px;border-left:3px solid var(--border);background:var(--light)}
+.ai-director-item:last-child{margin-bottom:0}
+.ai-director-item.critica{border-left-color:var(--danger);background:#fef2f2}
+.ai-director-item.alta{border-left-color:#f59e0b;background:#fffbeb}
+.ai-director-item.media{border-left-color:#8b5cf6;background:#f5f3ff}
+.ai-director-item.baixa{border-left-color:var(--secondary);background:#f0fdf4}
+.ai-director-item-title{font-weight:700;font-size:14px;color:var(--dark);margin-bottom:4px}
+.ai-director-item-body{font-size:13px;color:var(--text);line-height:1.6}
+.ai-director-item-meta{font-size:12px;color:var(--text-light);margin-top:6px;display:flex;gap:12px;flex-wrap:wrap}
+.ai-acao-group{margin-bottom:12px}
+.ai-acao-group-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.ai-pergunta{font-size:13px;color:var(--text);padding:8px 12px;border-radius:6px;background:var(--light);border-left:3px solid var(--primary);margin-bottom:6px;line-height:1.5}
+.ai-nivel-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;margin-left:auto}
+.ai-nivel-estavel{background:#d1fae5;color:#065f46}
+.ai-nivel-atencao{background:#fef3c7;color:#92400e}
+.ai-nivel-critico{background:#fee2e2;color:#991b1b}
+body.dark-mode .ai-director-item.critica{background:rgba(239,68,68,.08)}
+body.dark-mode .ai-director-item.alta{background:rgba(245,158,11,.06)}
+body.dark-mode .ai-director-item.media{background:rgba(139,92,246,.08)}
+body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
 .print-chart-img{width:100%;height:auto;display:block}
 /* Print modal */
 #modalPrint .pm-section{margin-bottom:18px}
@@ -719,11 +764,15 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
       <div style="background:var(--card-bg);border-radius:15px;padding:14px 20px;margin-bottom:18px;box-shadow:0 4px 20px rgba(0,0,0,.08);display:flex;align-items:center;gap:14px;flex-wrap:wrap">
         <span style="font-size:26px">🤖</span>
         <div style="flex:1;min-width:180px">
-          <div style="font-size:13px;font-weight:700;color:var(--dark)">Análise Inteligente — Groq</div>
+          <div style="font-size:13px;font-weight:700;color:var(--dark)">Análise Inteligente — Diretor de Operações</div>
           <div id="aiStatus" style="font-size:12px;color:var(--text-light);margin-top:2px">Pronto para analisar.</div>
         </div>
         <button class="btn btn-secondary" onclick="App.runAIAnalysis()" id="btnAI">✨ Gerar Análise IA</button>
+        <button class="btn btn-ghost" onclick="App.openEquipeModal()" style="font-size:12px">👥 Configurar Equipe</button>
       </div>
+
+      <!-- Alertas automáticos -->
+      <div id="actionPlan"></div>
       <!-- Resultado IA -->
       <div id="aiResult" style="display:none" class="chart-container">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
@@ -848,6 +897,36 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
   </div>
 </div>
 
+<!-- MODAL CONFIGURAR EQUIPE -->
+<div class="modal-overlay" id="modalEquipe" onclick="if(event.target===this)App.closeEquipeModal()">
+  <div class="modal-box" style="max-width:520px">
+    <div class="modal-header" style="background:linear-gradient(135deg,#065f46,#10b981)">
+      <h2>👥 Configuração da Equipe</h2>
+      <button class="modal-close" onclick="App.closeEquipeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;line-height:1.6">Membros <strong>inativos</strong> não aparecem em rankings, médias, gráficos ou análises da IA. Os dados históricos deles são preservados.</p>
+      <div id="equipeList" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div style="margin-top:16px;padding:12px 14px;background:var(--light);border-radius:8px;border:1px solid var(--border)">
+        <div style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:8px">➕ Adicionar membro manualmente</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input type="text" id="equipeNomeInput" placeholder="Nome do membro" style="flex:1;min-width:150px;padding:8px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;background:var(--input-bg);color:var(--text)">
+          <select id="equipeCargoInput" style="padding:8px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;background:var(--input-bg);color:var(--text)">
+            <option value="designer">Designer</option>
+            <option value="vendedor">Vendedor</option>
+          </select>
+          <button class="btn btn-secondary" style="padding:8px 14px;font-size:13px" onclick="App.addEquipeMembro()">Adicionar</button>
+        </div>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="App.saveEquipe()">💾 Salvar</button>
+        <button class="btn btn-ghost" onclick="App.closeEquipeModal()">Cancelar</button>
+        <span id="equipeSaveMsg" style="font-size:12px;color:var(--secondary);display:none;align-self:center">✅ Salvo!</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="loading" id="loading">
   <div class="spinner"></div>
   <div class="loading-text" id="loadingText">Sincronizando com o Trello…</div>
@@ -867,6 +946,66 @@ const DEBUG_TIME = false;
 /* NOTE: Trello object kept as dead code — all calls now go via /api/sync */
 const TRELLO_API = 'https://api.trello.com/1';
 const SK = { cfg:'sb_trello_cfg', dataset:'sb_last_dataset', ui:'sb_ui_state' };
+
+/* ══════════════════════════════════════════════
+   EQUIPE — sistema de membros ativos/inativos
+══════════════════════════════════════════════ */
+// Lista padrão: Guilherme já vem inativo
+const EQUIPE_DEFAULT = [
+  { nome: 'Guilherme', cargo: 'designer', ativo: false }
+];
+const EQUIPE_SK = 'sb_equipe_config';
+
+const TeamFilter = {
+  _equipe: null,
+
+  load(){
+    const saved = Store.get(EQUIPE_SK);
+    this._equipe = saved && saved.length ? saved : [...EQUIPE_DEFAULT];
+    return this._equipe;
+  },
+
+  save(list){
+    this._equipe = list;
+    Store.set(EQUIPE_SK, list);
+  },
+
+  getInactiveNames(){
+    if(!this._equipe) this.load();
+    return this._equipe.filter(m=>!m.ativo).map(m=>DL.norm(m.nome));
+  },
+
+  isActiveDesigner(name){
+    const n = DL.norm(name||'');
+    if(!n) return true;
+    return !this.getInactiveNames().includes(n);
+  },
+
+  // Auto-detect and add members found in data that aren't in list yet
+  syncFromData(rows){
+    if(!this._equipe) this.load();
+    const existing = new Set(this._equipe.map(m=>DL.norm(m.nome)));
+    const newMembers = [];
+    rows.forEach(r=>{
+      if(r.designer){const n=DL.norm(r.designer); if(n&&!existing.has(n)){existing.add(n);newMembers.push({nome:r.designer,cargo:'designer',ativo:true});}}
+    });
+    if(newMembers.length){
+      this._equipe = [...this._equipe, ...newMembers];
+      Store.set(EQUIPE_SK, this._equipe);
+    }
+    return this._equipe;
+  },
+
+  // Filter rows for stats — removes rows where designer is inactive
+  filterForStats(rows){
+    const inactive = this.getInactiveNames();
+    if(!inactive.length) return rows;
+    return rows.filter(r => {
+      if(!r.designer) return true;
+      return !inactive.includes(DL.norm(r.designer));
+    });
+  }
+};
 
 const SCHEDULE = {
   1:[[480,1080]],2:[[480,1080]],3:[[480,1080]],
@@ -2886,34 +3025,78 @@ const RL = {
     const el=document.getElementById('actionPlan');
     if(!el)return;
 
+    const inactive=snap.inactiveFiltered||[];
+    const inactiveBanner=inactive.length?`<div style="background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#92400e;display:flex;align-items:center;gap:8px">
+      <span>🔕</span><span><strong>Membros inativos filtrados das estatísticas:</strong> ${inactive.join(', ')}. Dados históricos preservados.</span>
+      <button onclick="App.openEquipeModal()" style="margin-left:auto;background:none;border:1px solid #f59e0b;border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;color:#92400e">Gerenciar</button>
+    </div>`:'';;
+
     const badgeScore=s=>s>=6?`<span class="badge badge-danger">Crítico ${s}</span>`:s>=3?`<span class="badge badge-warning">Atenção ${s}</span>`:`<span class="badge badge-success">OK ${s}</span>`;
     const stBadge=st=>st==='critico'?'<span class="badge badge-danger">Crítico</span>':st==='atencao'?'<span class="badge badge-warning">Atenção</span>':'<span class="badge badge-success">OK</span>';
     const sec=(title,icon,cls,body,cnt='')=>`<div class="alert-section"><div class="alert-section-header ${cls}">${icon} ${title}${cnt?`<span class="alert-count-badge">${cnt}</span>`:''}</div><div class="alert-section-body">${body}</div></div>`;
 
-    // Seção 1: Gargalos top 3 fases por p90*count
+    // ── CATEGORIA: OPERACIONAL — Gargalos top 3 fases
     const gargPhases=Object.entries(snap.byPhase).map(([ph,d])=>({ph,scoreG:d.p90Hours*d.count,...d})).sort((a,b)=>b.scoreG-a.scoreG).slice(0,3);
-    const gargHtml=gargPhases.length?gargPhases.map(g=>`<div class="action-item priority-${g.p90Hours>48?'high':g.p90Hours>24?'medium':'low'}"><div class="action-header"><div class="action-title">🚧 ${g.ph}</div><span class="badge badge-${g.p90Hours>48?'danger':g.p90Hours>24?'warning':'info'}">${g.p90Hours.toFixed(0)}h p90</span></div><div class="action-description">${g.count} cards · mediana ${g.medianHours.toFixed(1)}h · p90 ${g.p90Hours.toFixed(1)}h</div></div>`).join(''):'<div class="alert-section-empty">Sem dados de fase.</div>';
+    const gargHtml=gargPhases.length?gargPhases.map(g=>{
+      const sev=g.p90Hours>48?'high':g.p90Hours>24?'medium':'low';
+      const sevLabel=g.p90Hours>48?'🔴 Alta':g.p90Hours>24?'🟡 Média':'🟢 Baixa';
+      return`<div class="action-item priority-${sev}">
+        <div class="action-header"><div class="action-title">🚧 ${g.ph}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+            <span class="badge badge-${g.p90Hours>48?'danger':g.p90Hours>24?'warning':'info'}">${g.p90Hours.toFixed(0)}h p90</span>
+            <span style="font-size:11px;color:var(--text-light)">Severidade: ${sevLabel}</span>
+          </div>
+        </div>
+        <div class="action-description">${g.count} cards · mediana ${g.medianHours.toFixed(1)}h · p90 ${g.p90Hours.toFixed(1)}h</div>
+        <div class="action-metrics">Impacto: ${g.count} pedidos potencialmente bloqueados nesta etapa</div>
+      </div>`;}).join(''):'<div class="alert-section-empty">Sem dados de fase.</div>';
 
-    // Seção 2: Alertas críticos (score ≥ 6)
-    const critHtml=snap.alertasCriticos.length?snap.alertasCriticos.map(r=>`<div class="action-item priority-high"><div class="action-header"><div class="action-title">${DL.pedidoLinkHTML(r)}</div>${badgeScore(r._riskScore)}</div><div class="action-description">Fase: ${r._fase||'—'} · Urgência: ${r.urgencia||'—'} · ${r.qtdeAlteracoes} alt. · Designer: ${r.designer||'—'}</div></div>`).join(''):'<div class="alert-section-empty">✅ Nenhum card em estado crítico.</div>';
+    // ── CATEGORIA: COMERCIAL — Alertas críticos (score ≥ 6)
+    const critHtml=snap.alertasCriticos.length?snap.alertasCriticos.map(r=>`
+      <div class="action-item priority-high">
+        <div class="action-header"><div class="action-title">${DL.pedidoLinkHTML(r)}</div>${badgeScore(r._riskScore)}</div>
+        <div class="action-description">Fase: ${r._fase||'—'} · Urgência: <strong>${r.urgencia||'—'}</strong> · ${r.qtdeAlteracoes} alt. · Designer: ${r.designer||'—'}</div>
+        <div class="action-metrics">Score: ${r._riskScore}/7 pontos de risco · Impacto: risco de atraso comercial</div>
+      </div>`).join(''):'<div class="alert-section-empty">✅ Nenhum card em estado crítico.</div>';
 
-    // Seção 3: Atenção (score 3–5)
-    const atHtml=snap.alertasAtencao.length?snap.alertasAtencao.slice(0,10).map(r=>`<div class="action-item priority-medium"><div class="action-header"><div class="action-title">${DL.pedidoLinkHTML(r)}</div>${badgeScore(r._riskScore)}</div><div class="action-description">Fase: ${r._fase||'—'} · ${r.qtdeAlteracoes} alt. · Designer: ${r.designer||'—'}</div></div>`).join(''):'<div class="alert-section-empty">✅ Nenhum card em atenção.</div>';
+    // ── CATEGORIA: QUALIDADE — Atenção (score 3–5)
+    const atHtml=snap.alertasAtencao.length?snap.alertasAtencao.slice(0,10).map(r=>`
+      <div class="action-item priority-medium">
+        <div class="action-header"><div class="action-title">${DL.pedidoLinkHTML(r)}</div>${badgeScore(r._riskScore)}</div>
+        <div class="action-description">Fase: ${r._fase||'—'} · ${r.qtdeAlteracoes} alt. · Designer: ${r.designer||'—'}</div>
+        <div class="action-metrics">Impacto: qualidade do briefing ou execução abaixo do esperado</div>
+      </div>`).join(''):'<div class="alert-section-empty">✅ Nenhum card em atenção.</div>';
 
-    // Seção 4: Ranking designers
+    // ── CATEGORIA: EFICIÊNCIA — Ranking designers
     const desRank=Object.entries(snap.byDesigner).sort((a,b)=>b[1].revisionsAvg-a[1].revisionsAvg);
-    const desHtml=desRank.length?desRank.map(([n,d])=>{const st=d.revisionsAvg>=2?'critico':d.revisionsAvg>=1?'atencao':'ok';return`<div class="action-item priority-${st==='critico'?'high':st==='atencao'?'medium':'low'}"><div class="action-header"><div class="action-title">🎨 ${n}</div>${stBadge(st)}</div><div class="action-description">${d.cards} cards · ${d.revisionsAvg.toFixed(2)} alt/arte · mediana ${d.medianCycleHours.toFixed(1)}h ciclo · ${d.stuckHigh} urgAlta parados</div></div>`;}).join(''):'<div class="alert-section-empty">Sem dados de designers.</div>';
+    const desHtml=desRank.length?desRank.map(([n,d])=>{
+      const st=d.revisionsAvg>=2?'critico':d.revisionsAvg>=1?'atencao':'ok';
+      const pri=st==='critico'?'high':st==='atencao'?'medium':'low';
+      const impact=st==='critico'?'Alto retrabalho — verificar briefing e alinhamento':st==='atencao'?'Retrabalho moderado — acompanhar':' Eficiência adequada';
+      return`<div class="action-item priority-${pri}">
+        <div class="action-header"><div class="action-title">🎨 ${n}</div>${stBadge(st)}</div>
+        <div class="action-description">${d.cards} cards · ${d.revisionsAvg.toFixed(2)} alt/arte · mediana ${d.medianCycleHours.toFixed(1)}h ciclo · ${d.stuckHigh} urgAlta parados</div>
+        <div class="action-metrics">Impacto: ${impact}</div>
+      </div>`;}).join(''):'<div class="alert-section-empty">Sem dados de designers.</div>';
 
-    // Seção 5: Ranking vendedores
+    // ── CATEGORIA: PREDITIVO — Vendedores com alto retrabalho
     const vendRank=Object.entries(snap.byVendor).sort((a,b)=>b[1].revisionsAvg-a[1].revisionsAvg);
-    const vendHtml=vendRank.length?vendRank.map(([n,d])=>{const st=d.revisionsAvg>=2?'critico':d.revisionsAvg>=1?'atencao':'ok';return`<div class="action-item priority-${st==='critico'?'high':st==='atencao'?'medium':'low'}"><div class="action-header"><div class="action-title">👤 ${n}</div>${stBadge(st)}</div><div class="action-description">${d.cards} cards · ${d.revisionsAvg.toFixed(2)} alt/arte · ${d.highUrgency} urgência-alta</div></div>`;}).join(''):'<div class="alert-section-empty">Sem dados de vendedores.</div>';
+    const vendHtml=vendRank.length?vendRank.map(([n,d])=>{
+      const st=d.revisionsAvg>=2?'critico':d.revisionsAvg>=1?'atencao':'ok';
+      const pri=st==='critico'?'high':st==='atencao'?'medium':'low';
+      const prediction=st==='critico'?'Tendência: este vendedor continuará gerando alto retrabalho sem intervenção':st==='atencao'?'Risco preditivo moderado de retrabalho':'Padrão dentro do esperado';
+      return`<div class="action-item priority-${pri}">
+        <div class="action-header"><div class="action-title">👤 ${n}</div>${stBadge(st)}</div>
+        <div class="action-description">${d.cards} cards · ${d.revisionsAvg.toFixed(2)} alt/arte · ${d.highUrgency} urgência-alta</div>
+        <div class="action-metrics">${prediction}</div>
+      </div>`;}).join(''):'<div class="alert-section-empty">Sem dados de vendedores.</div>';
 
-    el.innerHTML=
-      sec('Gargalos Agora (Top 3 Fases)','🚧','operacional',gargHtml)+
-      sec('Alertas Críticos','🔴','comercial',critHtml,snap.alertasCriticos.length||'')+
-      sec('Alertas de Atenção','🟡','prazo',atHtml,snap.alertasAtencao.length||'')+
-      sec('Ranking Designers','🎨','qualidade',desHtml)+
-      sec('Ranking Vendedores','👤','operacional',vendHtml);
+    el.innerHTML= inactiveBanner +
+      sec('Operacional — Gargalos Atuais (Top 3 Fases)','🚧','operacional',gargHtml)+
+      sec('Comercial — Alertas Críticos','🔴','comercial',critHtml,snap.alertasCriticos.length||'')+
+      sec('Qualidade — Pedidos em Atenção','🟡','prazo',atHtml,snap.alertasAtencao.length||'')+
+      sec('Eficiência — Ranking Designers','🎨','qualidade',desHtml)+
+      sec('Preditivo — Padrão de Retrabalho por Vendedor','📈','preditivo',vendHtml);
   },
 
   /* ══════ MODAIS DE DETALHE ══════ */
@@ -3240,32 +3423,126 @@ const App = {
     const tsEl=document.getElementById('aiTimestamp');
     if(!contentEl)return;
 
-    const stBadge=st=>st==='critico'?'<span class="badge badge-danger">Crítico</span>':st==='atencao'?'<span class="badge badge-warning">Atenção</span>':'<span class="badge badge-success">OK</span>';
+    const priBadge=p=>({critica:'<span class="badge badge-danger">🔴 Crítica</span>',alta:'<span class="badge badge-warning">🟠 Alta</span>',media:'<span class="badge badge-info">🟡 Média</span>',baixa:'<span class="badge badge-success">🟢 Baixa</span>'}[p]||'');
+    const nivelBadge=n=>({critico:'<span class="ai-nivel-badge ai-nivel-critico">⛔ Crítico</span>',atencao:'<span class="ai-nivel-badge ai-nivel-atencao">⚠️ Atenção</span>',estavel:'<span class="ai-nivel-badge ai-nivel-estavel">✅ Estável</span>'}[n]||'');
+
+    const sec=(cls,icon,title,body)=>`<div class="ai-director-section"><div class="ai-director-header ${cls}">${icon} ${title}</div><div class="ai-director-body">${body}</div></div>`;
+
     let html='';
 
-    if(parsed.resumo){
-      html+=`<div class="ai-section"><div class="ai-section-title">📋 Resumo Executivo</div><div class="ai-card">${parsed.resumo}</div></div>`;
+    // ── RESUMO EXECUTIVO
+    if(parsed.resumo_executivo||parsed.resumo){
+      const re=parsed.resumo_executivo||{};
+      if(typeof re==='object'&&re.visao_geral){
+        const nivel=nivelBadge(re.nivel_operacao||'');
+        html+=sec('resumo','📋','Resumo Executivo',`
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+            <div style="font-size:13px;color:var(--text);line-height:1.7">${re.visao_geral}</div>
+            ${nivel?`<div>${nivel}</div>`:''}
+          </div>
+          ${re.principal_risco?`<div class="ai-director-item critica"><div class="ai-director-item-title">⚠️ Principal Risco</div><div class="ai-director-item-body">${re.principal_risco}</div></div>`:''}
+          ${re.principal_oportunidade?`<div class="ai-director-item baixa"><div class="ai-director-item-title">💡 Principal Oportunidade</div><div class="ai-director-item-body">${re.principal_oportunidade}</div></div>`:''}`);
+      } else {
+        html+=sec('resumo','📋','Resumo Executivo',`<div class="ai-director-item"><div class="ai-director-item-body">${typeof re==='string'?re:(parsed.resumo||'')}</div></div>`);
+      }
     }
-    if(parsed.gargalos?.length){
-      html+=`<div class="ai-section"><div class="ai-section-title">🚧 Gargalos Identificados</div>`;
-      parsed.gargalos.forEach(g=>{html+=`<div class="ai-card urgente"><div class="ai-card-title">🚧 ${g.fase}</div><div class="ai-card-body">${g.problema}</div><div class="ai-card-action">➡ ${g.acao}</div></div>`;});
-      html+='</div>';
+
+    // ── DIAGNÓSTICO OPERACIONAL
+    if(parsed.diagnostico_operacional&&parsed.diagnostico_operacional.length){
+      const items=parsed.diagnostico_operacional.map(d=>`<div class="ai-director-item ${d.tipo||'media'}">
+        <div class="ai-director-item-title">${d.titulo||d.area||''}</div>
+        <div class="ai-director-item-body">${d.descricao||d.obs||''}</div>
+      </div>`).join('');
+      html+=sec('diagnostico','🔬','Diagnóstico Operacional',items);
+    } else if(parsed.gargalos?.length) {
+      const items=parsed.gargalos.map(g=>`<div class="ai-director-item alta">
+        <div class="ai-director-item-title">🚧 ${g.fase}</div>
+        <div class="ai-director-item-body">${g.problema}</div>
+        <div class="ai-director-item-meta"><span>➡ Ação: ${g.acao}</span></div>
+      </div>`).join('');
+      html+=sec('diagnostico','🔬','Diagnóstico Operacional',items);
     }
-    if(parsed.designers?.length){
-      html+=`<div class="ai-section"><div class="ai-section-title">🎨 Análise Designers</div>`;
-      parsed.designers.forEach(d=>{html+=`<div class="ai-card ${d.status==='critico'?'urgente':d.status==='atencao'?'atencao':'positivo'}"><div class="ai-card-title">${stBadge(d.status)} ${d.nome}</div><div class="ai-card-body">${d.obs}</div></div>`;});
-      html+='</div>';
+
+    // ── ALERTAS CRÍTICOS
+    if(parsed.alertas_criticos&&parsed.alertas_criticos.length){
+      const items=parsed.alertas_criticos.map(a=>`<div class="ai-director-item ${a.prioridade==='critica'?'critica':a.prioridade==='alta'?'alta':a.prioridade==='media'?'media':'baixa'}">
+        <div class="ai-director-item-title">${a.titulo||''} ${priBadge(a.prioridade||'')}</div>
+        <div class="ai-director-item-body">${a.evidencia||a.descricao||''}</div>
+        <div class="ai-director-item-meta"><span>Impacto: ${a.impacto||'—'}</span></div>
+      </div>`).join('');
+      html+=sec('alertas','🚨','Alertas Críticos',items);
     }
-    if(parsed.vendedores?.length){
-      html+=`<div class="ai-section"><div class="ai-section-title">👥 Análise Vendedores</div>`;
-      parsed.vendedores.forEach(v=>{html+=`<div class="ai-card ${v.status==='critico'?'urgente':v.status==='atencao'?'atencao':'positivo'}"><div class="ai-card-title">${stBadge(v.status)} ${v.nome}</div><div class="ai-card-body">${v.obs}</div></div>`;});
-      html+='</div>';
+
+    // ── CAUSAS PROVÁVEIS
+    if(parsed.causas_provaveis&&parsed.causas_provaveis.length){
+      const items=parsed.causas_provaveis.map(c=>`<div class="ai-director-item media">
+        <div class="ai-director-item-title">${c.causa||c}</div>
+        ${c.evidencia?`<div class="ai-director-item-body">${c.evidencia}</div>`:''}
+      </div>`).join('');
+      html+=sec('causas','🔍','Causas Prováveis',items);
     }
-    if(parsed.proximos_passos?.length){
-      const pp=parsed.proximos_passos.map(p=>`<li style="font-size:13px;line-height:2">${p}</li>`).join('');
-      html+=`<div class="ai-section"><div class="ai-section-title">✅ Próximos Passos</div><div class="ai-card"><ol style="margin:0;padding-left:20px">${pp}</ol></div></div>`;
+
+    // ── AÇÕES RECOMENDADAS
+    if(parsed.acoes_recomendadas||(parsed.proximos_passos&&parsed.proximos_passos.length)){
+      const ar=parsed.acoes_recomendadas;
+      if(ar&&(ar.imediata||ar.curto_prazo||ar.estrutural)){
+        let body='';
+        if(ar.imediata?.length){
+          body+=`<div class="ai-acao-group"><div class="ai-acao-group-title">⚡ Ação Imediata (hoje)</div>`;
+          ar.imediata.forEach(a=>{body+=`<div class="ai-director-item critica"><div class="ai-director-item-body">${a}</div></div>`;});
+          body+='</div>';
+        }
+        if(ar.curto_prazo?.length){
+          body+=`<div class="ai-acao-group"><div class="ai-acao-group-title">📅 Curto Prazo (próximos dias)</div>`;
+          ar.curto_prazo.forEach(a=>{body+=`<div class="ai-director-item alta"><div class="ai-director-item-body">${a}</div></div>`;});
+          body+='</div>';
+        }
+        if(ar.estrutural?.length){
+          body+=`<div class="ai-acao-group"><div class="ai-acao-group-title">🏗️ Ação Estrutural (processo)</div>`;
+          ar.estrutural.forEach(a=>{body+=`<div class="ai-director-item baixa"><div class="ai-director-item-body">${a}</div></div>`;});
+          body+='</div>';
+        }
+        html+=sec('acoes','✅','Ações Recomendadas',body);
+      } else {
+        const pp=(parsed.proximos_passos||[]).map(p=>`<div class="ai-director-item baixa"><div class="ai-director-item-body">${p}</div></div>`).join('');
+        html+=sec('acoes','✅','Próximos Passos',pp);
+      }
     }
-    if(!html)html='<div class="ai-card">Sem dados suficientes para análise.</div>';
+
+    // ── TENDÊNCIAS E PREVISÕES
+    if(parsed.tendencias&&parsed.tendencias.length){
+      const items=parsed.tendencias.map(t=>`<div class="ai-director-item ${t.direcao==='piora'?'alta':t.direcao==='melhora'?'baixa':'media'}">
+        <div class="ai-director-item-title">${t.direcao==='piora'?'📉':t.direcao==='melhora'?'📈':'➡'} ${t.titulo||t.area||''}</div>
+        <div class="ai-director-item-body">${t.descricao||t}</div>
+      </div>`).join('');
+      html+=sec('tendencias','📈','Tendências e Previsões',items);
+    }
+
+    // ── PERGUNTAS DE GESTÃO
+    if(parsed.perguntas_gestao&&parsed.perguntas_gestao.length){
+      const items=parsed.perguntas_gestao.map(q=>`<div class="ai-pergunta">❓ ${q}</div>`).join('');
+      html+=sec('perguntas','🤔','Perguntas Estratégicas de Gestão',items);
+    }
+
+    // ── DESIGNERS / VENDEDORES (fallback para schema legado)
+    if(!parsed.diagnostico_operacional&&parsed.designers?.length){
+      const stBadge=st=>st==='critico'?'<span class="badge badge-danger">Crítico</span>':st==='atencao'?'<span class="badge badge-warning">Atenção</span>':'<span class="badge badge-success">OK</span>';
+      const items=parsed.designers.map(d=>`<div class="ai-director-item ${d.status==='critico'?'critica':d.status==='atencao'?'alta':'baixa'}">
+        <div class="ai-director-item-title">${stBadge(d.status)} ${d.nome}</div>
+        <div class="ai-director-item-body">${d.obs}</div>
+      </div>`).join('');
+      html+=sec('diagnostico','🎨','Análise Designers',items);
+    }
+    if(!parsed.diagnostico_operacional&&parsed.vendedores?.length){
+      const stBadge=st=>st==='critico'?'<span class="badge badge-danger">Crítico</span>':st==='atencao'?'<span class="badge badge-warning">Atenção</span>':'<span class="badge badge-success">OK</span>';
+      const items=parsed.vendedores.map(v=>`<div class="ai-director-item ${v.status==='critico'?'critica':v.status==='atencao'?'alta':'baixa'}">
+        <div class="ai-director-item-title">${stBadge(v.status)} ${v.nome}</div>
+        <div class="ai-director-item-body">${v.obs}</div>
+      </div>`).join('');
+      html+=sec('tendencias','👥','Análise Vendedores',items);
+    }
+
+    if(!html)html='<div class="ai-director-item"><div class="ai-director-item-body">Sem dados suficientes para análise.</div></div>';
 
     contentEl.innerHTML=html;
     if(tsEl)tsEl.textContent=`${fromCache?'(cache) ':''}Gerado em ${DL.fmtDT(new Date())} · ${rowCount} pedidos · ${meta?.model||'Groq'}`;
@@ -3294,6 +3571,7 @@ const App = {
 
   /* Chamado após login bem-sucedido (reload) ou boot com sessão válida */
   _onSession(cfg){
+    TeamFilter.load();
     this._role      = cfg.role || 'viewer';
     this._userEmail = cfg.user?.email || cfg.user?.username || '';
     document.getElementById('connectScreen').style.display = 'none';
@@ -3393,6 +3671,68 @@ const App = {
   closeAdminModal(){
     document.getElementById('modalAdmin').classList.remove('active');
   },
+
+  // ── Equipe Modal ──────────────────────────────────────────────────────────
+  openEquipeModal(){
+    const list = TeamFilter.load();
+    this._renderEquipeList(list);
+    document.getElementById('equipeSaveMsg').style.display='none';
+    document.getElementById('modalEquipe').classList.add('active');
+  },
+
+  closeEquipeModal(){
+    document.getElementById('modalEquipe').classList.remove('active');
+  },
+
+  _renderEquipeList(list){
+    const el = document.getElementById('equipeList');
+    if(!el) return;
+    el.innerHTML = list.map((m,i)=>`
+      <div class="equipe-item ${m.ativo?'':'inativo'}" id="equipe-item-${i}">
+        <label class="equipe-toggle">
+          <input type="checkbox" ${m.ativo?'checked':''} onchange="App._toggleEquipeMembro(${i},this.checked)">
+          <span class="equipe-slider"></span>
+        </label>
+        <span class="equipe-nome">${String(m.nome).replace(/</g,'&lt;')}</span>
+        <span class="equipe-cargo">${m.cargo}</span>
+        <button class="equipe-del" title="Remover" onclick="App._removeEquipeMembro(${i})">✕</button>
+      </div>`).join('');
+  },
+
+  _toggleEquipeMembro(idx, ativo){
+    const list = TeamFilter._equipe || TeamFilter.load();
+    if(list[idx]) list[idx].ativo = ativo;
+    const item = document.getElementById('equipe-item-'+idx);
+    if(item) item.className = 'equipe-item'+(ativo?'':' inativo');
+  },
+
+  _removeEquipeMembro(idx){
+    const list = TeamFilter._equipe || TeamFilter.load();
+    list.splice(idx, 1);
+    this._renderEquipeList(list);
+  },
+
+  addEquipeMembro(){
+    const nome = (document.getElementById('equipeNomeInput').value||'').trim();
+    const cargo = document.getElementById('equipeCargoInput').value || 'designer';
+    if(!nome){ alert('Digite o nome do membro.'); return; }
+    const list = TeamFilter._equipe || TeamFilter.load();
+    if(list.some(m=>DL.norm(m.nome)===DL.norm(nome))){ alert('Membro já existe.'); return; }
+    list.push({nome, cargo, ativo: true});
+    document.getElementById('equipeNomeInput').value = '';
+    this._renderEquipeList(list);
+  },
+
+  saveEquipe(){
+    const list = TeamFilter._equipe || TeamFilter.load();
+    TeamFilter.save(list);
+    const msg = document.getElementById('equipeSaveMsg');
+    if(msg){ msg.style.display='inline'; setTimeout(()=>msg.style.display='none',2500); }
+    // Invalidate AI cache and re-render alerts
+    this._aiCachedResult = null;
+    if(State.rowsFiltered.length) RL.renderPlanoAcoes(State.rowsFiltered);
+  },
+  // ── End Equipe Modal ──────────────────────────────────────────────────────
 
   // legacy shim kept for safety
   openModal(){ this.openAdminModal(); },
@@ -3540,6 +3880,7 @@ const App = {
 
       State.reset();
       State.loadData(allRows);
+      TeamFilter.syncFromData(allRows);
 
       Store.set(SK.dataset,{rows:allRows,fetchedAt:new Date().toISOString()});
       const now=DL.fmtDT(new Date());
@@ -4042,16 +4383,19 @@ window.addEventListener('afterprint', ()=>{
 // buildSnapshot — gera JSON compacto para enviar à IA (sem todos os cards)
 // ═══════════════════════════════════════════════════════════════════
 function buildSnapshot(rows){
+  // Filter inactive team members from stats
+  const activeRows = TeamFilter.filterForStats(rows);
+
   const now=Date.now();
   function hoursStuck(r){const d=r._createdObj;if(!d||!(d instanceof Date))return 0;return(now-d.getTime())/3600000;}
   function cycleHours(r){if(r._tempoUtil!=null)return r._tempoUtil/60;return null;}
 
-  const criacao=rows.filter(r=>DL.isCriacao(r));
-  const aprovados=rows.filter(r=>DL.isCriacao(r)&&DL.isAprovado(r));
+  const criacao=activeRows.filter(r=>DL.isCriacao(r));
+  const aprovados=activeRows.filter(r=>DL.isCriacao(r)&&DL.isAprovado(r));
 
-  // byPhase
+  // byPhase (use all active rows)
   const phaseGroups={};
-  rows.forEach(r=>{const ph=r._fase||'outro';if(!phaseGroups[ph])phaseGroups[ph]=[];phaseGroups[ph].push(hoursStuck(r));});
+  activeRows.forEach(r=>{const ph=r._fase||'outro';if(!phaseGroups[ph])phaseGroups[ph]=[];phaseGroups[ph].push(hoursStuck(r));});
   const byPhase={},p90ByPhase={};
   Object.entries(phaseGroups).forEach(([ph,hrs])=>{
     hrs.sort((a,b)=>a-b);
@@ -4072,7 +4416,7 @@ function buildSnapshot(rows){
   }
 
   // topStuckCards
-  const topStuckCards=[...rows].map(r=>({...r,_hs:hoursStuck(r)}))
+  const topStuckCards=[...activeRows].map(r=>({...r,_hs:hoursStuck(r)}))
     .sort((a,b)=>b._hs-a._hs).slice(0,10)
     .map(r=>({title:r.title,hoursStuck:r._hs,phase:r._fase||'?',designer:r.designer||'',urgency:r.urgencia||'',revisions:r.qtdeAlteracoes,score:scoreCard(r)}));
 
@@ -4084,22 +4428,24 @@ function buildSnapshot(rows){
 
   // byVendor
   const vMap3={};
-  rows.forEach(r=>{if(!r.vendedor)return;if(!vMap3[r.vendedor])vMap3[r.vendedor]={cards:0,highUrgency:0,rev:0};vMap3[r.vendedor].cards++;vMap3[r.vendedor].rev+=r.qtdeAlteracoes;if(r.urgencia==='ALTA')vMap3[r.vendedor].highUrgency++;});
+  activeRows.forEach(r=>{if(!r.vendedor)return;if(!vMap3[r.vendedor])vMap3[r.vendedor]={cards:0,highUrgency:0,rev:0};vMap3[r.vendedor].cards++;vMap3[r.vendedor].rev+=r.qtdeAlteracoes;if(r.urgencia==='ALTA')vMap3[r.vendedor].highUrgency++;});
   const byVendor={};
   Object.entries(vMap3).forEach(([n,d])=>{byVendor[n]={cards:d.cards,highUrgency:d.highUrgency,revisionsAvg:d.cards?d.rev/d.cards:0};});
 
   // alertas
-  const scored=rows.map(r=>({r,s:scoreCard(r)}));
+  const scored=activeRows.map(r=>({r,s:scoreCard(r)}));
   const alertasCriticos=scored.filter(x=>x.s>=6).sort((a,b)=>b.s-a.s).slice(0,10).map(x=>({...x.r,_riskScore:x.s}));
   const alertasAtencao=scored.filter(x=>x.s>=3&&x.s<6).sort((a,b)=>b.s-a.s).slice(0,20).map(x=>({...x.r,_riskScore:x.s}));
   const allScores=scored.map(x=>x.s);
   const avgRisk=allScores.length?allScores.reduce((a,b)=>a+b,0)/allScores.length:0;
+  const inactiveMembers=TeamFilter.getInactiveNames();
 
   return{
-    totals:{total:rows.length,criacao:criacao.length,aprovados:aprovados.length,avgRisk},
+    totals:{total:activeRows.length,criacao:criacao.length,aprovados:aprovados.length,avgRisk},
     byPhase,topStuckCards,byDesigner,byVendor,
     riskSummary:{high:alertasCriticos.length,medium:alertasAtencao.length,thresholds:p90ByPhase},
-    alertasCriticos,alertasAtencao,_p90ByPhase:p90ByPhase
+    alertasCriticos,alertasAtencao,_p90ByPhase:p90ByPhase,
+    inactiveFiltered:inactiveMembers
   };
 }
 
