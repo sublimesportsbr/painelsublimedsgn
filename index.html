@@ -1928,19 +1928,31 @@ const RL = {
     RL._tempoEquipeAlt={total:_tempoTotalAlt,events:_altEvFilt,semPar:_altSemPar};
     const _fmtH=m=>{const h=Math.floor(m/60),mn=m%60;return h>0?`${h}h ${mn}min`:`${mn}min`;};
 
-    this.restoreCanvas('chartTempoEquipeWrap','chartTempoEquipe');
-    if(!_total2){this.showEmpty('chartTempoEquipeWrap','Sem dados de tempo. Acesse a aba Designers primeiro para carregar alterações.');}
-    else{
-      const _pctCri=Math.round(_tempoTotalCri/_total2*100);
-      const _pctAlt=100-_pctCri;
+    // Helper to render/update the chart with current data
+    const _renderTempoEquipeChart=()=>{
+      const evFiltered=_altEvents.filter(ev=>{
+        if(_dArr2.length&&!_dArr2.includes(ev.designer)) return false;
+        if(_vArr2.length&&!_vArr2.includes(ev.vendedor)) return false;
+        return true;
+      });
+      const altTotal=evFiltered.reduce((s,ev)=>s+(ev.durMin||0),0);
+      const total=_tempoTotalCri+altTotal;
+      RL._tempoEquipeAlt={total:altTotal,events:evFiltered,semPar:evFiltered.filter(ev=>ev.durMin==null).length};
+      this.restoreCanvas('chartTempoEquipeWrap','chartTempoEquipe');
+      if(!total){
+        this.showEmpty('chartTempoEquipeWrap','Sem dados de tempo de alterações disponíveis. Os dados de alterações são carregados automaticamente na aba Designers.');
+        return;
+      }
+      const pctCri=Math.round(_tempoTotalCri/total*100);
+      const pctAlt=100-pctCri;
       this.upsert('chartTempoEquipe',{
         type:'bar',
         data:{
           labels:['Tempo da Equipe'],
           datasets:[
-            {label:'Criação',data:[_pctCri],backgroundColor:'rgba(99,102,241,.8)',stack:'t',
+            {label:'Criação',data:[pctCri],backgroundColor:'rgba(99,102,241,.8)',stack:'t',
              borderRadius:{topLeft:6,bottomLeft:6},hoverBackgroundColor:'rgba(99,102,241,1)'},
-            {label:'Alterações',data:[_pctAlt],backgroundColor:'rgba(239,68,68,.75)',stack:'t',
+            {label:'Alterações',data:[pctAlt],backgroundColor:'rgba(239,68,68,.75)',stack:'t',
              borderRadius:{topRight:6,bottomRight:6},hoverBackgroundColor:'rgba(239,68,68,1)'}
           ]
         },
@@ -1949,14 +1961,15 @@ const RL = {
           plugins:{
             legend:{display:true,position:'top'},
             tooltip:{callbacks:{label:ctx=>{
-              const t=ctx.dataset.label==='Criação'?_tempoTotalCri:_tempoTotalAlt;
+              const t=ctx.datasetIndex===0?_tempoTotalCri:altTotal;
               return ` ${ctx.dataset.label}: ${ctx.parsed.x}% (${_fmtH(t)})`;
             }}}
           },
           scales:{x:{stacked:true,max:100,ticks:{callback:v=>v+'%'}},y:{stacked:true,display:false}},
           onClick:(evt,els)=>{
-            if(!els.length) return;
-            const seg=els[0].dataset.label;
+            if(!els||!els.length) return;
+            const dsIdx=els[0].datasetIndex;
+            const seg=dsIdx===0?'Criação':'Alterações';
             if(seg==='Criação'){
               const lista=(RL._tempoEquipeCri.rows||[]).slice().sort((a,b)=>(b._tempoUtil||0)-(a._tempoUtil||0));
               const semT=criacao.length-lista.length;
@@ -1968,7 +1981,7 @@ const RL = {
                 <td><span class="badge badge-${r.urgencia==='ALTA'?'danger':r.urgencia==='MÉDIA'?'warning':'success'}">${r.urgencia||'—'}</span></td>
                 <td style="text-align:center;font-weight:700;color:#7c3aed">${DL.countArteLayouts(r._attachments)}</td>
               </tr>`).join('');
-              App.openDetailModal('Detalhamento \u2014 Tempo gasto em Criação','linear-gradient(135deg,#4f46e5,#7c3aed)',
+              App.openDetailModal('Detalhamento — Tempo gasto em Criação','linear-gradient(135deg,#4f46e5,#7c3aed)',
                 `<div class="detail-row" style="margin-bottom:16px">
                   <div class="detail-stat"><div class="detail-stat-val">${_fmtH(RL._tempoEquipeCri.total)}</div><div class="detail-stat-lbl">Total</div></div>
                   <div class="detail-stat"><div class="detail-stat-val">${lista.length}</div><div class="detail-stat-lbl">Com tempo</div></div>
@@ -1986,7 +1999,7 @@ const RL = {
                   <td><span class="badge badge-${ev.urgencia==='ALTA'?'danger':ev.urgencia==='MÉDIA'?'warning':'success'}">${ev.urgencia||'—'}</span></td>
                 </tr>`;
               }).join('');
-              App.openDetailModal('Detalhamento \u2014 Tempo gasto em Alterações','linear-gradient(135deg,#065f46,#059669)',
+              App.openDetailModal('Detalhamento — Tempo gasto em Alterações','linear-gradient(135deg,#065f46,#059669)',
                 `<div class="detail-row" style="margin-bottom:16px">
                   <div class="detail-stat"><div class="detail-stat-val">${_fmtH(RL._tempoEquipeAlt.total)}</div><div class="detail-stat-lbl">Total</div></div>
                   <div class="detail-stat"><div class="detail-stat-val">${evs.length}</div><div class="detail-stat-lbl">Concluídos</div></div>
@@ -1996,6 +2009,45 @@ const RL = {
           }
         }
       });
+    };
+
+    // Render chart immediately with whatever data is available
+    this.restoreCanvas('chartTempoEquipeWrap','chartTempoEquipe');
+    if(!_total2){
+      this.showEmpty('chartTempoEquipeWrap','Carregando dados de alterações…');
+    } else {
+      _renderTempoEquipeChart();
+    }
+
+    // Background fetch alterações if not yet loaded (i.e. Designers tab not visited yet)
+    if(!RL._altIndexedByDay || Object.keys(RL._altIndexedByDay).length===0){
+      (async ()=>{
+        try{
+          const allRows=State.rowsAll||rows;
+          // Use a wide window: last 90 days
+          const _to=new Date(); _to.setHours(23,59,59,999);
+          const _from=new Date(_to); _from.setDate(_from.getDate()-90); _from.setHours(0,0,0,0);
+          const _rowsById={};
+          allRows.forEach(r=>{ if(r._trelloId) _rowsById[r._trelloId]=r; });
+          const _resp=await App._apiFetch('/api/comments',{
+            method:'POST',
+            body:JSON.stringify({fromISO:_from.toISOString(),toISO:_to.toISOString()})
+          });
+          if(_resp&&Array.isArray(_resp.actions)){
+            const _idx=DL.indexAlterationDone(_resp.actions,_rowsById);
+            RL._altIndexedByDay=_idx.byDay;
+            RL._altIndexedByMonth=_idx.byMonth;
+            // Rebuild _altEvents from fresh data
+            _altEvents=[];
+            Object.values(RL._altIndexedByDay).forEach(dd=>{ if(dd.doneEvents) _altEvents=_altEvents.concat(dd.doneEvents); });
+            _renderTempoEquipeChart();
+          }
+        }catch(e){
+          console.warn('[TempoEquipe background fetch]',e.message);
+          // Show chart with only criação data if we have it
+          if(_tempoTotalCri>0) _renderTempoEquipeChart();
+        }
+      })();
     }
 
     /* ── GRÁFICO 3: Gargalos do Fluxo ── */
@@ -3027,76 +3079,125 @@ const RL = {
 
     const inactive=snap.inactiveFiltered||[];
     const inactiveBanner=inactive.length?`<div style="background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#92400e;display:flex;align-items:center;gap:8px">
-      <span>🔕</span><span><strong>Membros inativos filtrados das estatísticas:</strong> ${inactive.join(', ')}. Dados históricos preservados.</span>
+      <span>🔕</span><span><strong>Membros inativos (excluídos das análises):</strong> ${inactive.join(', ')}. Os dados históricos deles continuam salvos.</span>
       <button onclick="App.openEquipeModal()" style="margin-left:auto;background:none;border:1px solid #f59e0b;border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;color:#92400e">Gerenciar</button>
-    </div>`:'';;
+    </div>`:'';
 
-    const badgeScore=s=>s>=6?`<span class="badge badge-danger">Crítico ${s}</span>`:s>=3?`<span class="badge badge-warning">Atenção ${s}</span>`:`<span class="badge badge-success">OK ${s}</span>`;
-    const stBadge=st=>st==='critico'?'<span class="badge badge-danger">Crítico</span>':st==='atencao'?'<span class="badge badge-warning">Atenção</span>':'<span class="badge badge-success">OK</span>';
+    const urgBadge=u=>u==='ALTA'?'<span class="badge badge-danger">🔴 Urgente</span>':u==='MÉDIA'?'<span class="badge badge-warning">🟡 Média</span>':'<span class="badge badge-success">🟢 Baixa</span>';
+    const stBadge=st=>st==='critico'?'<span class="badge badge-danger">🔴 Problema grave</span>':st==='atencao'?'<span class="badge badge-warning">🟡 Atenção</span>':'<span class="badge badge-success">🟢 Normal</span>';
     const sec=(title,icon,cls,body,cnt='')=>`<div class="alert-section"><div class="alert-section-header ${cls}">${icon} ${title}${cnt?`<span class="alert-count-badge">${cnt}</span>`:''}</div><div class="alert-section-body">${body}</div></div>`;
 
-    // ── CATEGORIA: OPERACIONAL — Gargalos top 3 fases
-    const gargPhases=Object.entries(snap.byPhase).map(([ph,d])=>({ph,scoreG:d.p90Hours*d.count,...d})).sort((a,b)=>b.scoreG-a.scoreG).slice(0,3);
+    // ── CATEGORIA: OPERACIONAL — Etapas mais lentas
+    const gargPhases=Object.entries(snap.byPhase)
+      .map(([ph,d])=>({ph,scoreG:d.p90Hours*d.count,...d}))
+      .sort((a,b)=>b.scoreG-a.scoreG).slice(0,3);
     const gargHtml=gargPhases.length?gargPhases.map(g=>{
       const sev=g.p90Hours>48?'high':g.p90Hours>24?'medium':'low';
       const sevLabel=g.p90Hours>48?'🔴 Alta':g.p90Hours>24?'🟡 Média':'🟢 Baixa';
+      // Human-friendly time description
+      const midH=g.medianHours;
+      const maxH=g.p90Hours;
+      const midTxt=midH<1?`${Math.round(midH*60)} min`:midH<24?`${midH.toFixed(1).replace('.0','')} hora${midH>=2?'s':''}`:midH<48?`${(midH/24).toFixed(1).replace('.0','')} dia${midH>=48?'s':' e alguns horas'}`:  `${Math.round(midH/24)} dias`;
+      const maxTxt=maxH<1?`${Math.round(maxH*60)} min`:maxH<24?`${maxH.toFixed(0)} horas`:maxH<48?`quase 2 dias`:`${Math.round(maxH/24)} dias`;
       return`<div class="action-item priority-${sev}">
-        <div class="action-header"><div class="action-title">🚧 ${g.ph}</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-            <span class="badge badge-${g.p90Hours>48?'danger':g.p90Hours>24?'warning':'info'}">${g.p90Hours.toFixed(0)}h p90</span>
-            <span style="font-size:11px;color:var(--text-light)">Severidade: ${sevLabel}</span>
+        <div class="action-header">
+          <div class="action-title">🚧 ${g.ph}</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+            <span class="badge badge-${sev==='high'?'danger':sev==='medium'?'warning':'info'}">Urgência: ${sevLabel}</span>
           </div>
         </div>
-        <div class="action-description">${g.count} cards · mediana ${g.medianHours.toFixed(1)}h · p90 ${g.p90Hours.toFixed(1)}h</div>
-        <div class="action-metrics">Impacto: ${g.count} pedidos potencialmente bloqueados nesta etapa</div>
-      </div>`;}).join(''):'<div class="alert-section-empty">Sem dados de fase.</div>';
+        <div class="action-description">
+          <strong>${g.count} pedido${g.count!==1?'s':''}</strong> estão parados aqui.
+          A maioria fica cerca de <strong>${midTxt}</strong> nessa etapa —
+          mas os mais demorados chegam a <strong>${maxTxt}</strong>.
+        </div>
+        <div class="action-metrics">⚡ O que fazer: revisar o que está bloqueando pedidos nessa etapa e priorizar a desobstrução.</div>
+      </div>`;}).join(''):'<div class="alert-section-empty">Nenhum dado de etapas disponível ainda.</div>';
 
-    // ── CATEGORIA: COMERCIAL — Alertas críticos (score ≥ 6)
-    const critHtml=snap.alertasCriticos.length?snap.alertasCriticos.map(r=>`
-      <div class="action-item priority-high">
-        <div class="action-header"><div class="action-title">${DL.pedidoLinkHTML(r)}</div>${badgeScore(r._riskScore)}</div>
-        <div class="action-description">Fase: ${r._fase||'—'} · Urgência: <strong>${r.urgencia||'—'}</strong> · ${r.qtdeAlteracoes} alt. · Designer: ${r.designer||'—'}</div>
-        <div class="action-metrics">Score: ${r._riskScore}/7 pontos de risco · Impacto: risco de atraso comercial</div>
-      </div>`).join(''):'<div class="alert-section-empty">✅ Nenhum card em estado crítico.</div>';
+    // ── CATEGORIA: COMERCIAL — Pedidos que precisam de atenção urgente
+    const critHtml=snap.alertasCriticos.length?snap.alertasCriticos.map(r=>{
+      const reasons=[];
+      if(r.urgencia==='ALTA') reasons.push('marcado como urgente');
+      if(r.qtdeAlteracoes>=3) reasons.push(`passou por ${r.qtdeAlteracoes} rodadas de alteração`);
+      if(r.designer) reasons.push(`atribuído a ${r.designer}`);
+      const faseLabel={'negociacao':'em negociação','criacao':'em criação','producao':'em produção','entregues':'entregue'}[r._fase]||r._fase||'fase desconhecida';
+      return`<div class="action-item priority-high">
+        <div class="action-header">
+          <div class="action-title">${DL.pedidoLinkHTML(r)}</div>
+          ${urgBadge(r.urgencia||'')}
+        </div>
+        <div class="action-description">
+          Este pedido está <strong>${faseLabel}</strong>${reasons.length?' e '+reasons.join(', '):''}. Precisa de acompanhamento imediato.
+        </div>
+        <div class="action-metrics">⚡ O que fazer: contatar o responsável e verificar o que está impedindo o avanço.</div>
+      </div>`}).join(''):'<div class="alert-section-empty">✅ Nenhum pedido em situação crítica no momento.</div>';
 
-    // ── CATEGORIA: QUALIDADE — Atenção (score 3–5)
-    const atHtml=snap.alertasAtencao.length?snap.alertasAtencao.slice(0,10).map(r=>`
-      <div class="action-item priority-medium">
-        <div class="action-header"><div class="action-title">${DL.pedidoLinkHTML(r)}</div>${badgeScore(r._riskScore)}</div>
-        <div class="action-description">Fase: ${r._fase||'—'} · ${r.qtdeAlteracoes} alt. · Designer: ${r.designer||'—'}</div>
-        <div class="action-metrics">Impacto: qualidade do briefing ou execução abaixo do esperado</div>
-      </div>`).join(''):'<div class="alert-section-empty">✅ Nenhum card em atenção.</div>';
+    // ── CATEGORIA: QUALIDADE — Pedidos que merecem acompanhamento
+    const atHtml=snap.alertasAtencao.length?snap.alertasAtencao.slice(0,10).map(r=>{
+      const faseLabel={'negociacao':'em negociação','criacao':'em criação','producao':'em produção','entregues':'entregue'}[r._fase]||r._fase||'fase desconhecida';
+      const altTxt=r.qtdeAlteracoes>0?`Passou por <strong>${r.qtdeAlteracoes} rodada${r.qtdeAlteracoes>1?'s':''} de alteração</strong>. `:'';
+      return`<div class="action-item priority-medium">
+        <div class="action-header">
+          <div class="action-title">${DL.pedidoLinkHTML(r)}</div>
+          ${r.urgencia?urgBadge(r.urgencia):''}
+        </div>
+        <div class="action-description">
+          Pedido <strong>${faseLabel}</strong>${r.designer?`, designer: ${r.designer}`:''}. ${altTxt}Está acumulando sinais de atenção.
+        </div>
+        <div class="action-metrics">👀 O que fazer: monitorar e verificar se o briefing está completo.</div>
+      </div>`}).join(''):'<div class="alert-section-empty">✅ Nenhum pedido em situação de atenção no momento.</div>';
 
-    // ── CATEGORIA: EFICIÊNCIA — Ranking designers
+    // ── CATEGORIA: EFICIÊNCIA — Como está cada designer
     const desRank=Object.entries(snap.byDesigner).sort((a,b)=>b[1].revisionsAvg-a[1].revisionsAvg);
     const desHtml=desRank.length?desRank.map(([n,d])=>{
       const st=d.revisionsAvg>=2?'critico':d.revisionsAvg>=1?'atencao':'ok';
       const pri=st==='critico'?'high':st==='atencao'?'medium':'low';
-      const impact=st==='critico'?'Alto retrabalho — verificar briefing e alinhamento':st==='atencao'?'Retrabalho moderado — acompanhar':' Eficiência adequada';
+      const altMedia=d.revisionsAvg;
+      // Build a plain-language summary
+      let desc='';
+      if(st==='critico'){
+        desc=`Em média, cada arte deste designer passa por <strong>${altMedia.toFixed(1)} rodada${altMedia>=2?'s':''} de alteração</strong> — acima do ideal. Isso pode indicar briefings incompletos ou necessidade de alinhamento antes de começar.`;
+      } else if(st==='atencao'){
+        desc=`Média de <strong>${altMedia.toFixed(1)} alteração por arte</strong>. Está dentro do aceitável, mas vale ficar de olho.`;
+      } else {
+        desc=`Excelente! Média de <strong>${altMedia.toFixed(1)} alteração por arte</strong>. As artes saem corretas na primeira ou segunda tentativa.`;
+      }
+      if(d.stuckHigh>0) desc+=` Tem <strong>${d.stuckHigh} pedido${d.stuckHigh>1?'s':''} urgente${d.stuckHigh>1?'s':''} parado${d.stuckHigh>1?'s':''}</strong>.`;
+      const action=st==='critico'?'⚡ Revisar o processo de briefing com este designer.':st==='atencao'?'👀 Monitorar nas próximas semanas.':'✅ Nenhuma ação necessária.';
       return`<div class="action-item priority-${pri}">
         <div class="action-header"><div class="action-title">🎨 ${n}</div>${stBadge(st)}</div>
-        <div class="action-description">${d.cards} cards · ${d.revisionsAvg.toFixed(2)} alt/arte · mediana ${d.medianCycleHours.toFixed(1)}h ciclo · ${d.stuckHigh} urgAlta parados</div>
-        <div class="action-metrics">Impacto: ${impact}</div>
-      </div>`;}).join(''):'<div class="alert-section-empty">Sem dados de designers.</div>';
+        <div class="action-description">${desc} Total: ${d.cards} arte${d.cards!==1?'s':''}.</div>
+        <div class="action-metrics">${action}</div>
+      </div>`;}).join(''):'<div class="alert-section-empty">Sem dados de designers no período atual.</div>';
 
-    // ── CATEGORIA: PREDITIVO — Vendedores com alto retrabalho
+    // ── CATEGORIA: PREDITIVO — Padrão por vendedor
     const vendRank=Object.entries(snap.byVendor).sort((a,b)=>b[1].revisionsAvg-a[1].revisionsAvg);
     const vendHtml=vendRank.length?vendRank.map(([n,d])=>{
       const st=d.revisionsAvg>=2?'critico':d.revisionsAvg>=1?'atencao':'ok';
       const pri=st==='critico'?'high':st==='atencao'?'medium':'low';
-      const prediction=st==='critico'?'Tendência: este vendedor continuará gerando alto retrabalho sem intervenção':st==='atencao'?'Risco preditivo moderado de retrabalho':'Padrão dentro do esperado';
+      const altMedia=d.revisionsAvg;
+      let desc='';
+      if(st==='critico'){
+        desc=`Os pedidos deste vendedor geram em média <strong>${altMedia.toFixed(1)} rodadas de alteração</strong>. Isso sugere que os briefings chegam incompletos ou com informações erradas.`;
+      } else if(st==='atencao'){
+        desc=`Média de <strong>${altMedia.toFixed(1)} alteração por pedido</strong>. Aceitável, mas pode melhorar com briefings mais detalhados.`;
+      } else {
+        desc=`<strong>${altMedia.toFixed(1)} alteração por pedido</strong> — ótimo! Os pedidos chegam com informações claras.`;
+      }
+      if(d.highUrgency>0) desc+=` Tem <strong>${d.highUrgency} pedido${d.highUrgency>1?'s':''} urgente${d.highUrgency>1?'s':''}</strong> em aberto.`;
+      const action=st==='critico'?'⚡ Conversar com este vendedor sobre como melhorar a qualidade dos briefings.':st==='atencao'?'👀 Sugerir um checklist de briefing para este vendedor.':'✅ Nenhuma ação necessária.';
       return`<div class="action-item priority-${pri}">
         <div class="action-header"><div class="action-title">👤 ${n}</div>${stBadge(st)}</div>
-        <div class="action-description">${d.cards} cards · ${d.revisionsAvg.toFixed(2)} alt/arte · ${d.highUrgency} urgência-alta</div>
-        <div class="action-metrics">${prediction}</div>
-      </div>`;}).join(''):'<div class="alert-section-empty">Sem dados de vendedores.</div>';
+        <div class="action-description">${desc} Total: ${d.cards} pedido${d.cards!==1?'s':''}.</div>
+        <div class="action-metrics">${action}</div>
+      </div>`;}).join(''):'<div class="alert-section-empty">Sem dados de vendedores no período atual.</div>';
 
     el.innerHTML= inactiveBanner +
-      sec('Operacional — Gargalos Atuais (Top 3 Fases)','🚧','operacional',gargHtml)+
-      sec('Comercial — Alertas Críticos','🔴','comercial',critHtml,snap.alertasCriticos.length||'')+
-      sec('Qualidade — Pedidos em Atenção','🟡','prazo',atHtml,snap.alertasAtencao.length||'')+
-      sec('Eficiência — Ranking Designers','🎨','qualidade',desHtml)+
-      sec('Preditivo — Padrão de Retrabalho por Vendedor','📈','preditivo',vendHtml);
+      sec('Etapas Mais Lentas (onde os pedidos estão travando)','🚧','operacional',gargHtml)+
+      sec('Pedidos que Precisam de Atenção Imediata','🔴','comercial',critHtml,snap.alertasCriticos.length||'')+
+      sec('Pedidos para Monitorar','🟡','prazo',atHtml,snap.alertasAtencao.length||'')+
+      sec('Como Está Cada Designer','🎨','qualidade',desHtml)+
+      sec('Padrão de Retrabalho por Vendedor','📈','preditivo',vendHtml);
   },
 
   /* ══════ MODAIS DE DETALHE ══════ */
