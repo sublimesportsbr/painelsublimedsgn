@@ -83,7 +83,7 @@ async function callGroq(apiKey, model, sys, usr) {
   const res = await fetch(GROQ_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-    body: JSON.stringify({ model, messages: [{ role:'system', content:sys }, { role:'user', content:usr }], temperature:0.3, max_tokens:700 }),
+    body: JSON.stringify({ model, messages: [{ role:'system', content:sys }, { role:'user', content:usr }], temperature:0.3, max_tokens:2000 }),
   });
   if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e?.error?.message || `Groq HTTP ${res.status}`); }
   const d = await res.json();
