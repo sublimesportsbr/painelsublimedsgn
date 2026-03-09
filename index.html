@@ -1158,7 +1158,7 @@ const PipelineBar = {
     if(!bar) return;
     // Exclude delivered (entregues)
     const rows=allRows.filter(r=>r._fase!=='entregues');
-    const norm=s=>String(s||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const norm=s=>String(s||'').trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
     const counts={};
     const byStage={};
     this.STAGES.forEach(s=>{ counts[s.key]=0; byStage[s.key]=[]; });
@@ -1330,7 +1330,7 @@ const WorkTime = {
 ══════════════════════════════════════════════ */
 const DL = {
   importTimestamp: null,
-  norm(s){ if(s==null)return''; return String(s).trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); },
+  norm(s){ if(s==null)return''; return String(s).trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,''); },
   normTipo(s){
     const n=this.norm(s);
     if(n.includes('REPOSICAO')||n.includes('REPOSI')) return 'REPOSIÇÃO';
@@ -1632,7 +1632,7 @@ const Trello = {
    * Normaliza string: uppercase + sem acentos + sem espaços extras.
    * Mesmo critério do DL.norm() — usado para comparação de chaves de CF.
    */
-  _n(s){ return String(s||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); },
+  _n(s){ return String(s||'').trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,''); },
 
   /**
    * Busca flexível em um objeto de Custom Fields (cf).
@@ -2338,7 +2338,7 @@ const RL = {
       {key:'AGUARD',   label:'Aguardando Resposta',    match:l=>l.includes('AGUARDANDO RESPOSTA')},
       {key:'LIBERAR',  label:'Liberar para Produção',  match:l=>l.includes('LIBERAR')}
     ];
-    const _normLG=l=>String(l||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const _normLG=l=>String(l||'').trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
     const _agora=new Date();
     const _gargRows=_FASES_GARG.map(fase=>{
       const rr=rows.filter(r=>fase.match(_normLG(r.list)));
@@ -3304,6 +3304,8 @@ const RL = {
       </div>${thead}${tbody}</tbody></table>`
     );
   },
+
+  renderAguardandoDor(rows){
     var normL=function(s){return String(s||'').trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');};
     var isAg=function(r){return normL(r.list).includes('AGUARDANDO RESPOSTA');};
     var hoje=new Date();hoje.setHours(0,0,0,0);
