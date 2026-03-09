@@ -96,41 +96,53 @@ async function groq(apiKey, sys, usr) {
 function cleanJSON(r) { return r.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim(); }
 
 function buildPrompt(s) {
-  const pl = Object.entries(s.byPhase   ||{}).map(([ph,d])=>`  ${ph}: ${d.count} cards | mediana ${(+d.medianHours).toFixed(1)}h | p90 ${(+d.p90Hours).toFixed(1)}h`).join('\n');
-  const sl = (s.topStuckCards||[]).slice(0,10).map(c=>`  "${c.title}" — ${(+c.hoursStuck).toFixed(1)}h | fase:${c.phase} | designer:${c.designer||'?'} | urgência:${c.urgency||'?'} | ${c.revisions} alt.`).join('\n');
-  const dl = Object.entries(s.byDesigner||{}).slice(0,8).map(([n,d])=>`  ${n}: ${d.cards} cards | mediana ${(+d.medianCycleHours).toFixed(1)}h | ${(+d.revisionsAvg).toFixed(2)} alt/arte | ${d.stuckHigh} urgAlta parados`).join('\n');
-  const vl = Object.entries(s.byVendor  ||{}).slice(0,8).map(([n,d])=>`  ${n}: ${d.cards} cards | ${d.highUrgency} urgAlta | ${(+d.revisionsAvg).toFixed(2)} alt/arte`).join('\n');
+  // Human-friendly data summary — no p90/percentile/technical terms
+  const fmtH = h => {
+    h = +h || 0;
+    if(h < 1) return `${Math.round(h*60)} minutos`;
+    if(h < 24) return `${h.toFixed(1).replace('.0','')} hora${h >= 2 ? 's' : ''}`;
+    return `${(h/24).toFixed(1).replace('.0','')} dia${h >= 48 ? 's' : ''}`;
+  };
+  const pl = Object.entries(s.byPhase||{}).map(([ph,d])=>`  ${ph}: ${d.count} pedidos parados | tempo típico ${fmtH(d.medianHours)} | casos mais demorados chegam a ${fmtH(d.p90Hours)}`).join('\n');
+  const sl = (s.topStuckCards||[]).slice(0,10).map(c=>`  "${c.title}" — parado há ${fmtH(c.hoursStuck)} | etapa: ${c.phase} | designer: ${c.designer||'(sem designer)'} | urgência: ${c.urgency||'—'} | passou por ${c.revisions} rodada(s) de alteração`).join('\n');
+  const dl = Object.entries(s.byDesigner||{}).slice(0,8).map(([n,d])=>`  ${n}: ${d.cards} pedidos | tempo médio ${fmtH(d.medianCycleHours)} | média de ${(+d.revisionsAvg).toFixed(1)} alteração(ões) por arte | ${d.stuckHigh} pedido(s) urgente(s) parado(s)`).join('\n');
+  const vl = Object.entries(s.byVendor||{}).slice(0,8).map(([n,d])=>`  ${n}: ${d.cards} pedidos | ${d.highUrgency} urgente(s) | média de ${(+d.revisionsAvg).toFixed(1)} alteração(ões) por pedido`).join('\n');
   const rk = s.riskSummary||{};
   const inactive = (s.inactiveFiltered||[]).join(', ') || 'nenhum';
 
-  return `Você é Diretor de Operações analisando a equipe de criação da Sublime Sports (artes para uniformes esportivos).
+  return `Você é Diretor de Operações da Sublime Sports (artes para uniformes esportivos) analisando a operação da equipe de criação.
 
-Seu papel: agir como gestor experiente que interpreta dados, identifica padrões, diagnostica causas, prevê riscos e sugere decisões gerenciais. Nunca apenas descreva métricas — ligue dado → causa → impacto → ação.
+Seu papel: agir como gestor experiente que interpreta dados, identifica padrões, diagnostica causas, prevê riscos e sugere ações concretas.
 
-## SNAPSHOT DO PAINEL
+## REGRA CRÍTICA DE LINGUAGEM
+Use APENAS linguagem simples e direta, como um gestor explicando para a equipe.
+PROIBIDO usar: percentil, p90, desvio padrão, variância, regressão, estatística, sigma, quartil, ou qualquer jargão técnico/estatístico.
+PREFIRA: "alguns pedidos estão demorando mais que o normal", "em média", "a maioria", "nos casos mais extremos".
+
+## DADOS DA OPERAÇÃO
 Total de pedidos (membros ativos): ${s.totals?.total||0}
 Em criação: ${s.totals?.criacao||0} | Aprovados: ${s.totals?.aprovados||0}
-Score médio de risco: ${(+(s.totals?.avgRisk||0)).toFixed(1)} | Críticos: ${rk.high||0} | Atenção: ${rk.medium||0}
+Pedidos críticos: ${rk.high||0} | Pedidos em atenção: ${rk.medium||0}
 Membros inativos excluídos da análise: ${inactive}
 
-## POR FASE (count | mediana h | p90 h)
-${pl||'  sem dados'}
+## POR ETAPA DO FLUXO
+${pl||'  (sem dados de etapas)'}
 
-## TOP CARDS TRAVADOS
-${sl||'  sem dados'}
+## PEDIDOS MAIS PARADOS
+${sl||'  (sem dados)'}
 
-## DESIGNERS (cards | mediana ciclo h | alt/arte | urgAlta parados)
-${dl||'  sem dados'}
+## DESIGNERS
+${dl||'  (sem dados de designers)'}
 
-## VENDEDORES (cards | urgAlta | alt/arte)
-${vl||'  sem dados'}
+## VENDEDORES
+${vl||'  (sem dados de vendedores)'}
 
-## INSTRUÇÕES DE ANÁLISE
-- Identifique gargalos, concentração de problemas, padrões vendedor×designer
-- Diferencie problemas pontuais de sistêmicos
-- Reconheça sinais positivos também
-- Quando houver poucos dados, declare explicitamente
-- Quando houver padrão forte, seja assertivo
+## O QUE FAZER NA SUA ANÁLISE
+- Ligue dado → causa provável → impacto no negócio → ação sugerida
+- Diferencie problemas pontuais de padrões repetitivos
+- Destaque também os pontos positivos quando existirem
+- Se houver poucos dados, diga claramente
+- Seja direto e objetivo — sem rodeios
 
 Retorne APENAS JSON válido sem markdown, schema exato:
 {"resumo_executivo":{"visao_geral":"string","principal_risco":"string","principal_oportunidade":"string","nivel_operacao":"estavel|atencao|critico"},"diagnostico_operacional":[{"area":"string","titulo":"string","descricao":"string","tipo":"critica|alta|media|baixa"}],"alertas_criticos":[{"titulo":"string","evidencia":"string","impacto":"string","prioridade":"critica|alta|media|baixa"}],"causas_provaveis":[{"causa":"string","evidencia":"string"}],"acoes_recomendadas":{"imediata":["string"],"curto_prazo":["string"],"estrutural":["string"]},"tendencias":[{"area":"string","titulo":"string","descricao":"string","direcao":"melhora|piora|estavel"}],"perguntas_gestao":["string"]}`;
