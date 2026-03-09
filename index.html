@@ -24,7 +24,7 @@ body.dark-mode{
   --table-header:#0f172a;--table-hover:#0f172a;
 }
 body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,var(--bg-body-1) 0%,var(--bg-body-2) 100%);min-height:100vh;color:var(--text);transition:background .3s,color .3s}
-.container{max-width:1400px;margin:0 auto;padding:20px}
+.container{max-width:1400px;margin:0 auto;padding:20px;padding-top:110px}
 
 /* Connect Screen */
 #connectScreen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center}
@@ -84,7 +84,7 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-g
 
 /* Filters */
 /* ── FILTER DRAWER ── */
-.filter-trigger-bar{background:var(--header-bg);border-radius:15px;padding:10px 18px;margin-bottom:12px;box-shadow:0 4px 20px rgba(0,0,0,.08);display:flex;align-items:center;gap:10px;flex-wrap:wrap;transition:background .3s;position:sticky;top:0;z-index:200}
+.filter-trigger-bar{background:var(--header-bg);border-radius:0;padding:8px 18px;margin-bottom:0;box-shadow:0 2px 10px rgba(0,0,0,.1);display:flex;align-items:center;gap:10px;flex-wrap:wrap;transition:background .3s;position:fixed;top:0;left:0;right:0;z-index:300}
 .btn-filter-open{display:flex;align-items:center;gap:7px;padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s,transform .15s}
 .btn-filter-open:hover{background:var(--primary-dark);transform:translateY(-1px)}
 .filter-chips-row{display:flex;flex-wrap:wrap;gap:6px;flex:1}
@@ -153,7 +153,7 @@ body.dark-mode .daily-table td.da{background:rgba(5,150,105,.12)}
 .ms-item.todos{font-weight:700;border-bottom:1px solid var(--border);color:var(--primary)}
 
 /* Tabs */
-.tabs{background:var(--header-bg);border-radius:15px;padding:8px;margin-bottom:18px;box-shadow:0 4px 20px rgba(0,0,0,.08);display:flex;gap:4px;overflow-x:auto;transition:background .3s;position:sticky;top:70px;z-index:190}
+.tabs{background:var(--header-bg);border-radius:0;padding:6px 18px;margin-bottom:0;box-shadow:0 2px 8px rgba(0,0,0,.07);display:flex;gap:4px;overflow-x:auto;transition:background .3s;position:fixed;top:52px;left:0;right:0;z-index:290}
 .tab-btn{background:transparent;border:none;padding:10px 20px;cursor:pointer;border-radius:10px;font-weight:600;color:var(--text-light);transition:all .2s;white-space:nowrap;font-size:14px}
 .tab-btn.active{background:var(--primary);color:white}
 .tab-btn:hover:not(.active){background:var(--light)}
@@ -176,7 +176,7 @@ body.dark-mode .daily-table td.da{background:rgba(5,150,105,.12)}
 /* Tooltip */
 .tooltip-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--border);color:var(--text-light);font-size:10px;cursor:help;position:relative}
 .tooltip-icon:hover .tooltip-text{visibility:visible;opacity:1}
-.tooltip-text{visibility:hidden;opacity:0;width:270px;background-color:#1f2937;color:white;text-align:left;border-radius:8px;padding:10px;position:absolute;z-index:1000;bottom:125%;left:50%;transform:translateX(-50%);font-size:12px;line-height:1.5;transition:opacity .25s;box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none}
+.tooltip-text{visibility:hidden;opacity:0;width:270px;background-color:#1f2937;color:white;text-align:left;border-radius:8px;padding:10px;position:absolute;z-index:9500;bottom:125%;left:50%;transform:translateX(-50%);font-size:12px;line-height:1.5;transition:opacity .25s;box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none}
 .tooltip-text::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1f2937}
 
 /* Charts & Tables */
@@ -331,7 +331,7 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
 @media print{
   @page{margin:8mm}
   body{background:white}
-  .header-actions,.tabs,.filters-bar,.debug-panel,.modal-overlay,#syncToast,#modalPrint{display:none!important}
+  .header-actions,.tabs,.filters-bar,.filter-trigger-bar,.pipeline-bar,.debug-panel,.modal-overlay,#syncToast,#modalPrint{display:none!important}
   .tab-content{display:block!important}
   .chart-container,.table-container,.card{break-inside:avoid;page-break-inside:avoid}
   .chart-wrapper,.chart-wrapper-tall{height:260px}
@@ -371,7 +371,8 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
 @media(max-width:768px){
   .header{flex-direction:column}
   .cards-grid{grid-template-columns:1fr 1fr}
-  .tabs{flex-wrap:wrap}
+  .tabs{flex-wrap:wrap;top:48px}
+  .container{padding-top:120px}
   .chart-wrapper,.chart-wrapper-tall{height:280px}
   .filter-drawer{width:100%;border-radius:20px 20px 0 0;top:auto;bottom:0;height:85vh;transform:translateY(100%)}
   .filter-drawer.open{transform:translateY(0)}
@@ -1199,37 +1200,23 @@ const PipelineBar = {
       return db-da;
     });
     const total=sorted.length;
-    const show10=sorted.slice(0,10);
-    const rest=sorted.slice(10);
-    const rowHtml=(r,idx)=>`<tr>
+    const rowHtml=(r)=>`<tr>
       <td style="max-width:200px;word-break:break-word">${DL.pedidoLinkHTML(r)}</td>
       <td>${r.designer||'—'}</td>
       <td>${r.vendedor||'—'}</td>
       <td><span class="badge badge-${r.urgencia==='ALTA'?'danger':r.urgencia==='MÉDIA'?'warning':'success'}">${r.urgencia||'—'}</span></td>
       <td>${r.qtdeAlteracoes||0}</td>
     </tr>`;
-    const thead=`<table class="detail-table"><thead><tr><th>Pedido</th><th>Designer</th><th>Vendedor</th><th>Urgência</th><th>Alt.</th></tr></thead><tbody id="pipeModalBody">`;
-    const tbody=show10.map(rowHtml).join('');
-    const verTodos=rest.length?`<tr id="pipeVerTodosRow"><td colspan="5" style="text-align:center;padding:12px"><button class="btn btn-ghost" style="font-size:13px" onclick="PipelineBar._expandModal(${JSON.stringify(rest.map(r=>r._trelloId||r.title||''))})">📋 Ver todos os ${total} pedidos</button></td></tr>`:'';
+    const thead=`<table class="detail-table"><thead><tr><th>Pedido</th><th>Designer</th><th>Vendedor</th><th>Urgência</th><th>Alt.</th></tr></thead><tbody>`;
+    const tbody=sorted.map(rowHtml).join('');
     App.openDetailModal(`${label} — ${total} pedido${total!==1?'s':''}`,
       'linear-gradient(135deg,#1e3a8a,#2563eb)',
-      `${thead}${tbody}${verTodos}</tbody></table>`);
+      `${thead}${tbody}</tbody></table>`);
     this._modalRows=sorted;
   },
 
   _modalRows:[],
-  _expandModal(){
-    const body=document.getElementById('pipeModalBody');
-    if(!body) return;
-    const all=this._modalRows;
-    const rowHtml=(r)=>`<tr>
-      <td style="max-width:200px;word-break:break-word">${DL.pedidoLinkHTML(r)}</td>
-      <td>${r.designer||'—'}</td><td>${r.vendedor||'—'}</td>
-      <td><span class="badge badge-${r.urgencia==='ALTA'?'danger':r.urgencia==='MÉDIA'?'warning':'success'}">${r.urgencia||'—'}</span></td>
-      <td>${r.qtdeAlteracoes||0}</td>
-    </tr>`;
-    body.innerHTML=all.map(rowHtml).join('');
-  }
+  _expandModal(){}
 };
 
 /* ══════════════════════════════════════════════
@@ -3261,16 +3248,62 @@ const RL = {
     data.sort((a,b)=>b.total-a.total).forEach(v=>{const c1=criacao.filter(r=>r.vendedor===v.name&&r.qtdeAlteracoes===1).length;const p2=v.total>0?(v.total-v.sem-c1)/v.total*100:0;html+=`<tr><td><strong style="cursor:pointer;color:var(--primary);text-decoration:underline dotted" onclick="RL.showDetailVendedor('${v.name.replace(/'/g,"\\'")}',RL._lastRowsVendedor)">${v.name}</strong></td><td>${v.total}</td><td><span class="badge badge-${v.pSem>=80?'success':v.pSem>=60?'warning':'danger'}">${v.pSem.toFixed(0)}%</span></td><td><span class="badge badge-${p2<20?'success':p2<40?'warning':'danger'}">${p2.toFixed(0)}%</span></td><td><span class="badge badge-${v.media<0.5?'success':v.media<1.5?'warning':'danger'}">${v.media.toFixed(2)}</span></td><td>${v.critico>0?`<span class="badge badge-danger">${v.critico}</span>`:'<span class="badge badge-success">0</span>'}</td></tr>`;});
     html+='</tbody>';document.getElementById('tableVendedores').innerHTML=html;
 
-    const mat={};criacao.forEach(r=>{if(!r.designer||!r.vendedor)return;const k=`${r.vendedor}|${r.designer}`;if(!mat[k])mat[k]={vendedor:r.vendedor,designer:r.designer,total:0,critico:0};mat[k].total++;if(r.qtdeAlteracoes>=4)mat[k].critico++;});
+    const mat={};
+    criacao.forEach(r=>{
+      if(!r.designer||!r.vendedor)return;
+      const k=`${r.vendedor}|${r.designer}`;
+      if(!mat[k])mat[k]={vendedor:r.vendedor,designer:r.designer,total:0,critico:0,rows:[]};
+      mat[k].total++;
+      if(r.qtdeAlteracoes>=4)mat[k].critico++;
+      mat[k].rows.push(r);
+    });
+    RL._matrizRows=mat;
     let mh=`<thead><tr><th>Vendedor</th><th>Designer</th><th>Total</th><th>&gt; 4 Alt.</th><th>Taxa</th></tr></thead><tbody>`;
-    Object.values(mat).map(m=>({...m,taxa:m.total?m.critico/m.total*100:0})).sort((a,b)=>b.critico-a.critico).slice(0,10).forEach(m=>{mh+=`<tr><td><strong>${m.vendedor}</strong></td><td>${m.designer}</td><td>${m.total}</td><td>${m.critico>0?`<span class="badge badge-danger">${m.critico}</span>`:'<span class="badge badge-success">0</span>'}</td><td><span class="badge badge-${m.taxa<10?'success':m.taxa<25?'warning':'danger'}">${m.taxa.toFixed(0)}%</span></td></tr>`;});
+    Object.values(mat).map(m=>({...m,taxa:m.total?m.critico/m.total*100:0})).sort((a,b)=>b.critico-a.critico).slice(0,10).forEach(m=>{
+      const kEsc=`${m.vendedor}|${m.designer}`.replace(/'/g,"\\'");
+      mh+=`<tr style="cursor:pointer" onclick="RL.showModalPar('${kEsc}')">
+        <td><strong style="color:var(--primary)">${m.vendedor}</strong></td>
+        <td>${m.designer}</td>
+        <td>${m.total}</td>
+        <td>${m.critico>0?`<span class="badge badge-danger">${m.critico}</span>`:'<span class="badge badge-success">0</span>'}</td>
+        <td><span class="badge badge-${m.taxa<10?'success':m.taxa<25?'warning':'danger'}">${m.taxa.toFixed(0)}%</span></td>
+      </tr>`;
+    });
     mh+='</tbody>';document.getElementById('tableMatrizRetrabalho').innerHTML=mh;
 
     // ── Análise de Permanência — AGUARDANDO RESPOSTA ──
     this.renderAguardandoDor(rows);
   },
 
-  renderAguardandoDor(rows){
+  _matrizRows: {},
+
+  showModalPar(key){
+    const entry=this._matrizRows[key];
+    if(!entry||!entry.rows||!entry.rows.length){
+      App.openDetailModal('Par sem pedidos','linear-gradient(135deg,#6b7280,#4b5563)','<p style="padding:20px;color:var(--text-light)">Nenhum pedido encontrado para esta dupla.</p>');
+      return;
+    }
+    const sorted=[...entry.rows].sort((a,b)=>b.qtdeAlteracoes-a.qtdeAlteracoes);
+    const thead=`<table class="detail-table"><thead><tr><th>Pedido</th><th>Urgência</th><th>Alterações</th><th>Fase</th></tr></thead><tbody>`;
+    const tbody=sorted.map(r=>`<tr>
+      <td style="max-width:220px;word-break:break-word">${DL.pedidoLinkHTML(r)}</td>
+      <td><span class="badge badge-${r.urgencia==='ALTA'?'danger':r.urgencia==='MÉDIA'?'warning':'success'}">${r.urgencia||'—'}</span></td>
+      <td><span class="badge badge-${r.qtdeAlteracoes>=4?'danger':r.qtdeAlteracoes>=2?'warning':'success'}">${r.qtdeAlteracoes}</span></td>
+      <td>${r._fase||'—'}</td>
+    </tr>`).join('');
+    const altTotal=sorted.reduce((s,r)=>s+r.qtdeAlteracoes,0);
+    const criticos=sorted.filter(r=>r.qtdeAlteracoes>=4).length;
+    App.openDetailModal(
+      `${entry.vendedor} × ${entry.designer}`,
+      'linear-gradient(135deg,#7c3aed,#4f46e5)',
+      `<div class="detail-row" style="margin-bottom:16px">
+        <div class="detail-stat"><div class="detail-stat-val">${sorted.length}</div><div class="detail-stat-lbl">Pedidos</div></div>
+        <div class="detail-stat"><div class="detail-stat-val">${altTotal}</div><div class="detail-stat-lbl">Total de alterações</div></div>
+        <div class="detail-stat"><div class="detail-stat-val">${criticos}</div><div class="detail-stat-lbl">Com 4+ alt.</div></div>
+        <div class="detail-stat"><div class="detail-stat-val">${sorted.length?(altTotal/sorted.length).toFixed(1):'—'}</div><div class="detail-stat-lbl">Média alt./pedido</div></div>
+      </div>${thead}${tbody}</tbody></table>`
+    );
+  },
     var normL=function(s){return String(s||'').trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');};
     var isAg=function(r){return normL(r.list).includes('AGUARDANDO RESPOSTA');};
     var hoje=new Date();hoje.setHours(0,0,0,0);
@@ -4377,6 +4410,8 @@ const App = {
     document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===index));
     document.querySelectorAll('.tab-content').forEach((c,i)=>c.classList.toggle('active',i===index));
     State.activeTab=index;
+    // Scroll to top on every tab change
+    window.scrollTo({top:0,behavior:'smooth'});
     // Show skeleton for data-heavy tabs
     if(index===0){ const sk=document.getElementById('skeletonGeral'); if(sk&&!State.rowsFiltered.length) sk.style.display=''; }
     if(index===1){ const sk=document.getElementById('skeletonDesigners'); if(sk&&!State.rowsFiltered.length) sk.style.display=''; }
