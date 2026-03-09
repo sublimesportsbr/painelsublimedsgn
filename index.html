@@ -83,7 +83,51 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-g
 #syncToast.toast-err{background:#ef4444}
 
 /* Filters */
-.filters-bar{background:var(--header-bg);border-radius:15px;padding:16px 20px;margin-bottom:18px;box-shadow:0 4px 20px rgba(0,0,0,.08);display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;transition:background .3s;position:sticky;top:0;z-index:200}
+/* ── FILTER DRAWER ── */
+.filter-trigger-bar{background:var(--header-bg);border-radius:15px;padding:10px 18px;margin-bottom:12px;box-shadow:0 4px 20px rgba(0,0,0,.08);display:flex;align-items:center;gap:10px;flex-wrap:wrap;transition:background .3s;position:sticky;top:0;z-index:200}
+.btn-filter-open{display:flex;align-items:center;gap:7px;padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s,transform .15s}
+.btn-filter-open:hover{background:var(--primary-dark);transform:translateY(-1px)}
+.filter-chips-row{display:flex;flex-wrap:wrap;gap:6px;flex:1}
+.filter-chip{display:inline-flex;align-items:center;gap:5px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;color:#1d4ed8;white-space:nowrap}
+.filter-chip button{background:none;border:none;cursor:pointer;color:#1d4ed8;font-size:13px;line-height:1;padding:0 1px;font-weight:800}
+.filter-chip button:hover{color:#ef4444}
+.filter-drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;display:none;backdrop-filter:blur(2px)}
+.filter-drawer-overlay.open{display:block}
+.filter-drawer{position:fixed;top:0;right:0;height:100%;width:320px;max-width:95vw;background:var(--card-bg);z-index:1200;box-shadow:-8px 0 40px rgba(0,0,0,.2);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;border-radius:20px 0 0 20px;overflow:hidden}
+.filter-drawer.open{transform:translateX(0)}
+.filter-drawer-header{padding:20px 20px 14px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;display:flex;align-items:center;justify-content:space-between}
+.filter-drawer-header h3{font-size:16px;font-weight:800;margin:0}
+.filter-drawer-close{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:8px;width:32px;height:32px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.filter-drawer-close:hover{background:rgba(255,255,255,.35)}
+.filter-drawer-body{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:16px}
+.filter-drawer-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px}
+.filters-bar{display:none}
+/* ── SKELETON SCREENS ── */
+@keyframes sk-shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+.skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--light) 50%,var(--border) 75%);background-size:800px 100%;animation:sk-shimmer 1.4s infinite linear;border-radius:8px}
+.sk-card{height:110px;border-radius:15px}
+.sk-chart{height:200px;border-radius:12px}
+.sk-row{height:16px;border-radius:6px;margin-bottom:8px}
+.sk-row.short{width:60%}
+.skeleton-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:16px;margin-bottom:22px}
+/* ── PIPELINE BAR ── */
+.pipeline-bar{display:flex;align-items:stretch;background:var(--card-bg);border-radius:15px;padding:0;margin-bottom:18px;box-shadow:0 4px 20px rgba(0,0,0,.08);overflow:hidden;flex-wrap:wrap}
+.pipeline-stage{flex:1;min-width:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 6px;cursor:pointer;transition:background .18s,transform .15s;position:relative;border-right:1px solid var(--border);gap:3px}
+.pipeline-stage:last-child{border-right:none}
+.pipeline-stage:hover{background:var(--light);transform:scale(1.04);z-index:1}
+.pipeline-stage .ps-icon{font-size:18px;line-height:1}
+.pipeline-stage .ps-count{font-size:20px;font-weight:800;color:var(--dark);line-height:1}
+.pipeline-stage .ps-label{font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.4px;text-align:center;line-height:1.2}
+.pipeline-stage.ps-alert .ps-count{color:#ef4444}
+.pipeline-stage.ps-warn .ps-count{color:#f59e0b}
+.pipeline-stage.ps-ok .ps-count{color:#10b981}
+/* ── CHART INFO TOOLTIP ── */
+.chart-title-row{display:flex;align-items:center;gap:8px}
+.chart-info-btn{background:none;border:1.5px solid var(--border);border-radius:50%;width:22px;height:22px;font-size:11px;cursor:pointer;color:var(--text-light);display:inline-flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0}
+.chart-info-btn:hover{background:var(--primary);border-color:var(--primary);color:#fff}
+.chart-info-popup{position:fixed;z-index:9000;background:var(--card-bg);border:1.5px solid var(--primary);border-radius:12px;padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,.22);max-width:290px;font-size:13px;line-height:1.65;color:var(--text)}
+.chart-info-popup strong{color:var(--dark);display:block;margin-bottom:4px}
+.chart-info-popup .tip-dica{margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--primary);font-weight:700}
 #btnScrollTop{display:none;position:fixed;bottom:28px;right:28px;z-index:4000;width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;border:none;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(37,99,235,.4);transition:opacity .2s,transform .2s}
 #btnScrollTop:hover{transform:translateY(-3px);opacity:.9}
 .dh-alt{background:#065f46;color:#fff;border-right:2px solid #064e3b}
@@ -329,9 +373,12 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
   .cards-grid{grid-template-columns:1fr 1fr}
   .tabs{flex-wrap:wrap}
   .chart-wrapper,.chart-wrapper-tall{height:280px}
-  .filters-bar{flex-direction:column}
+  .filter-drawer{width:100%;border-radius:20px 20px 0 0;top:auto;bottom:0;height:85vh;transform:translateY(100%)}
+  .filter-drawer.open{transform:translateY(0)}
   .filter-group{width:100%;min-width:unset}
   .form-row{grid-template-columns:1fr}
+  .pipeline-bar{overflow-x:auto;flex-wrap:nowrap}
+  .pipeline-stage{min-width:72px}
 }
 @media(max-width:480px){.cards-grid{grid-template-columns:1fr}}
 /* AI Analysis */
@@ -580,54 +627,79 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
       </div>
     </div>
 
+    <!-- Overlay do drawer de filtros -->
+    <div class="filter-drawer-overlay" id="filterDrawerOverlay" onclick="FD.close()"></div>
+    <!-- Drawer de filtros -->
+    <div class="filter-drawer" id="filterDrawer">
+      <div class="filter-drawer-header">
+        <h3>🔍 Filtros</h3>
+        <button class="filter-drawer-close" onclick="FD.close()">✕</button>
+      </div>
+      <div class="filter-drawer-body">
+        <div class="filter-group ms-wrap" id="wrapVendedor">
+          <label class="filter-label">Vendedor</label>
+          <button class="ms-btn" id="btnVendedor" onclick="MF.toggle('Vendedor')"><span class="ms-label" id="lblVendedor">Todos</span><span class="ms-arrow">▼</span></button>
+          <div class="ms-dropdown" id="ddVendedor">
+            <label class="ms-item todos"><input type="checkbox" id="ckAllVendedor" checked onchange="MF.toggleAll('Vendedor',this)"> Todos</label>
+          </div>
+        </div>
+        <div class="filter-group ms-wrap" id="wrapDesigner">
+          <label class="filter-label">Designer</label>
+          <button class="ms-btn" id="btnDesigner" onclick="MF.toggle('Designer')"><span class="ms-label" id="lblDesigner">Todos</span><span class="ms-arrow">▼</span></button>
+          <div class="ms-dropdown" id="ddDesigner">
+            <label class="ms-item todos"><input type="checkbox" id="ckAllDesigner" checked onchange="MF.toggleAll('Designer',this)"> Todos</label>
+          </div>
+        </div>
+        <div class="filter-group ms-wrap" id="wrapUrgencia">
+          <label class="filter-label">Urgência</label>
+          <button class="ms-btn" id="btnUrgencia" onclick="MF.toggle('Urgencia')"><span class="ms-label" id="lblUrgencia">Todos</span><span class="ms-arrow">▼</span></button>
+          <div class="ms-dropdown" id="ddUrgencia">
+            <label class="ms-item todos"><input type="checkbox" id="ckAllUrgencia" checked onchange="MF.toggleAll('Urgencia',this)"> Todos</label>
+          </div>
+        </div>
+        <div class="filter-group ms-wrap" id="wrapTipo">
+          <label class="filter-label">Tipo de Pedido</label>
+          <button class="ms-btn" id="btnTipo" onclick="MF.toggle('Tipo')"><span class="ms-label" id="lblTipo">Todos</span><span class="ms-arrow">▼</span></button>
+          <div class="ms-dropdown" id="ddTipo">
+            <label class="ms-item todos"><input type="checkbox" id="ckAllTipo" checked onchange="MF.toggleAll('Tipo',this)"> Todos</label>
+            <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="NOVO" onchange="MF.onChange('Tipo')"> Novo</label>
+            <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="ALTERAÇÃO" onchange="MF.onChange('Tipo')"> Alteração</label>
+            <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="REPETIÇÃO" onchange="MF.onChange('Tipo')"> Repetição</label>
+            <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="REPOSIÇÃO" onchange="MF.onChange('Tipo')"> Reposição</label>
+          </div>
+        </div>
+        <div class="filter-group ms-wrap" id="wrapFase">
+          <label class="filter-label">Fase do Pedido</label>
+          <button class="ms-btn" id="btnFase" onclick="MF.toggle('Fase')"><span class="ms-label" id="lblFase">Todos</span><span class="ms-arrow">▼</span></button>
+          <div class="ms-dropdown" id="ddFase">
+            <label class="ms-item todos"><input type="checkbox" id="ckAllFase" checked onchange="MF.toggleAll('Fase',this)"> Todos</label>
+            <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="negociacao" onchange="MF.onChange('Fase')"> Em negociação</label>
+            <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="criacao" onchange="MF.onChange('Fase')"> Em criação</label>
+            <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="producao" onchange="MF.onChange('Fase')"> Em produção</label>
+            <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="entregues" onchange="MF.onChange('Fase')"> Entregues</label>
+          </div>
+        </div>
+      </div>
+      <div class="filter-drawer-footer">
+        <button class="btn" style="flex:1" onclick="App.clearFilters();FD.close()">✕ Limpar filtros</button>
+        <button class="btn btn-primary" style="flex:1" onclick="FD.close()">✅ Aplicar</button>
+      </div>
+    </div>
+
+    <!-- Barra de trigger dos filtros + chips -->
+    <div class="filter-trigger-bar" id="filterTriggerBar">
+      <button class="btn-filter-open" onclick="FD.open()" id="btnOpenFilters">
+        <span>🔍</span><span>Filtros</span><span id="filterBadge" style="display:none;background:rgba(255,255,255,.3);border-radius:10px;padding:1px 7px;font-size:12px"></span>
+      </button>
+      <div class="filter-chips-row" id="filterChipsRow"></div>
+    </div>
+
+    <!-- Barra de pipeline / volume por etapa -->
+    <div class="pipeline-bar" id="pipelineBar" style="display:none"></div>
+
+    <!-- Filtros antigos (ocultos, mantidos para compatibilidade) -->
     <div class="filters-bar">
-      <div class="filter-group ms-wrap" id="wrapVendedor">
-        <label class="filter-label">Vendedor</label>
-        <button class="ms-btn" id="btnVendedor" onclick="MF.toggle('Vendedor')"><span class="ms-label" id="lblVendedor">Todos</span><span class="ms-arrow">▼</span></button>
-        <div class="ms-dropdown" id="ddVendedor">
-          <label class="ms-item todos"><input type="checkbox" id="ckAllVendedor" checked onchange="MF.toggleAll('Vendedor',this)"> Todos</label>
-        </div>
-      </div>
-      <div class="filter-group ms-wrap" id="wrapDesigner">
-        <label class="filter-label">Designer</label>
-        <button class="ms-btn" id="btnDesigner" onclick="MF.toggle('Designer')"><span class="ms-label" id="lblDesigner">Todos</span><span class="ms-arrow">▼</span></button>
-        <div class="ms-dropdown" id="ddDesigner">
-          <label class="ms-item todos"><input type="checkbox" id="ckAllDesigner" checked onchange="MF.toggleAll('Designer',this)"> Todos</label>
-        </div>
-      </div>
-      <div class="filter-group ms-wrap" id="wrapUrgencia">
-        <label class="filter-label">Urgência</label>
-        <button class="ms-btn" id="btnUrgencia" onclick="MF.toggle('Urgencia')"><span class="ms-label" id="lblUrgencia">Todos</span><span class="ms-arrow">▼</span></button>
-        <div class="ms-dropdown" id="ddUrgencia">
-          <label class="ms-item todos"><input type="checkbox" id="ckAllUrgencia" checked onchange="MF.toggleAll('Urgencia',this)"> Todos</label>
-        </div>
-      </div>
-      <div class="filter-group ms-wrap" id="wrapTipo">
-        <label class="filter-label">Tipo de Pedido</label>
-        <button class="ms-btn" id="btnTipo" onclick="MF.toggle('Tipo')"><span class="ms-label" id="lblTipo">Todos</span><span class="ms-arrow">▼</span></button>
-        <div class="ms-dropdown" id="ddTipo">
-          <label class="ms-item todos"><input type="checkbox" id="ckAllTipo" checked onchange="MF.toggleAll('Tipo',this)"> Todos</label>
-          <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="NOVO" onchange="MF.onChange('Tipo')"> Novo</label>
-          <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="ALTERAÇÃO" onchange="MF.onChange('Tipo')"> Alteração</label>
-          <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="REPETIÇÃO" onchange="MF.onChange('Tipo')"> Repetição</label>
-          <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="REPOSIÇÃO" onchange="MF.onChange('Tipo')"> Reposição</label>
-        </div>
-      </div>
-      <div class="filter-group ms-wrap" id="wrapFase">
-        <label class="filter-label">Fase do Pedido</label>
-        <button class="ms-btn" id="btnFase" onclick="MF.toggle('Fase')"><span class="ms-label" id="lblFase">Todos</span><span class="ms-arrow">▼</span></button>
-        <div class="ms-dropdown" id="ddFase">
-          <label class="ms-item todos"><input type="checkbox" id="ckAllFase" checked onchange="MF.toggleAll('Fase',this)"> Todos</label>
-          <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="negociacao" onchange="MF.onChange('Fase')"> Em negociação</label>
-          <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="criacao" onchange="MF.onChange('Fase')"> Em criação</label>
-          <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="producao" onchange="MF.onChange('Fase')"> Em produção</label>
-          <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="entregues" onchange="MF.onChange('Fase')"> Entregues</label>
-        </div>
-      </div>
-      <div class="filter-group" style="min-width:unset">
-        <label class="filter-label">&nbsp;</label>
-        <button class="btn" onclick="App.clearFilters()">✕ Limpar</button>
-      </div>
+      <div class="filter-group ms-wrap" id="wrapVendedor2" style="display:none"></div>
     </div>
 
     <div class="tabs" role="tablist">
@@ -639,35 +711,53 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
 
     <!-- TAB 0: Visão Geral -->
     <div class="tab-content active" id="tab-0">
+      <div id="skeletonGeral" class="skeleton-grid" style="display:none">
+        <div class="skeleton sk-card"></div><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div>
+      </div>
       <div class="cards-grid" id="geralCards"></div>
       <div class="chart-container">
-        <h3 class="chart-title">📊 Distribuição das Artes por Quantidade de Alterações</h3>
-        <p class="chart-subtitle">Quantas artes tiveram 0, 1, 2, 3–4 ou 5+ alterações. Ideal: maior parte na faixa 0.</p>
+        <div class="chart-title-row">
+          <h3 class="chart-title" style="margin:0">📊 Quantas vezes cada arte precisou de alteração</h3>
+          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Distribuição de Alterações','Este gráfico mostra quantas artes saíram na primeira tentativa (0 alterações), precisaram de 1, 2, 3–4 ou 5 ou mais revisões.','Como é calculado: conta o número de vezes que cada pedido voltou para alteração antes de ser aprovado.','Dica: se a maioria das artes estiver em 0 ou 1 alteração, o processo de briefing está funcionando bem. Se houver muitas com 3+, vale conversar com os vendedores sobre como melhorar as instruções no pedido.')">ℹ</button>
+        </div>
+        <p class="chart-subtitle">Ideal: maior parte das artes com 0 ou 1 alteração.</p>
         <div class="chart-wrapper"><canvas id="chartDistribuicao"></canvas></div>
       </div>
       <div class="chart-container">
-        <h3 class="chart-title">📊 Distribuição do Tempo de Criação (Pedidos × Layouts)</h3>
-        <p class="chart-subtitle">Faixas de duração de criação. Barras = qtd pedidos; Linha = layouts (arquivos ARTE*).</p>
+        <div class="chart-title-row">
+          <h3 class="chart-title" style="margin:0">📊 Quanto tempo cada pedido leva para ficar pronto</h3>
+          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Tempo de Criação','Este gráfico agrupa os pedidos por faixa de tempo: menos de 30 minutos, 30min–1h, 1–2h, e assim por diante.','Como é calculado: mede o tempo de expediente (segunda a sexta, 8h–18h) entre o início e o fim da criação de cada arte. Finais de semana não contam.','Dica: se muitos pedidos estão demorando mais de 4 horas, pode ser sinal de fila acumulada ou briefings incompletos que geram retrabalho durante a criação.')">ℹ</button>
+        </div>
+        <p class="chart-subtitle">Barras = quantidade de pedidos · Linha = arquivos de arte entregues</p>
         <div id="chartTempoCriacaoWrap"><div class="chart-wrapper"><canvas id="chartTempoCriacao"></canvas></div></div>
       </div>
       <div class="chart-container">
-        <h3 class="chart-title">⏳ Tempo da Equipe: Criação vs Alterações</h3>
-        <p class="chart-subtitle">Proporção do tempo total gasto em criação vs retrabalho. Clique nas barras para detalhes.</p>
+        <div class="chart-title-row">
+          <h3 class="chart-title" style="margin:0">⏳ Quanto tempo a equipe gasta em criação vs. correções</h3>
+          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Criação vs. Alterações','Este gráfico mostra como o tempo total da equipe está dividido: quanto é gasto criando artes novas e quanto é gasto corrigindo artes que voltaram para alteração.','Como é calculado: soma o tempo útil de todas as criações e de todas as alterações concluídas no período, e mostra a proporção de cada um.','Dica: idealmente, a maior parte do tempo deveria ser gasto em criação (roxo). Se as correções (vermelho) estiverem acima de 40%, pode indicar que os briefings precisam de mais detalhes.')">ℹ</button>
+        </div>
+        <p class="chart-subtitle">Clique nas barras para ver o detalhamento completo.</p>
         <div id="chartTempoEquipeWrap"><div class="chart-wrapper" style="max-height:120px"><canvas id="chartTempoEquipe"></canvas></div></div>
       </div>
       <div class="chart-container">
-        <h3 class="chart-title">🚧 Gargalos do Fluxo de Criação (Volume × Tempo)</h3>
-        <p class="chart-subtitle">Pedidos atuais por fase e tempo médio de permanência (dias desde última movimentação). Clique para detalhar.</p>
+        <div class="chart-title-row">
+          <h3 class="chart-title" style="margin:0">🚧 Onde os pedidos estão parados agora</h3>
+          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Gargalos do Fluxo','Este gráfico mostra em quais etapas do processo os pedidos estão acumulando e há quanto tempo estão parados ali.','Como é calculado: conta quantos cartões estão em cada etapa do Trello e calcula o tempo médio desde a última movimentação.','Dica: etapas com muitos pedidos parados por vários dias precisam de atenção imediata. Clique em qualquer barra para ver quais pedidos estão naquela etapa.')">ℹ</button>
+        </div>
+        <p class="chart-subtitle">Volume de pedidos por etapa e tempo médio parado. Clique para ver os detalhes.</p>
         <div id="chartGargalosWrap"><div class="chart-wrapper"><canvas id="chartGargalos"></canvas></div></div>
       </div>
       <div class="chart-container">
-        <h3 class="chart-title">🔥 Distribuição por Urgência</h3>
-        <p class="chart-subtitle">Proporção de artes de criação por nível de urgência.</p>
+        <div class="chart-title-row">
+          <h3 class="chart-title" style="margin:0">🔥 Pedidos por nível de urgência</h3>
+          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Distribuição por Urgência','Este gráfico mostra como os pedidos de criação estão divididos entre urgência alta, média e baixa.','Como é calculado: conta quantos pedidos foram marcados com cada nível de urgência no Trello.','Dica: se muitos pedidos estiverem como urgência alta ao mesmo tempo, a equipe fica sobrecarregada. Revise com os vendedores quais pedidos realmente precisam de prioridade.')">ℹ</button>
+        </div>
+        <p class="chart-subtitle">Proporção das artes de criação por urgência.</p>
         <div class="chart-wrapper" style="max-width:460px;margin:0 auto"><canvas id="chartUrgencia"></canvas></div>
       </div>
       <div class="chart-container" id="criticosContainer">
         <h3 class="chart-title">🔴 Pedidos que Mais Precisam de Atenção</h3>
-        <p class="chart-subtitle">Artes com 4+ alterações, tempo muito alto ou urgência ALTA com retrabalho.</p>
+        <p class="chart-subtitle">Artes com muitas alterações, tempo muito alto ou urgência ALTA com retrabalho.</p>
         <div class="criticos-list" id="criticosList"></div>
       </div>
       <details class="debug-panel" id="debugPanel">
@@ -679,29 +769,39 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
 
     <!-- TAB 1: Designers -->
     <div class="tab-content" id="tab-1">
+      <div id="skeletonDesigners" class="skeleton-grid" style="display:none">
+        <div class="skeleton sk-card"></div><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div>
+      </div>
       <div class="cards-grid" id="designersCards"></div>
       <div class="chart-container">
-        <h3 class="chart-title">🎯 Pedidos Sem Alteração por Designer (em produção)</h3>
-        <p class="chart-subtitle">% de pedidos <strong>em produção</strong> de cada designer que saíram sem nenhuma alteração. Verde ≥ 80% · Amarelo ≥ 50% · Vermelho &lt; 50%. Clique na barra para ver a lista.</p>
+        <div class="chart-title-row">
+          <h3 class="chart-title" style="margin:0">🎯 Artes que saíram aprovadas sem nenhuma alteração (por designer)</h3>
+          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Artes Aprovadas Sem Alteração','Este gráfico mostra qual porcentagem das artes de cada designer foi aprovada logo na primeira versão, sem precisar de correção.','Como é calculado: conta os pedidos que estão em produção ou já foram entregues e que não tiveram nenhuma rodada de alteração, dividido pelo total de pedidos do designer.','Dica: quanto mais alto, melhor. Verde (80%+) = ótimo. Amarelo (50–80%) = pode melhorar. Vermelho (abaixo de 50%) = vale conversar sobre o processo de briefing. Clique na barra para ver os pedidos.')">ℹ</button>
+        </div>
+        <p class="chart-subtitle">Verde ≥ 80% · Amarelo ≥ 50% · Vermelho &lt; 50%. Clique na barra para ver a lista.</p>
         <div class="chart-wrapper"><canvas id="chartDesignersAcerto"></canvas></div>
       </div>
       <div class="chart-container">
-        <h3 class="chart-title">📈 Pedidos que avançaram (produção + entregues) por Designer</h3>
-        <p class="chart-subtitle">% de pedidos com início de criação registrado que já avançaram para produção ou foram entregues. Quanto maior, melhor o fluxo de entrega. Clique na barra para ver a lista.</p>
+        <div class="chart-title-row">
+          <h3 class="chart-title" style="margin:0">📈 Pedidos concluídos ou em produção por designer</h3>
+          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Taxa de Avanço','Este gráfico mostra qual porcentagem dos pedidos de cada designer já avançou para produção ou foi entregue ao cliente.','Como é calculado: entre todos os pedidos com início de criação registrado, conta quantos já foram para produção ou entrega, dividido pelo total.','Dica: uma taxa alta significa que o designer está entregando bem. Uma taxa baixa pode indicar pedidos travados ou muita fila acumulada. Clique na barra para ver detalhes.')">ℹ</button>
+        </div>
+        <p class="chart-subtitle">% de pedidos com criação iniciada que já avançaram para produção ou entrega. Clique para ver.</p>
         <div id="chartAvancouWrap"><div class="chart-wrapper"><canvas id="chartAvancou"></canvas></div></div>
       </div>
       <div class="chart-container">
-        <h3 class="chart-title">⚡ Velocidade vs. Precisão por Designer</h3>
-        <p class="chart-subtitle">Barras = Tempo mediano útil (min). Linha laranja = Média de alterações por arte. 🟢 Rápido e preciso · 🟡 Rápido com erros · 🔵 Lento preciso · 🔴 Lento com erros</p>
+        <div class="chart-title-row">
+          <h3 class="chart-title" style="margin:0">⚡ Velocidade vs. precisão — quem é rápido E preciso?</h3>
+          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Velocidade vs. Precisão','Este gráfico compara dois aspectos de cada designer: a velocidade (tempo mediano de criação) e a precisão (quantas alterações em média).','Como é calculado: as barras mostram o tempo mediano útil em minutos. A linha laranja mostra a média de alterações por arte.','Dica: o ideal é ter barras baixas (rápido) E linha baixa (poucas correções). 🟢 Rápido e preciso é o melhor cenário. 🔴 Lento com erros é o que mais precisa de atenção.')">ℹ</button>
+        </div>
+        <p class="chart-subtitle">Barras = tempo mediano · Linha = média de alterações por arte</p>
         <div id="chartVQWrap"><div class="chart-wrapper-tall"><canvas id="chartVelocidadeQualidade"></canvas></div></div>
       </div>
       <div class="table-container">
-        <h3 class="chart-title">📋 Eficiência Detalhada por Designer</h3>
-        <p class="chart-subtitle">Tempo mediano útil, casos demorados, % sem alterações e volume total.</p>
+        <h3 class="chart-title">📋 Resumo detalhado por designer</h3>
+        <p class="chart-subtitle">Tempo mediano, pedidos demorados, % sem alterações e volume total.</p>
         <table id="tableDesigners"></table>
       </div>
-
-      <!-- ── NOVA SEÇÃO: Produção diária ── -->
       <div class="table-container" id="dailyProdContainer">
         <h3 class="chart-title">📆 Produção diária <span id="dailyPeriodLabel"></span></h3>
         <p class="chart-subtitle">Quantidade e tempo de criações concluídas por dia. Clique em qualquer número ou item para ver os pedidos.</p>
@@ -725,34 +825,45 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
         </div>
         <div id="dailyProdTable"></div>
       </div>
-      <!-- ── NOVA SEÇÃO: Média mensal ── -->
       <div class="table-container" id="wrapMonthlyAvg">
-        <div class="chart-title">📅 Média de Criação Mensal (por dias trabalhados)</div>
-        <div class="chart-subtitle">Consolidado do filtro atual. Base: FIM CRIAÇÃO. Média = Artes / dias úteis do mês.</div>
+        <div class="chart-title">📅 Média de criações por mês</div>
+        <div class="chart-subtitle">Total do período filtrado. Base: data de conclusão da criação. Média = artes por dias trabalhados no mês.</div>
         <div id="monthlyAvgBody"></div>
       </div>
     </div>
 
     <!-- TAB 2: Vendedores -->
     <div class="tab-content" id="tab-2">
+      <div id="skeletonVendedores" class="skeleton-grid" style="display:none">
+        <div class="skeleton sk-chart"></div><div class="skeleton sk-chart"></div>
+      </div>
       <div class="chart-container">
-        <h3 class="chart-title">📊 Principais Responsáveis pelo Retrabalho</h3>
-        <p class="chart-subtitle">Vendedores por número total de alterações geradas.</p>
+        <div class="chart-title-row">
+          <h3 class="chart-title" style="margin:0">📊 Quem mais gera retrabalho</h3>
+          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Retrabalho por Vendedor','Este gráfico mostra quantas alterações os pedidos de cada vendedor geraram no total, e quantos saíram sem nenhuma correção.','Como é calculado: soma todas as rodadas de alteração dos pedidos de cada vendedor.','Dica: vendedores com muitas alterações podem estar enviando briefings incompletos. Vale conversar sobre como detalhar melhor os pedidos antes de enviar para o designer. Clique nas barras para ver os pedidos.')">ℹ</button>
+        </div>
+        <p class="chart-subtitle">Total de alterações geradas e artes sem alteração, por vendedor. Clique para ver detalhes.</p>
         <div class="chart-wrapper"><canvas id="chartVendedoresRetrabalho"></canvas></div>
       </div>
       <div class="table-container">
-        <h3 class="chart-title">👥 Análise Completa por Vendedor</h3>
+        <h3 class="chart-title">👥 Resumo por vendedor</h3>
         <p class="chart-subtitle">Volume, qualidade e taxa de retrabalho por vendedor.</p>
         <table id="tableVendedores"></table>
       </div>
       <div class="table-container">
-        <h3 class="chart-title">🔍 Top 10 Pares Vendedor × Designer com Mais Retrabalho</h3>
+        <div class="chart-title-row">
+          <h3 class="chart-title" style="margin:0">🔍 Os 10 pares vendedor + designer com mais retrabalho</h3>
+          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Pares com Mais Retrabalho','Mostra as combinações de vendedor e designer que mais geraram artes com 4 ou mais rodadas de revisão.','Como é calculado: agrupa os pedidos por par vendedor+designer e conta quantos tiveram 4+ alterações.','Dica: se um par específico aparece frequentemente, pode ser um problema de comunicação ou alinhamento entre eles. Clique no nome da dupla para ver os pedidos.')">ℹ</button>
+        </div>
         <p class="chart-subtitle">Combinações com maior número de artes que precisaram de mais de 4 rodadas.</p>
         <table id="tableMatrizRetrabalho"></table>
       </div>
       <div class="chart-container">
-        <h3 class="chart-title">⏳ Análise de Permanência — AGUARDANDO RESPOSTA</h3>
-        <p class="chart-subtitle">Distribuição de pedidos por tempo desde a última movimentação. Utilize os filtros para analisar urgência, vendedor e impacto operacional.</p>
+        <div class="chart-title-row">
+          <h3 class="chart-title" style="margin:0">⏳ Pedidos aguardando resposta do cliente — há quanto tempo?</h3>
+          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Aguardando Resposta','Mostra há quantos dias cada pedido está parado esperando uma resposta do cliente, agrupados por faixas de tempo.','Como é calculado: conta os dias desde a última movimentação dos cartões que estão na coluna AGUARDANDO RESPOSTA.','Dica: pedidos aguardando há mais de 7 dias merecem um follow-up. Acima de 30 dias, pode ser que o cliente tenha desistido ou o pedido esteja perdido. Clique nas barras para ver quais pedidos estão em cada faixa.')">ℹ</button>
+        </div>
+        <p class="chart-subtitle">Pedidos agrupados por tempo de espera. Clique nas barras para ver os detalhes.</p>
         <div id="aguardandoDorResumo" style="font-weight:800;font-size:13px;margin:6px 0 14px;color:var(--dark)"></div>
         <div id="chartAguardandoDorWrap"><div class="chart-wrapper-tall"><canvas id="chartAguardandoDor"></canvas></div></div>
       </div>
@@ -946,6 +1057,180 @@ const DEBUG_TIME = false;
 /* NOTE: Trello object kept as dead code — all calls now go via /api/sync */
 const TRELLO_API = 'https://api.trello.com/1';
 const SK = { cfg:'sb_trello_cfg', dataset:'sb_last_dataset', ui:'sb_ui_state' };
+
+/* ══════════════════════════════════════════════
+   FD — Filter Drawer
+══════════════════════════════════════════════ */
+const FD = {
+  open(){
+    document.getElementById('filterDrawer').classList.add('open');
+    document.getElementById('filterDrawerOverlay').classList.add('open');
+    document.body.style.overflow='hidden';
+  },
+  close(){
+    document.getElementById('filterDrawer').classList.remove('open');
+    document.getElementById('filterDrawerOverlay').classList.remove('open');
+    document.body.style.overflow='';
+    MF.closeAll();
+  },
+  // Rebuild the chips row from current State.filters
+  updateChips(){
+    const row=document.getElementById('filterChipsRow');
+    const badge=document.getElementById('filterBadge');
+    if(!row) return;
+    const labels={vendedor:'Vendedor',designer:'Designer',urgencia:'Urgência',tipo:'Tipo',fase:'Fase'};
+    const chips=[];
+    Object.entries(State.filters||{}).forEach(([key,vals])=>{
+      if(!Array.isArray(vals)||!vals.length) return;
+      vals.forEach(v=>{
+        chips.push(`<span class="filter-chip">${labels[key]||key}: <strong>${v}</strong><button title="Remover filtro" onclick="FD._removeChip('${key}','${v.replace(/'/g,"\\'")}')">&times;</button></span>`);
+      });
+    });
+    row.innerHTML=chips.join('');
+    const n=chips.length;
+    if(badge){
+      badge.textContent=n?n:'';
+      badge.style.display=n?'inline':'none';
+    }
+  },
+  _removeChip(key,val){
+    if(!State.filters[key]) return;
+    State.filters[key]=State.filters[key].filter(v=>v!==val);
+    // Uncheck the checkbox
+    document.querySelectorAll(`.ms-opt-${key.charAt(0).toUpperCase()+key.slice(1)}`).forEach(c=>{ if(c.value===val) c.checked=false; });
+    const nameMap={vendedor:'Vendedor',designer:'Designer',urgencia:'Urgencia',tipo:'Tipo',fase:'Fase'};
+    const name=nameMap[key]||key;
+    MF.onChange(name);
+  }
+};
+
+/* ══════════════════════════════════════════════
+   ChartInfo — tooltip popup for chart info buttons
+══════════════════════════════════════════════ */
+const ChartInfo = {
+  _popup: null,
+  _active: null,
+  show(btn, titulo, oQue, comoCal, dica){
+    // Remove existing
+    if(this._popup){ this._popup.remove(); this._popup=null; }
+    if(this._active===btn){ this._active=null; return; }
+    this._active=btn;
+    const p=document.createElement('div');
+    p.className='chart-info-popup';
+    p.innerHTML=`<strong>${titulo}</strong>${oQue}<br><br><span style="font-size:12px;color:var(--text-light)">${comoCal}</span><div class="tip-dica">💡 Dica: ${dica}</div>`;
+    p.style.cssText='position:fixed;z-index:9000;background:var(--card-bg,#fff);border:1.5px solid #2563eb;border-radius:12px;padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,.22);max-width:290px;font-size:13px;line-height:1.65;color:var(--text,#374151)';
+    document.body.appendChild(p);
+    this._popup=p;
+    // Position near button
+    const r=btn.getBoundingClientRect();
+    let left=r.left;
+    let top=r.bottom+8;
+    if(left+300>window.innerWidth) left=window.innerWidth-308;
+    if(top+200>window.innerHeight) top=r.top-p.offsetHeight-8;
+    p.style.left=Math.max(8,left)+'px';
+    p.style.top=Math.max(8,top)+'px';
+    // Auto close on outside click
+    setTimeout(()=>{
+      const close=e=>{if(!p.contains(e.target)&&e.target!==btn){p.remove();this._popup=null;this._active=null;document.removeEventListener('click',close);}};
+      document.addEventListener('click',close);
+    },0);
+  }
+};
+
+/* ══════════════════════════════════════════════
+   PipelineBar — status circles / volume by stage
+══════════════════════════════════════════════ */
+const PipelineBar = {
+  STAGES:[
+    {key:'COLETA',    icon:'📋', label:'Coleta',         match:l=>l.includes('COLETA')},
+    {key:'FILA',      icon:'⏳', label:'Fila Criação',   match:l=>l.includes('FILA')&&(l.includes('CRIACAO')||l.includes('CRIAÇÃO')||l.includes('URGENCIA')||l.includes('URGÊNCIA'))},
+    {key:'EM_CRI',    icon:'🎨', label:'Em Criação',     match:l=>l==='EM CRIACAO'||l==='EM CRIAÇÃO'},
+    {key:'ALT_SOL',   icon:'✏️', label:'Alt. Solicitada',match:l=>l.includes('ALTERACAO SOLICITADA')||l.includes('ALTERAÇÃO SOLICITADA')},
+    {key:'EM_ALT',    icon:'🔄', label:'Em Alteração',   match:l=>l==='EM ALTERACAO'||l==='EM ALTERAÇÃO'},
+    {key:'ENVIAR',    icon:'📤', label:'Enviar Cliente', match:l=>l.includes('ENVIAR')},
+    {key:'AGUARD',    icon:'⏰', label:'Aguardando',     match:l=>l.includes('AGUARDANDO RESPOSTA')},
+    {key:'APROVADA',  icon:'✅', label:'Arte Aprovada',  match:l=>l.includes('LIBERAR')&&l.includes('PRODUCAO')||l==='EM PRODUCAO'||l==='EM PRODUÇÃO'}
+  ],
+
+  render(allRows){
+    const bar=document.getElementById('pipelineBar');
+    if(!bar) return;
+    // Exclude delivered (entregues)
+    const rows=allRows.filter(r=>r._fase!=='entregues');
+    const norm=s=>String(s||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const counts={};
+    const byStage={};
+    this.STAGES.forEach(s=>{ counts[s.key]=0; byStage[s.key]=[]; });
+    rows.forEach(r=>{
+      const l=norm(r.list||'');
+      for(const s of this.STAGES){
+        if(s.match(l)){ counts[s.key]++; byStage[s.key].push(r); break; }
+      }
+    });
+    bar.innerHTML=this.STAGES.map(s=>{
+      const n=counts[s.key];
+      const cls=n>=10?'ps-alert':n>=5?'ps-warn':'ps-ok';
+      return `<div class="pipeline-stage ${cls}" onclick="PipelineBar.openModal('${s.key}','${s.label}')">
+        <span class="ps-icon">${s.icon}</span>
+        <span class="ps-count">${n}</span>
+        <span class="ps-label">${s.label}</span>
+      </div>`;
+    }).join('');
+    bar.style.display='flex';
+    this._byStage=byStage;
+  },
+
+  _byStage:{},
+
+  openModal(key, label){
+    const rows=this._byStage[key]||[];
+    if(!rows.length){
+      App.openDetailModal(`${label} — Nenhum pedido`,'linear-gradient(135deg,#6b7280,#4b5563)',
+        `<div style="text-align:center;padding:32px 20px">
+          <div style="font-size:40px;margin-bottom:12px">☕</div>
+          <div style="font-size:15px;font-weight:700;color:var(--dark)">Tudo limpo por aqui!</div>
+          <div style="font-size:13px;color:var(--text-light);margin-top:6px">Nenhum pedido nesta etapa no momento.</div>
+        </div>`);
+      return;
+    }
+    const sorted=[...rows].sort((a,b)=>{
+      const da=a._createdObj instanceof Date?a._createdObj:new Date(0);
+      const db=b._createdObj instanceof Date?b._createdObj:new Date(0);
+      return db-da;
+    });
+    const total=sorted.length;
+    const show10=sorted.slice(0,10);
+    const rest=sorted.slice(10);
+    const rowHtml=(r,idx)=>`<tr>
+      <td style="max-width:200px;word-break:break-word">${DL.pedidoLinkHTML(r)}</td>
+      <td>${r.designer||'—'}</td>
+      <td>${r.vendedor||'—'}</td>
+      <td><span class="badge badge-${r.urgencia==='ALTA'?'danger':r.urgencia==='MÉDIA'?'warning':'success'}">${r.urgencia||'—'}</span></td>
+      <td>${r.qtdeAlteracoes||0}</td>
+    </tr>`;
+    const thead=`<table class="detail-table"><thead><tr><th>Pedido</th><th>Designer</th><th>Vendedor</th><th>Urgência</th><th>Alt.</th></tr></thead><tbody id="pipeModalBody">`;
+    const tbody=show10.map(rowHtml).join('');
+    const verTodos=rest.length?`<tr id="pipeVerTodosRow"><td colspan="5" style="text-align:center;padding:12px"><button class="btn btn-ghost" style="font-size:13px" onclick="PipelineBar._expandModal(${JSON.stringify(rest.map(r=>r._trelloId||r.title||''))})">📋 Ver todos os ${total} pedidos</button></td></tr>`:'';
+    App.openDetailModal(`${label} — ${total} pedido${total!==1?'s':''}`,
+      'linear-gradient(135deg,#1e3a8a,#2563eb)',
+      `${thead}${tbody}${verTodos}</tbody></table>`);
+    this._modalRows=sorted;
+  },
+
+  _modalRows:[],
+  _expandModal(){
+    const body=document.getElementById('pipeModalBody');
+    if(!body) return;
+    const all=this._modalRows;
+    const rowHtml=(r)=>`<tr>
+      <td style="max-width:200px;word-break:break-word">${DL.pedidoLinkHTML(r)}</td>
+      <td>${r.designer||'—'}</td><td>${r.vendedor||'—'}</td>
+      <td><span class="badge badge-${r.urgencia==='ALTA'?'danger':r.urgencia==='MÉDIA'?'warning':'success'}">${r.urgencia||'—'}</span></td>
+      <td>${r.qtdeAlteracoes||0}</td>
+    </tr>`;
+    body.innerHTML=all.map(rowHtml).join('');
+  }
+};
 
 /* ══════════════════════════════════════════════
    EQUIPE — sistema de membros ativos/inativos
@@ -1251,6 +1536,7 @@ const MF = {
 
     State.applyFilters();
     App.renderActiveTab();
+    FD.updateChips();
   },
 
   populate(name, opts){
@@ -1729,6 +2015,12 @@ const RL = {
   /* ── TAB 0 ── */
   renderGeral(rows){
     const criacao=rows.filter(r=>DL.isCriacao(r));
+    // Render pipeline status bar using all rows (not filtered by creation type)
+    PipelineBar.render(rows);
+    // Hide skeleton if showing
+    const sk=document.getElementById('skeletonGeral');
+    if(sk) sk.style.display='none';
+    document.getElementById('geralCards').style.display='';
 
     // ── Painel de diagnóstico — sempre atualizado, nunca sobrescrito ──
     const diagId = '_diagPanel';
@@ -2188,6 +2480,10 @@ const RL = {
 
   /* ── TAB 1 ── */
   async renderDesigners(rows){
+    const sk=document.getElementById('skeletonDesigners');
+    if(sk) sk.style.display='none';
+    // Apply team filter so inactive designers don't appear in stats
+    rows = TeamFilter.filterForStats(rows);
     const criacao=rows.filter(r=>DL.isCriacao(r));
     const dS={};
     criacao.forEach(r=>{if(!r.designer)return;if(!dS[r.designer])dS[r.designer]={total:0,totalAlt:0,critico:0,tempos:[]};const d=dS[r.designer];d.total++;d.totalAlt+=r.qtdeAlteracoes;if(r.qtdeAlteracoes>=4)d.critico++;if(r._tempoUtil!=null)d.tempos.push(r._tempoUtil);});
@@ -2949,6 +3245,10 @@ const RL = {
   },
 
   renderVendedores(rows){
+    const sk=document.getElementById('skeletonVendedores');
+    if(sk) sk.style.display='none';
+    // Apply team filter so inactive designers don't skew stats
+    rows = TeamFilter.filterForStats(rows);
     const criacao=rows.filter(r=>DL.isCriacao(r));
     const vend={};
     criacao.forEach(r=>{if(!r.vendedor)return;if(!vend[r.vendedor])vend[r.vendedor]={total:0,alt:0,critico:0,sem:0};vend[r.vendedor].total++;vend[r.vendedor].alt+=r.qtdeAlteracoes;if(r.qtdeAlteracoes>=4)vend[r.vendedor].critico++;if(r.qtdeAlteracoes===0)vend[r.vendedor].sem++;});
@@ -4071,13 +4371,18 @@ const App = {
     this.renderActiveTab();
   },
 
-  clearFilters(){ State.clearFilters(); this.renderActiveTab(); },
+  clearFilters(){ State.clearFilters(); MF.resetAll(); FD.updateChips(); this.renderActiveTab(); },
 
   switchTab(index){
     document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===index));
     document.querySelectorAll('.tab-content').forEach((c,i)=>c.classList.toggle('active',i===index));
     State.activeTab=index;
+    // Show skeleton for data-heavy tabs
+    if(index===0){ const sk=document.getElementById('skeletonGeral'); if(sk&&!State.rowsFiltered.length) sk.style.display=''; }
+    if(index===1){ const sk=document.getElementById('skeletonDesigners'); if(sk&&!State.rowsFiltered.length) sk.style.display=''; }
+    if(index===2){ const sk=document.getElementById('skeletonVendedores'); if(sk&&!State.rowsFiltered.length) sk.style.display=''; }
     this.renderActiveTab();
+    FD.updateChips();
     setTimeout(()=>{ Object.values(State.charts).forEach(c=>c&&c.resize&&c.resize()); },120);
   },
 
