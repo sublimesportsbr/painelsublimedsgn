@@ -2413,7 +2413,7 @@ const RL = {
     /* Urgência — com clique */
     const urg={};criacao.forEach(r=>{if(r.urgencia&&r.urgencia!=='N/A')DL.inc(urg,r.urgencia);});
     const urgLabels=Object.keys(urg);
-    this.upsert('chartUrgencia',{type:'doughnut',data:{labels:urgLabels,datasets:[{data:Object.values(urg),backgroundColor:urgLabels.map(u=>URGENCY_COLORS[u]),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16}},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw} artes`}}},onClick:(evt,els)=>{if(els.length){const lbl=urgLabels[els[0].index];RL.showDetailUrgencia(lbl,rows);}}}});
+    this.upsert('chartUrgencia',{type:'doughnut',data:{labels:urgLabels,datasets:[{data:Object.values(urg),backgroundColor:urgLabels.map(u=>URGENCY_COLORS[u]),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16}},tooltip:{callbacks:{label:ctx=>{const total=ctx.dataset.data.reduce((a,b)=>a+b,0);const pct=total>0?Math.round(ctx.raw/total*100):0;return ` ${ctx.label}: ${ctx.raw} artes (${pct}%)`;}}},},onClick:(evt,els)=>{if(els.length){const lbl=urgLabels[els[0].index];RL.showDetailUrgencia(lbl,rows);}}}});
 
     /* Críticos */
     const top=criacao.map(r=>({...r,_scoreObj:DL.calcScore(r,tMed),_score:DL.calcScore(r,tMed).score})).filter(r=>r.qtdeAlteracoes>=4||(r._tempoUtil!=null&&tMed>0&&r._tempoUtil>tMed*2)||(r.urgencia==='ALTA'&&r.qtdeAlteracoes>=2)).sort((a,b)=>a._score-b._score).slice(0,10);
