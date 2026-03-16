@@ -3,149 +3,205 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PAINEL SUBLIME — Gestão de Design</title>
+<title>Painel Sublime — Gestão de Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --primary:#2563eb;--primary-dark:#1e40af;--secondary:#10b981;
-  --danger:#ef4444;--warning:#f59e0b;--purple:#8b5cf6;
-  --dark:#1f2937;--light:#f9fafb;--border:#e5e7eb;
-  --text:#374151;--text-light:#6b7280;
-  --bg-body-1:#667eea;--bg-body-2:#764ba2;
-  --card-bg:white;--header-bg:white;--input-bg:white;
-  --table-header:#f9fafb;--table-hover:#f9fafb;
+  /* Brand */
+  --accent:#4ade80;--accent-dim:#22c55e;--accent-glow:rgba(74,222,128,.18);
+  --primary:#3b82f6;--primary-dark:#2563eb;
+  --secondary:#4ade80;--danger:#f87171;--warning:#fbbf24;--purple:#a78bfa;
+
+  /* Light mode surfaces */
+  --bg-base:#f0f2f7;--bg-base-2:#e8ebf2;
+  --surface:#ffffff;--surface-2:#f8fafc;--surface-3:#f1f5f9;
+  --sidebar-bg:#0f1117;--sidebar-text:#e2e8f0;--sidebar-text-dim:#64748b;
+  --header-bg:#ffffff;--card-bg:#ffffff;--input-bg:#f8fafc;
+  --border:#e2e8f0;--border-strong:#cbd5e1;
+
+  /* Text */
+  --dark:#0f172a;--light:#f8fafc;
+  --text:#1e293b;--text-light:#64748b;--text-dim:#94a3b8;
+
+  /* Misc */
+  --radius:10px;--radius-lg:14px;--radius-xl:18px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow:0 4px 16px rgba(0,0,0,.08),0 1px 4px rgba(0,0,0,.04);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.12),0 4px 12px rgba(0,0,0,.06);
+  --table-header:#f8fafc;--table-hover:#f1f5f9;
 }
 body.dark-mode{
-  --dark:#f9fafb;--light:#1f2937;--border:#374151;
-  --text:#e5e7eb;--text-light:#9ca3af;
-  --bg-body-1:#0f172a;--bg-body-2:#1e1b4b;
-  --card-bg:#1e293b;--header-bg:#1e293b;--input-bg:#0f172a;
-  --table-header:#0f172a;--table-hover:#0f172a;
+  --bg-base:#080b11;--bg-base-2:#0d1117;
+  --surface:#111827;--surface-2:#1a2232;--surface-3:#0f172a;
+  --sidebar-bg:#080b11;
+  --header-bg:#111827;--card-bg:#111827;--input-bg:#0f172a;
+  --border:#1e293b;--border-strong:#334155;
+  --dark:#f1f5f9;--light:#0f172a;
+  --text:#e2e8f0;--text-light:#94a3b8;--text-dim:#475569;
+  --table-header:#0f172a;--table-hover:#1a2232;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);
+  --shadow:0 4px 16px rgba(0,0,0,.35);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.5);
 }
-body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,var(--bg-body-1) 0%,var(--bg-body-2) 100%);min-height:100vh;color:var(--text);transition:background .3s,color .3s}
-.container{max-width:1400px;margin:0 auto;padding:20px}
+body{
+  font-family:'Outfit','Segoe UI',system-ui,sans-serif;
+  background:var(--bg-base);
+  min-height:100vh;color:var(--text);
+  transition:background .25s,color .25s;
+  -webkit-font-smoothing:antialiased;
+}
+.container{max-width:100%;margin:0;padding:0}
 
 /* Connect Screen */
-#connectScreen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center}
-.connect-box{background:var(--card-bg);border-radius:20px;padding:60px 44px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:480px;width:100%}
-.connect-icon{width:90px;height:90px;margin:0 auto 24px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:44px}
-.connect-box h1{color:var(--dark);font-size:26px;margin-bottom:8px}
-.connect-box p{color:var(--text-light);margin-bottom:30px;font-size:15px}
-.btn-connect{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;border:none;padding:14px 36px;font-size:15px;border-radius:10px;cursor:pointer;font-weight:700;transition:transform .2s,box-shadow .2s}
-.btn-connect:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(37,99,235,.4)}
+#connectScreen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:var(--sidebar-bg);text-align:center}
+.connect-box{background:var(--surface);border-radius:var(--radius-xl);padding:56px 48px;box-shadow:var(--shadow-lg);max-width:440px;width:calc(100% - 40px)}
+.connect-box .conn-logo{height:40px;margin:0 auto 32px;display:block;color:var(--dark);opacity:.85}
+body.dark-mode .connect-box .conn-logo{color:#e2e8f0;opacity:.9}
+.connect-box h1{color:var(--dark);font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px}
+.connect-box p{color:var(--text-light);margin-bottom:0;font-size:14px}
+.btn-connect{background:var(--accent);color:#0f172a;border:none;padding:13px 36px;font-size:14px;font-weight:700;border-radius:var(--radius);cursor:pointer;transition:all .2s;letter-spacing:.2px}
+.btn-connect:hover{background:var(--accent-dim);transform:translateY(-1px);box-shadow:0 6px 20px var(--accent-glow)}
 
 /* Modal de login */
-#loginModal{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.82);backdrop-filter:blur(4px)}
+#loginModal{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(8,11,17,.88);backdrop-filter:blur(6px)}
 #loginModal.hidden{display:none}
-.login-box{background:var(--card-bg);border-radius:20px;padding:52px 44px 44px;box-shadow:0 24px 64px rgba(0,0,0,.45);max-width:420px;width:100%;text-align:center;animation:lm-in .25s ease}
-@keyframes lm-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-.login-box .login-icon{width:80px;height:80px;margin:0 auto 22px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:38px}
-.login-box h2{font-size:22px;font-weight:800;color:var(--dark);margin-bottom:6px}
-.login-box .login-sub{font-size:14px;color:var(--text-light);margin-bottom:28px}
-.login-input{width:100%;padding:13px 16px;border:2px solid var(--border);border-radius:10px;font-size:15px;background:var(--input-bg);color:var(--text);outline:none;transition:border .2s;box-sizing:border-box}
-.login-input:focus{border-color:var(--primary)}
-.login-btn{margin-top:14px;width:100%;padding:13px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .15s}
-.login-btn:hover:not(:disabled){transform:translateY(-1px);opacity:.93}
-.login-btn:disabled{opacity:.6;cursor:not-allowed}
-.login-err{margin-top:14px;padding:10px 14px;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;color:#b91c1c;font-size:13px;display:none;text-align:left}
+.login-box{background:var(--surface);border-radius:var(--radius-xl);padding:48px 44px 40px;box-shadow:var(--shadow-lg);border:1px solid var(--border);max-width:400px;width:calc(100% - 32px);text-align:center;animation:lm-in .28s cubic-bezier(.22,1,.36,1)}
+@keyframes lm-in{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.login-box .login-logo{height:36px;margin:0 auto 36px;display:block;color:var(--dark)}
+body.dark-mode .login-box .login-logo{color:#e2e8f0}
+.login-box h2{font-size:20px;font-weight:700;color:var(--dark);margin-bottom:5px;letter-spacing:-.3px}
+.login-box .login-sub{font-size:13px;color:var(--text-light);margin-bottom:28px}
+.login-input{width:100%;padding:12px 15px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:'DM Mono',monospace;background:var(--input-bg);color:var(--text);outline:none;transition:border .18s,box-shadow .18s;box-sizing:border-box}
+.login-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.login-btn{margin-top:12px;width:100%;padding:12px;background:var(--accent);color:#0f172a;border:none;border-radius:var(--radius);font-size:14px;font-weight:700;cursor:pointer;transition:all .18s;letter-spacing:.2px}
+.login-btn:hover:not(:disabled){background:var(--accent-dim);transform:translateY(-1px);box-shadow:0 4px 16px var(--accent-glow)}
+.login-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.login-err{margin-top:12px;padding:10px 13px;background:#fef2f2;border:1px solid #fca5a5;border-radius:var(--radius);color:#b91c1c;font-size:13px;display:none;text-align:left}
+body.dark-mode .login-err{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.3);color:#fca5a5}
 
-/* Dashboard */
+/* Dashboard Layout — sidebar + main */
 #dashboard{display:none}
-.header{background:var(--header-bg);border-radius:15px;padding:20px 24px;margin-bottom:24px;box-shadow:0 4px 20px rgba(0,0,0,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;transition:background .3s}
-.header-content{flex:1;min-width:200px}
-.header h1{color:var(--dark);font-size:24px;margin-bottom:2px}
-.header-period{color:var(--primary);font-size:14px;font-weight:600;margin-top:3px}
-.header-meta{display:flex;align-items:center;gap:10px;margin-top:5px;flex-wrap:wrap}
-.sync-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-light);background:var(--light);padding:4px 10px;border-radius:20px;border:1px solid var(--border)}
-.sync-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.sync-dot.ok{background:#10b981}
-.sync-dot.busy{background:#f59e0b;animation:pulse .9s infinite}
-.sync-dot.err{background:#ef4444}
-.sync-dot.idle{background:#9ca3af}
+
+/* ── SIDEBAR ── */
+.sb-layout{display:flex;min-height:100vh}
+.sidebar{
+  width:220px;flex-shrink:0;
+  background:var(--sidebar-bg);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;
+  z-index:300;overflow-y:auto;
+  border-right:1px solid rgba(255,255,255,.05);
+  transition:transform .25s;
+}
+.sidebar-logo{
+  padding:22px 20px 18px;
+  display:flex;flex-direction:column;gap:4px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.sidebar-logo .sb-logo-svg{height:26px;color:#ffffff;opacity:.95;display:block}
+.sidebar-logo .sb-tagline{font-size:9px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:3px}
+.sidebar-nav{flex:1;padding:14px 10px}
+.sb-nav-group{margin-bottom:6px}
+.sb-nav-label{font-size:9.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,.25);padding:6px 10px 4px;display:block}
+.sb-tab-btn{
+  width:100%;display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:8px;
+  background:transparent;border:none;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;
+  color:var(--sidebar-text-dim);
+  transition:all .18s;text-align:left;
+}
+.sb-tab-btn:hover{background:rgba(255,255,255,.06);color:var(--sidebar-text)}
+.sb-tab-btn.active{background:rgba(74,222,128,.12);color:var(--accent);font-weight:600}
+.sb-tab-btn .sb-icon{font-size:15px;flex-shrink:0;width:20px;text-align:center}
+.sidebar-footer{padding:14px 10px;border-top:1px solid rgba(255,255,255,.06)}
+.sb-footer-user{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;margin-bottom:4px}
+.sb-avatar{width:30px;height:30px;border-radius:50%;background:rgba(74,222,128,.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0}
+.sb-user-info{flex:1;min-width:0}
+.sb-user-name{font-size:12px;font-weight:600;color:var(--sidebar-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-user-role{font-size:10px;color:rgba(255,255,255,.3);font-weight:500}
+.sb-btn{
+  width:100%;display:flex;align-items:center;gap:9px;
+  padding:8px 12px;border-radius:8px;
+  background:transparent;border:none;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;
+  color:var(--sidebar-text-dim);transition:all .18s;text-align:left;
+}
+.sb-btn:hover{background:rgba(255,255,255,.06);color:var(--sidebar-text)}
+.sb-btn.danger:hover{background:rgba(248,113,113,.1);color:#f87171}
+
+/* ── MAIN AREA ── */
+.sb-main{flex:1;margin-left:220px;min-height:100vh;display:flex;flex-direction:column}
+
+/* ── TOP BAR ── */
+.topbar{
+  background:var(--header-bg);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;height:58px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:200;
+  gap:16px;
+}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-title{font-size:16px;font-weight:700;color:var(--dark);letter-spacing:-.3px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.sync-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-light);background:var(--surface-2);padding:4px 10px;border-radius:20px;border:1px solid var(--border)}
+.sync-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sync-dot.ok{background:#4ade80}
+.sync-dot.busy{background:#fbbf24;animation:pulse .9s infinite}
+.sync-dot.err{background:#f87171}
+.sync-dot.idle{background:var(--text-dim)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.header-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;align-items:center}
-.btn{background:var(--primary);color:white;border:none;padding:9px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;white-space:nowrap}
-.btn:hover:not(:disabled){background:var(--primary-dark);transform:translateY(-1px)}
-.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
-.btn-secondary{background:var(--secondary)}
-.btn-secondary:hover:not(:disabled){background:#059669}
-.btn-ghost{background:transparent;color:var(--text-light);border:1.5px solid var(--border);font-size:13px;padding:7px 14px}
-.btn-ghost:hover:not(:disabled){background:var(--light);transform:none}
-.btn-danger{background:#ef4444}
-.btn-danger:hover:not(:disabled){background:#dc2626}
-.btn-dark{background:var(--dark);color:var(--light);border:none;padding:7px 14px;font-size:13px;border-radius:8px;cursor:pointer;font-weight:600;transition:all .2s}
-.btn-dark:hover{opacity:.85}
+#headerTimestamp{font-size:11px;color:var(--text-dim)}
+
+/* ── CONTENT ── */
+.sb-content{flex:1;padding:22px 24px}
+
+/* ── BUTTONS ── */
+.btn{background:var(--primary);color:#fff;border:none;padding:8px 16px;border-radius:var(--radius);cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;transition:all .18s;white-space:nowrap}
+.btn:hover:not(:disabled){background:var(--primary-dark);transform:translateY(-1px);box-shadow:0 3px 10px rgba(59,130,246,.25)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-secondary{background:var(--accent);color:#0f172a}
+.btn-secondary:hover:not(:disabled){background:var(--accent-dim);box-shadow:0 3px 10px var(--accent-glow)}
+.btn-ghost{background:transparent;color:var(--text-light);border:1.5px solid var(--border);font-size:12px;padding:6px 12px}
+.btn-ghost:hover:not(:disabled){background:var(--surface-2);color:var(--text);transform:none;box-shadow:none}
+.btn-danger{background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.2)}
+.btn-danger:hover:not(:disabled){background:rgba(248,113,113,.2);box-shadow:none}
+.btn-dark{background:var(--surface-3);color:var(--text);border:1px solid var(--border);padding:7px 13px;font-size:12px;border-radius:var(--radius);cursor:pointer;font-weight:600;transition:all .18s}
+.btn-dark:hover{background:var(--surface-2)}
+
+/* Header compat (old refs) */
+.header{display:none}.header-content,.header-actions,.header-period,.header-meta,.header h1{display:none}
 
 /* Sync toast */
-#syncToast{display:none;position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#1f2937;color:white;padding:10px 20px;border-radius:10px;font-size:13px;z-index:5000;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:opacity .3s}
+#syncToast{display:none;position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--dark);color:var(--light);padding:9px 20px;border-radius:var(--radius);font-size:13px;z-index:5000;box-shadow:var(--shadow-lg);border:1px solid var(--border-strong);transition:opacity .3s;font-family:'Outfit',sans-serif}
 #syncToast.active{display:block}
-#syncToast.toast-err{background:#ef4444}
+#syncToast.toast-err{background:#b91c1c;border-color:#f87171}
 
 /* Filters */
-/* ── FILTER DRAWER ── */
-.filter-trigger-bar{background:var(--card-bg);border-radius:15px 15px 0 0;padding:10px 18px;margin-bottom:0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;transition:background .3s}
-.btn-filter-open{display:flex;align-items:center;gap:7px;padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s,transform .15s}
-.btn-filter-open:hover{background:var(--primary-dark);transform:translateY(-1px)}
-.filter-chips-row{display:flex;flex-wrap:wrap;gap:6px;flex:1}
-.filter-chip{display:inline-flex;align-items:center;gap:5px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;color:#1d4ed8;white-space:nowrap}
-.filter-chip button{background:none;border:none;cursor:pointer;color:#1d4ed8;font-size:13px;line-height:1;padding:0 1px;font-weight:800}
-.filter-chip button:hover{color:#ef4444}
-.filter-drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;display:none;backdrop-filter:blur(2px)}
-.filter-drawer-overlay.open{display:block}
-.filter-drawer{position:fixed;top:0;right:0;height:100%;width:320px;max-width:95vw;background:var(--card-bg);z-index:1200;box-shadow:-8px 0 40px rgba(0,0,0,.2);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;border-radius:20px 0 0 20px;overflow:hidden}
-.filter-drawer.open{transform:translateX(0)}
-.filter-drawer-header{padding:20px 20px 14px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;display:flex;align-items:center;justify-content:space-between}
-.filter-drawer-header h3{font-size:16px;font-weight:800;margin:0}
-.filter-drawer-close{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:8px;width:32px;height:32px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
-.filter-drawer-close:hover{background:rgba(255,255,255,.35)}
-.filter-drawer-body{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:16px}
-.filter-drawer-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px}
-.filters-bar{display:none}
-/* ── SKELETON SCREENS ── */
-@keyframes sk-shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
-.skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--light) 50%,var(--border) 75%);background-size:800px 100%;animation:sk-shimmer 1.4s infinite linear;border-radius:8px}
-.sk-card{height:110px;border-radius:15px}
-.sk-chart{height:200px;border-radius:12px}
-.sk-row{height:16px;border-radius:6px;margin-bottom:8px}
-.sk-row.short{width:60%}
-.skeleton-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:16px;margin-bottom:22px}
-/* ── PIPELINE BAR ── */
-.pipeline-bar{display:flex;align-items:stretch;background:var(--card-bg);border-radius:0;padding:0;margin-bottom:0;border-bottom:1px solid var(--border);overflow:hidden;flex-wrap:wrap}
-.pipeline-stage{flex:1;min-width:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 6px;cursor:pointer;transition:background .18s,transform .15s;position:relative;border-right:1px solid var(--border);gap:3px}
-.pipeline-stage:last-child{border-right:none}
-.pipeline-stage:hover{background:var(--light);transform:scale(1.04);z-index:1}
-.pipeline-stage .ps-icon{font-size:18px;line-height:1}
-.pipeline-stage .ps-count{font-size:20px;font-weight:800;color:var(--dark);line-height:1}
-.pipeline-stage .ps-label{font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.4px;text-align:center;line-height:1.2}
-.pipeline-stage.ps-alert .ps-count{color:#ef4444}
-.pipeline-stage.ps-warn .ps-count{color:#f59e0b}
-.pipeline-stage.ps-ok .ps-count{color:#10b981}
-/* ── CHART INFO TOOLTIP ── */
-.chart-title-row{display:flex;align-items:center;gap:8px}
-.chart-info-btn{background:none;border:1.5px solid var(--border);border-radius:50%;width:22px;height:22px;font-size:11px;cursor:pointer;color:var(--text-light);display:inline-flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0}
-.chart-info-btn:hover{background:var(--primary);border-color:var(--primary);color:#fff}
-.chart-info-popup{position:fixed;z-index:9000;background:var(--card-bg);border:1.5px solid var(--primary);border-radius:12px;padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,.22);max-width:290px;font-size:13px;line-height:1.65;color:var(--text)}
-.chart-info-popup strong{color:var(--dark);display:block;margin-bottom:4px}
-.chart-info-popup .tip-dica{margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--primary);font-weight:700}
-#btnScrollTop{display:none;position:fixed;bottom:28px;right:28px;z-index:4000;width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;border:none;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(37,99,235,.4);transition:opacity .2s,transform .2s}
-#btnScrollTop:hover{transform:translateY(-3px);opacity:.9}
+.filters-bar{background:var(--header-bg);border-radius:var(--radius-lg);padding:13px 18px;margin-bottom:16px;box-shadow:var(--shadow-sm);border:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;position:sticky;top:58px;z-index:190}
+#btnScrollTop{display:none;position:fixed;bottom:28px;right:28px;z-index:4000;width:40px;height:40px;border-radius:50%;background:var(--surface);color:var(--text);border:1.5px solid var(--border);font-size:18px;cursor:pointer;box-shadow:var(--shadow);transition:opacity .2s,transform .2s}
+#btnScrollTop:hover{transform:translateY(-2px);opacity:.85}
 .dh-alt{background:#065f46;color:#fff;border-right:2px solid #064e3b}
 .daily-table td.da{background:rgba(209,250,229,.12)}
 body.dark-mode .daily-table td.da{background:rgba(5,150,105,.12)}
-.filter-group{display:flex;flex-direction:column;gap:4px;min-width:165px}
-.filter-label{font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.6px}
-.filter-select{padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;color:var(--text);background:var(--input-bg);cursor:pointer;transition:border-color .2s}
-.filter-select:focus{outline:none;border-color:var(--primary)}
+.filter-group{display:flex;flex-direction:column;gap:3px;min-width:158px}
+.filter-label{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.7px}
+.filter-select{padding:7px 11px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--input-bg);cursor:pointer;transition:border-color .18s;font-family:'Outfit',sans-serif}
+.filter-select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 
 /* Multi-select dropdown */
 .ms-wrap{position:relative;min-width:165px}
-.ms-btn{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;color:var(--text);background:var(--input-bg);cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;gap:6px;transition:border-color .2s;user-select:none;white-space:nowrap;overflow:hidden}
-.ms-btn:hover,.ms-btn.open{border-color:var(--primary)}
+.ms-btn{width:100%;padding:7px 11px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:'Outfit',sans-serif;color:var(--text);background:var(--input-bg);cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;gap:6px;transition:border-color .18s;user-select:none;white-space:nowrap;overflow:hidden}
+.ms-btn:hover,.ms-btn.open{border-color:var(--accent)}
 .ms-btn .ms-label{overflow:hidden;text-overflow:ellipsis;flex:1;font-size:14px}
 .ms-btn .ms-arrow{font-size:10px;flex-shrink:0;transition:transform .2s}
 .ms-btn.open .ms-arrow{transform:rotate(180deg)}
-.ms-dropdown{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card-bg);border:1.5px solid var(--primary);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:500;max-height:240px;overflow-y:auto}
+.ms-dropdown{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card-bg);border:1.5px solid var(--accent);border-radius:var(--radius);box-shadow:var(--shadow-lg);z-index:500;max-height:240px;overflow-y:auto}
 .ms-dropdown.open{display:block}
 .ms-item{display:flex;align-items:center;gap:9px;padding:9px 13px;cursor:pointer;font-size:14px;color:var(--text);transition:background .15s}
 .ms-item:hover{background:var(--light)}
@@ -153,54 +209,56 @@ body.dark-mode .daily-table td.da{background:rgba(5,150,105,.12)}
 .ms-item.todos{font-weight:700;border-bottom:1px solid var(--border);color:var(--primary)}
 
 /* Tabs */
-.tabs{background:var(--card-bg);border-radius:0 0 15px 15px;padding:8px 14px;margin-bottom:18px;box-shadow:0 4px 20px rgba(0,0,0,.08);display:flex;gap:4px;overflow-x:auto;transition:background .3s}
-.tab-btn{background:transparent;border:none;padding:10px 20px;cursor:pointer;border-radius:10px;font-weight:600;color:var(--text-light);transition:all .2s;white-space:nowrap;font-size:14px}
-.tab-btn.active{background:var(--primary);color:white}
-.tab-btn:hover:not(.active){background:var(--light)}
-.tab-content{display:none}
+.tabs{display:none!important}
+.tab-btn{display:none!important}
+.tab-content{display:none;}
 .tab-content.active{display:block}
 
 /* Cards */
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:16px;margin-bottom:22px}
-.card{background:var(--card-bg);border-radius:15px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.08);transition:transform .2s,background .3s;position:relative}
-.card:hover{transform:translateY(-3px)}
-.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:20px}
+.card{background:var(--card-bg);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow-sm);border:1px solid var(--border);transition:box-shadow .2s,transform .2s;position:relative}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
 .card-title-wrapper{display:flex;align-items:center;gap:6px}
-.card-title{font-size:11px;color:var(--text-light);font-weight:700;text-transform:uppercase;letter-spacing:.6px}
-.card-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.card-value{font-size:30px;font-weight:800;color:var(--dark);margin-bottom:3px;line-height:1}
-.card-subtitle{font-size:13px;color:var(--text-light)}
-.card-note{font-size:11px;color:var(--primary);margin-top:5px}
-.card-note-warn{font-size:11px;color:var(--text-light);margin-top:4px;font-style:italic}
+.card-title{font-size:10.5px;color:var(--text-light);font-weight:700;text-transform:uppercase;letter-spacing:.7px}
+.card-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.card-value{font-size:28px;font-weight:800;color:var(--dark);margin-bottom:2px;line-height:1;letter-spacing:-.5px}
+.card-subtitle{font-size:12.5px;color:var(--text-light)}
+.card-note{font-size:11px;color:var(--primary);margin-top:4px}
+.card-note-warn{font-size:11px;color:var(--text-light);margin-top:3px;font-style:italic}
 
 /* Tooltip */
 .tooltip-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--border);color:var(--text-light);font-size:10px;cursor:help;position:relative}
 .tooltip-icon:hover .tooltip-text{visibility:visible;opacity:1}
-.tooltip-text{visibility:hidden;opacity:0;width:270px;background-color:#1f2937;color:white;text-align:left;border-radius:8px;padding:10px;position:absolute;z-index:9500;bottom:125%;left:50%;transform:translateX(-50%);font-size:12px;line-height:1.5;transition:opacity .25s;box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none}
+.tooltip-text{visibility:hidden;opacity:0;width:270px;background-color:#1f2937;color:white;text-align:left;border-radius:8px;padding:10px;position:absolute;z-index:1000;bottom:125%;left:50%;transform:translateX(-50%);font-size:12px;line-height:1.5;transition:opacity .25s;box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none}
 .tooltip-text::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1f2937}
 
 /* Charts & Tables */
-.chart-container{background:var(--card-bg);border-radius:15px;padding:26px;box-shadow:0 4px 20px rgba(0,0,0,.08);margin-bottom:18px;transition:background .3s}
-.chart-title{font-size:16px;font-weight:700;color:var(--dark);margin-bottom:4px}
-.chart-subtitle{font-size:13px;color:var(--text-light);margin-bottom:18px;line-height:1.5}
-.chart-wrapper{position:relative;height:340px}
-.chart-wrapper-tall{position:relative;height:440px}
-.chart-empty{display:flex;align-items:center;justify-content:center;height:110px;color:var(--text-light);font-size:14px;font-style:italic;border:2px dashed var(--border);border-radius:10px;margin-top:10px}
-.table-container{background:var(--card-bg);border-radius:15px;padding:26px;box-shadow:0 4px 20px rgba(0,0,0,.08);overflow-x:auto;margin-bottom:18px;transition:background .3s}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th{background:var(--table-header);padding:12px 14px;text-align:left;font-weight:700;color:var(--dark);border-bottom:2px solid var(--border)}
-td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text)}
+.chart-container{background:var(--card-bg);border-radius:var(--radius-lg);padding:22px 24px;box-shadow:var(--shadow-sm);border:1px solid var(--border);margin-bottom:16px}
+.chart-title{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:3px;letter-spacing:-.2px}
+.chart-subtitle{font-size:12.5px;color:var(--text-light);margin-bottom:16px;line-height:1.5}
+.chart-wrapper{position:relative;height:320px}
+.chart-wrapper-tall{position:relative;height:420px}
+.chart-empty{display:flex;align-items:center;justify-content:center;height:100px;color:var(--text-dim);font-size:13px;font-style:italic;border:1.5px dashed var(--border);border-radius:var(--radius);margin-top:10px}
+.table-container{background:var(--card-bg);border-radius:var(--radius-lg);padding:22px 24px;box-shadow:var(--shadow-sm);border:1px solid var(--border);overflow-x:auto;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:var(--table-header);padding:10px 13px;text-align:left;font-weight:700;color:var(--dark);border-bottom:1.5px solid var(--border);font-size:11.5px;letter-spacing:.3px;text-transform:uppercase}
+td{padding:10px 13px;border-bottom:1px solid var(--border);color:var(--text)}
 tbody tr:hover{background:var(--table-hover)}
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
-.badge-success{background:#d1fae5;color:#065f46}
-.badge-warning{background:#fef3c7;color:#92400e}
-.badge-danger{background:#fee2e2;color:#991b1b}
-.badge-info{background:#dbeafe;color:#1e40af}
-.badge-gray{background:#f3f4f6;color:#374151}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:700}
+.badge-success{background:rgba(74,222,128,.15);color:#16a34a}
+.badge-warning{background:rgba(251,191,36,.15);color:#d97706}
+.badge-danger{background:rgba(248,113,113,.15);color:#dc2626}
+.badge-info{background:rgba(59,130,246,.12);color:#2563eb}
+.badge-gray{background:var(--surface-3);color:var(--text-light)}
+body.dark-mode .badge-success{color:#4ade80}
+body.dark-mode .badge-warning{color:#fbbf24}
+body.dark-mode .badge-danger{color:#f87171}
+body.dark-mode .badge-info{color:#60a5fa}
 
 /* Pedidos críticos */
 .criticos-list{display:flex;flex-direction:column;gap:10px}
-.critico-item{display:flex;align-items:flex-start;gap:13px;padding:13px 15px;border-radius:10px;border-left:4px solid var(--danger);background:var(--light)}
+.critico-item{display:flex;align-items:flex-start;gap:13px;padding:12px 15px;border-radius:var(--radius);border-left:3px solid var(--danger);background:var(--surface-2);border:1px solid var(--border);border-left:3px solid var(--danger)}
 .critico-item.nivel-medio{border-left-color:var(--warning)}
 .critico-rank{font-size:20px;font-weight:800;color:var(--text-light);width:26px;flex-shrink:0;text-align:center;line-height:1}
 .critico-body{flex:1}
@@ -209,10 +267,10 @@ tbody tr:hover{background:var(--table-hover)}
 .critico-badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
 
 /* Alert sections */
-.action-item{background:var(--card-bg);border-left:4px solid var(--warning);padding:16px 18px}
+.action-item{background:var(--card-bg);border-left:3px solid var(--warning);padding:14px 18px}
 .action-item.priority-high{border-left-color:var(--danger)}
-.action-item.priority-low{border-left-color:var(--secondary)}
-.action-item.priority-positive{border-left-color:#10b981}
+.action-item.priority-low{border-left-color:var(--accent)}
+.action-item.priority-positive{border-left-color:var(--accent)}
 .action-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:7px}
 .action-title{font-weight:700;color:var(--dark);font-size:15px;line-height:1.4}
 .action-description{color:var(--text);line-height:1.65;font-size:14px}
@@ -230,7 +288,7 @@ tbody tr:hover{background:var(--table-hover)}
 .alert-count-badge{margin-left:auto;background:rgba(0,0,0,.12);border-radius:20px;padding:2px 9px;font-size:12px;font-weight:700}
 
 /* Debug panel */
-.debug-panel{background:#1f2937;border-radius:15px;padding:22px;margin-bottom:18px;color:#e5e7eb}
+.debug-panel{background:var(--sidebar-bg);border-radius:var(--radius-lg);padding:18px 22px;margin-bottom:16px;color:#e5e7eb;border:1px solid var(--border)}
 .debug-panel summary{cursor:pointer;font-weight:700;font-size:14px;color:#93c5fd;user-select:none;list-style:none;display:flex;align-items:center;gap:8px}
 .debug-panel summary::before{content:'▶';font-size:10px;transition:transform .2s}
 .debug-panel[open] summary::before{transform:rotate(90deg)}
@@ -240,84 +298,39 @@ tbody tr:hover{background:var(--table-hover)}
 .debug-note{font-size:12px;color:#9ca3af;margin-top:10px;line-height:1.6}
 
 /* Loading overlay */
-.loading{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.loading{display:none;position:fixed;inset:0;background:rgba(8,11,17,.8);backdrop-filter:blur(4px);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:14px}
 .loading.active{display:flex}
-.spinner{width:48px;height:48px;border:5px solid rgba(255,255,255,.25);border-top-color:white;border-radius:50%;animation:spin .9s linear infinite}
-.loading-text{color:white;font-size:14px;font-weight:600}
+.spinner{width:40px;height:40px;border:3px solid rgba(74,222,128,.2);border-top-color:#4ade80;border-radius:50%;animation:spin .8s linear infinite}
+.loading-text{color:rgba(255,255,255,.7);font-size:13px;font-weight:500;font-family:'Outfit',sans-serif}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;align-items:center;justify-content:center}
 .modal-overlay.active{display:flex}
-.modal-box{background:var(--card-bg);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.35);max-width:540px;width:calc(100% - 32px);max-height:92vh;overflow-y:auto}
-.modal-header{background:linear-gradient(135deg,#1e3a8a,#2563eb);padding:22px 26px;border-radius:20px 20px 0 0;display:flex;justify-content:space-between;align-items:center}
+.modal-box{background:var(--card-bg);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);border:1px solid var(--border);max-width:540px;width:calc(100% - 32px);max-height:92vh;overflow-y:auto}
+.modal-header{background:linear-gradient(135deg,#0f172a,#1e3a8a);padding:20px 24px;border-radius:var(--radius-xl) var(--radius-xl) 0 0;display:flex;justify-content:space-between;align-items:center}
 .modal-header h2{color:white;font-size:19px}
 .modal-close{background:rgba(255,255,255,.2);border:none;color:white;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:background .2s}
 .modal-close:hover{background:rgba(255,255,255,.35)}
 .modal-body{padding:26px}
 .form-group{margin-bottom:15px}
 .form-label{display:block;font-size:12px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
-.form-input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;color:var(--text);background:var(--input-bg);transition:border-color .2s;font-family:inherit}
-.form-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.form-input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13.5px;color:var(--text);background:var(--input-bg);transition:border-color .18s,box-shadow .18s;font-family:'Outfit',sans-serif}
+.form-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 textarea.form-input{resize:vertical;min-height:80px;font-family:monospace;font-size:12px}
 .form-hint{font-size:12px;color:var(--text-light);margin-top:4px;line-height:1.5}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.modal-info{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 14px;margin-bottom:18px;font-size:13px;color:#1e40af;line-height:1.7}
+.modal-info{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:var(--radius);padding:12px 14px;margin-bottom:18px;font-size:13px;color:var(--primary);line-height:1.7}
 .modal-info a{color:#2563eb}
-.section-title{font-size:13px;font-weight:700;color:var(--dark);margin:18px 0 10px;padding-bottom:5px;border-bottom:2px solid var(--border)}
+.section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-dim);margin:18px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--border)}
 .toggle-group{display:flex;gap:0;border:1.5px solid var(--border);border-radius:8px;overflow:hidden}
 .toggle-btn{flex:1;background:var(--input-bg);border:none;padding:9px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-light);transition:all .2s}
 .toggle-btn.active{background:var(--primary);color:white}
 .modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
 .modal-actions .btn{flex:1;min-width:120px;text-align:center;padding:10px}
 
-.alert-section-header.eficiencia{background:#f0fdf4;color:#166534}
-.alert-section-header.preditivo{background:#faf5ff;color:#6b21a8}
-.alert-section-header.qualidade2{background:#ede9fe;color:#5b21b6}
-/* Equipe member toggle */
-.equipe-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--card-bg);transition:border-color .2s}
-.equipe-item.inativo{opacity:.55;background:var(--light)}
-.equipe-toggle{position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0}
-.equipe-toggle input{opacity:0;width:0;height:0}
-.equipe-slider{position:absolute;inset:0;background:#d1d5db;border-radius:22px;cursor:pointer;transition:.25s}
-.equipe-slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.25s}
-.equipe-toggle input:checked+.equipe-slider{background:var(--secondary)}
-.equipe-toggle input:checked+.equipe-slider:before{transform:translateX(18px)}
-.equipe-nome{flex:1;font-size:14px;font-weight:600;color:var(--dark)}
-.equipe-cargo{font-size:11px;color:var(--text-light);background:var(--border);padding:2px 8px;border-radius:10px;text-transform:uppercase}
-.equipe-del{background:none;border:none;cursor:pointer;color:var(--text-light);font-size:16px;padding:2px 6px;border-radius:5px;transition:color .2s}
-.equipe-del:hover{color:var(--danger)}
-/* AI Director sections */
-.ai-director-section{margin-bottom:22px;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
-.ai-director-header{padding:12px 18px;font-weight:800;font-size:13px;display:flex;align-items:center;gap:8px;letter-spacing:.3px}
-.ai-director-header.resumo{background:#eff6ff;color:#1e3a8a}
-.ai-director-header.diagnostico{background:#fef3c7;color:#92400e}
-.ai-director-header.alertas{background:#fee2e2;color:#991b1b}
-.ai-director-header.causas{background:#ede9fe;color:#5b21b6}
-.ai-director-header.acoes{background:#d1fae5;color:#065f46}
-.ai-director-header.tendencias{background:#f0f9ff;color:#0369a1}
-.ai-director-header.perguntas{background:#f9fafb;color:#374151}
-.ai-director-body{padding:16px 18px;background:var(--card-bg)}
-.ai-director-item{padding:10px 14px;border-radius:8px;margin-bottom:8px;border-left:3px solid var(--border);background:var(--light)}
-.ai-director-item:last-child{margin-bottom:0}
-.ai-director-item.critica{border-left-color:var(--danger);background:#fef2f2}
-.ai-director-item.alta{border-left-color:#f59e0b;background:#fffbeb}
-.ai-director-item.media{border-left-color:#8b5cf6;background:#f5f3ff}
-.ai-director-item.baixa{border-left-color:var(--secondary);background:#f0fdf4}
-.ai-director-item-title{font-weight:700;font-size:14px;color:var(--dark);margin-bottom:4px}
-.ai-director-item-body{font-size:13px;color:var(--text);line-height:1.6}
-.ai-director-item-meta{font-size:12px;color:var(--text-light);margin-top:6px;display:flex;gap:12px;flex-wrap:wrap}
-.ai-acao-group{margin-bottom:12px}
-.ai-acao-group-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
-.ai-pergunta{font-size:13px;color:var(--text);padding:8px 12px;border-radius:6px;background:var(--light);border-left:3px solid var(--primary);margin-bottom:6px;line-height:1.5}
-.ai-nivel-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;margin-left:auto}
-.ai-nivel-estavel{background:#d1fae5;color:#065f46}
-.ai-nivel-atencao{background:#fef3c7;color:#92400e}
-.ai-nivel-critico{background:#fee2e2;color:#991b1b}
-body.dark-mode .ai-director-item.critica{background:rgba(239,68,68,.08)}
-body.dark-mode .ai-director-item.alta{background:rgba(245,158,11,.06)}
-body.dark-mode .ai-director-item.media{background:rgba(139,92,246,.08)}
-body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
+/* Print */
+.print-hide{display:none!important}
 .print-chart-img{width:100%;height:auto;display:block}
 /* Print modal */
 #modalPrint .pm-section{margin-bottom:18px}
@@ -331,7 +344,7 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
 @media print{
   @page{margin:8mm}
   body{background:white}
-  .header-actions,.tabs,.filters-bar,.filter-trigger-bar,.pipeline-bar,.debug-panel,.modal-overlay,#syncToast,#modalPrint{display:none!important}
+  .header-actions,.tabs,.filters-bar,.debug-panel,.modal-overlay,#syncToast,#modalPrint{display:none!important}
   .tab-content{display:block!important}
   .chart-container,.table-container,.card{break-inside:avoid;page-break-inside:avoid}
   .chart-wrapper,.chart-wrapper-tall{height:260px}
@@ -373,12 +386,9 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
   .cards-grid{grid-template-columns:1fr 1fr}
   .tabs{flex-wrap:wrap}
   .chart-wrapper,.chart-wrapper-tall{height:280px}
-  .filter-drawer{width:100%;border-radius:20px 20px 0 0;top:auto;bottom:0;height:85vh;transform:translateY(100%)}
-  .filter-drawer.open{transform:translateY(0)}
+  .filters-bar{flex-direction:column}
   .filter-group{width:100%;min-width:unset}
   .form-row{grid-template-columns:1fr}
-  .pipeline-bar{overflow-x:auto;flex-wrap:nowrap}
-  .pipeline-stage{min-width:72px}
 }
 @media(max-width:480px){.cards-grid{grid-template-columns:1fr}}
 /* AI Analysis */
@@ -562,14 +572,63 @@ body.dark-mode .detail-stat{background:#1e293b}
 .daily-top3 .t3-time{color:#6b7280;font-size:10.5px;flex-shrink:0}
 /* badge expediente */
 .daily-badge-exp{display:inline-block;background:#fef3c7;color:#92400e;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:4px;vertical-align:middle}
-.daily-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;padding:10px 14px;background:var(--light);border-radius:8px;border:1.5px solid var(--border)}
+.daily-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;padding:10px 14px;background:var(--surface-2);border-radius:var(--radius);border:1px solid var(--border)}
 .daily-toolbar label{font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-right:2px}
-.daily-toolbar select,.daily-toolbar input[type=date]{padding:5px 9px;border:1.5px solid var(--border);border-radius:6px;font-size:13px;color:var(--text);background:var(--input-bg);cursor:pointer}
+.daily-toolbar select,.daily-toolbar input[type=date]{padding:5px 9px;border:1px solid var(--border);border-radius:var(--radius);font-size:12.5px;color:var(--text);background:var(--input-bg);cursor:pointer;font-family:'Outfit',sans-serif}
 .daily-toolbar .btn-sm{padding:5px 12px;font-size:12px;border-radius:6px;border:none;cursor:pointer;font-weight:700}
 .daily-toolbar .btn-sm.apply{background:var(--primary);color:#fff}
 .daily-toolbar .btn-sm.clear{background:transparent;border:1.5px solid var(--border);color:var(--text-light)}
 #dailyPeriodLabel{font-size:12px;color:var(--primary);font-weight:700;margin-left:4px}
 body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--text-dim)}
+
+/* ── Sidebar offset fixes ─────────────────────────────────────────────── */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sb-main{margin-left:0}
+  .filters-bar{top:58px}
+}
+
+/* ── Topbar sticky Z adjustment ──────────────────────────────────────── */
+.filters-bar{top:58px!important;z-index:190!important}
+
+/* ── Alert section colors adapted ──────────────────────────────────────── */
+.alert-section-header.comercial{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.2)}
+.alert-section-header.prazo{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)}
+.alert-section-header.qualidade{background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2)}
+.alert-section-header.operacional{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
+body:not(.dark-mode) .alert-section-header.comercial{background:#fef2f2;color:#b91c1c;border-color:#fca5a5}
+body:not(.dark-mode) .alert-section-header.prazo{background:#fffbeb;color:#92400e;border-color:#fcd34d}
+body:not(.dark-mode) .alert-section-header.qualidade{background:#f5f3ff;color:#5b21b6;border-color:#ddd6fe}
+body:not(.dark-mode) .alert-section-header.operacional{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+
+/* ── Score & score badge ─────────────────────────────────────────────── */
+.score-badge-crit{background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.25);padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.score-badge-warn{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.25);padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.score-badge-ok{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.2);padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
+
+/* ── AI card ─────────────────────────────────────────────────────────── */
+.ai-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:14px}
+.ai-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text-dim);margin-bottom:10px}
+
+/* ── Daily table header colors ───────────────────────────────────────── */
+.dh-cri{background:rgba(59,130,246,.08)!important;color:var(--primary)!important}
+.dh-alt{background:rgba(74,222,128,.08)!important;color:#16a34a!important;border-right:1px solid rgba(74,222,128,.2)!important}
+.dh-top{background:rgba(167,139,250,.08)!important;color:var(--purple)!important}
+.dh-date{background:var(--table-header)!important}
+body.dark-mode .dh-cri{color:#60a5fa!important}
+body.dark-mode .dh-alt{color:#4ade80!important}
+body.dark-mode .dh-top{color:#a78bfa!important}
+
+/* ── Daily table alt cell ────────────────────────────────────────────── */
+.daily-table td.da{background:rgba(74,222,128,.05)!important}
+body.dark-mode .daily-table td.da{background:rgba(74,222,128,.04)!important}
+
 </style>
 </head>
 <body>
@@ -577,8 +636,8 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
 <!-- MODAL DE LOGIN — aparece sobre tudo quando não há sessão -->
 <div id="loginModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
   <div class="login-box">
-    <div class="login-icon">🔐</div>
-    <h2 id="loginTitle">PAINEL SUBLIME</h2>
+    <svg class="login-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21193 22078" fill="currentColor" aria-label="Sublime Sports" style="height:52px;width:auto;margin:0 auto 24px;display:block"><path fill-rule="evenodd" d="M6318.85 22078.07l2812.4 -4794.73 -4434.06 1393.11 1897.81 -4123.03 -1606.66 454.93c-255.04,-758.27 -515.37,-2230.94 -661.32,-3185.15 -18.85,623.52 95.84,2038.32 181.18,2691.95l-4508.19 1380.91c424.2,-3170.04 2936.59,-11128.86 4789.53,-13436.51 147.35,-176.23 489.82,-188.48 678.99,-175.05 474.25,-347.9 321.18,-246.06 885.49,-235.83 386.34,-280.54 335.52,-185.46 805.75,-164.51l833.17 -1730.55c129.43,-211.69 493.55,-185.5 475.06,-37.1l-702.62 2644.39c-51.63,601.49 372.51,785 172.9,1148.52 -344.28,435.63 -688.62,871.31 -1032.9,1306.96l-1510.47 561.38c-692.18,1560.93 -1108.73,3328.54 -1276.32,5023.93 1781.31,-1062.53 2706.53,-1507.74 4657.23,-2002.92 -401.61,-543.49 -735.05,-1080.32 -861.75,-1759.6 -173.19,-929.31 -9.39,-1931.87 654.2,-2639.86 586.19,-625.2 1414.52,-852.3 2251.76,-783.46 294.05,24.62 661.66,69.99 900.31,254.28 132.18,102.08 203.98,211.86 243.01,371.04 334.66,222.54 638.92,502.19 920.2,787.51 86.34,87.9 171.39,171.32 238.82,275.68l197.63 730.44c30.98,72.63 88.55,138.24 135.51,200.26 132.59,176.05 198.68,347.48 217.64,567.75l-290.9 1667.11c2423.09,228.31 3528.62,502.19 5775.19,1272.76l-3035.06 3918.39 5070.99 -1340.56 -14874.52 9757.57z"/></svg>
+    <h2 id="loginTitle">Painel Sublime</h2>
     <p class="login-sub">Digite seu usuário para entrar</p>
     <input id="loginInput" class="login-input" type="text"
            autocomplete="off" autocorrect="off" autocapitalize="off"
@@ -591,118 +650,116 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
 <!-- CONNECT SCREEN (tela de splash enquanto verifica sessão) -->
 <div id="connectScreen">
   <div class="connect-box">
-    <div class="connect-icon">🔐</div>
-    <h1>PAINEL SUBLIME — Gestão de Design</h1>
+    <svg class="conn-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21193 22078" fill="currentColor" aria-label="Sublime Sports" style="height:52px;width:auto;margin:0 auto 28px;display:block"><path fill-rule="evenodd" d="M6318.85 22078.07l2812.4 -4794.73 -4434.06 1393.11 1897.81 -4123.03 -1606.66 454.93c-255.04,-758.27 -515.37,-2230.94 -661.32,-3185.15 -18.85,623.52 95.84,2038.32 181.18,2691.95l-4508.19 1380.91c424.2,-3170.04 2936.59,-11128.86 4789.53,-13436.51 147.35,-176.23 489.82,-188.48 678.99,-175.05 474.25,-347.9 321.18,-246.06 885.49,-235.83 386.34,-280.54 335.52,-185.46 805.75,-164.51l833.17 -1730.55c129.43,-211.69 493.55,-185.5 475.06,-37.1l-702.62 2644.39c-51.63,601.49 372.51,785 172.9,1148.52 -344.28,435.63 -688.62,871.31 -1032.9,1306.96l-1510.47 561.38c-692.18,1560.93 -1108.73,3328.54 -1276.32,5023.93 1781.31,-1062.53 2706.53,-1507.74 4657.23,-2002.92 -401.61,-543.49 -735.05,-1080.32 -861.75,-1759.6 -173.19,-929.31 -9.39,-1931.87 654.2,-2639.86 586.19,-625.2 1414.52,-852.3 2251.76,-783.46 294.05,24.62 661.66,69.99 900.31,254.28 132.18,102.08 203.98,211.86 243.01,371.04 334.66,222.54 638.92,502.19 920.2,787.51 86.34,87.9 171.39,171.32 238.82,275.68l197.63 730.44c30.98,72.63 88.55,138.24 135.51,200.26 132.59,176.05 198.68,347.48 217.64,567.75l-290.9 1667.11c2423.09,228.31 3528.62,502.19 5775.19,1272.76l-3035.06 3918.39 5070.99 -1340.56 -14874.52 9757.57z"/></svg>
+    <h1>Painel Sublime</h1>
     <p id="loginMsg">Verificando autenticação…</p>
-    <div id="loginError" style="margin-top:14px;color:#ef4444;font-size:13px;display:none"></div>
+    <div id="loginError" style="margin-top:12px;color:#f87171;font-size:13px;display:none"></div>
   </div>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard">
-  <div class="container">
+ <div class="sb-layout">
 
-    <div class="header">
-      <div class="header-content">
-        <h1>📊 PAINEL SUBLIME — Gestão de Design</h1>
-        <div class="header-period" id="headerPeriod"></div>
-        <div class="header-meta">
-          <span class="sync-badge">
-            <span class="sync-dot idle" id="syncDot"></span>
-            <span id="syncStatusText">—</span>
-          </span>
-          <span id="headerTimestamp" style="font-size:12px;color:var(--text-light)"></span>
+  <!-- ── SIDEBAR ── -->
+  <nav class="sidebar" id="appSidebar">
+    <div class="sidebar-logo">
+      <svg class="sb-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21193 22078" fill="currentColor" aria-label="Sublime Sports"><path fill-rule="evenodd" d="M6318.85 22078.07l2812.4 -4794.73 -4434.06 1393.11 1897.81 -4123.03 -1606.66 454.93c-255.04,-758.27 -515.37,-2230.94 -661.32,-3185.15 -18.85,623.52 95.84,2038.32 181.18,2691.95l-4508.19 1380.91c424.2,-3170.04 2936.59,-11128.86 4789.53,-13436.51 147.35,-176.23 489.82,-188.48 678.99,-175.05 474.25,-347.9 321.18,-246.06 885.49,-235.83 386.34,-280.54 335.52,-185.46 805.75,-164.51l833.17 -1730.55c129.43,-211.69 493.55,-185.5 475.06,-37.1l-702.62 2644.39c-51.63,601.49 372.51,785 172.9,1148.52 -344.28,435.63 -688.62,871.31 -1032.9,1306.96l-1510.47 561.38c-692.18,1560.93 -1108.73,3328.54 -1276.32,5023.93 1781.31,-1062.53 2706.53,-1507.74 4657.23,-2002.92 -401.61,-543.49 -735.05,-1080.32 -861.75,-1759.6 -173.19,-929.31 -9.39,-1931.87 654.2,-2639.86 586.19,-625.2 1414.52,-852.3 2251.76,-783.46 294.05,24.62 661.66,69.99 900.31,254.28 132.18,102.08 203.98,211.86 243.01,371.04 334.66,222.54 638.92,502.19 920.2,787.51 86.34,87.9 171.39,171.32 238.82,275.68l197.63 730.44c30.98,72.63 88.55,138.24 135.51,200.26 132.59,176.05 198.68,347.48 217.64,567.75l-290.9 1667.11c2423.09,228.31 3528.62,502.19 5775.19,1272.76l-3035.06 3918.39 5070.99 -1340.56 -14874.52 9757.57z"/></svg>
+      <span class="sb-tagline">Gestão de Design</span>
+    </div>
+    <div class="sidebar-nav">
+      <span class="sb-nav-label">Menu</span>
+      <button class="sb-tab-btn active" id="sb-tab-0" onclick="App.switchTab(0)"><span class="sb-icon">⊞</span> Visão Geral</button>
+      <button class="sb-tab-btn" id="sb-tab-1" onclick="App.switchTab(1)"><span class="sb-icon">✦</span> Designers</button>
+      <button class="sb-tab-btn" id="sb-tab-2" onclick="App.switchTab(2)"><span class="sb-icon">◈</span> Vendedores</button>
+      <button class="sb-tab-btn" id="sb-tab-3" onclick="App.switchTab(3)"><span class="sb-icon">⚡</span> Alertas &amp; Ações</button>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sb-footer-user">
+        <div class="sb-avatar" id="sbAvatar">—</div>
+        <div class="sb-user-info">
+          <div class="sb-user-name" id="userBadgeName">—</div>
+          <div class="sb-user-role" id="userBadgeRole">—</div>
         </div>
       </div>
-      <div class="header-actions">
-        <div id="userBadge" style="display:none;align-items:center;gap:8px;background:rgba(255,255,255,.12);border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;color:var(--dark)">
-          <span id="userBadgeName">—</span>
-          <span id="userBadgeRole" style="background:#2563eb;color:#fff;border-radius:4px;padding:1px 7px;font-size:11px">—</span>
-        </div>
-        <button class="btn" id="btnSync" onclick="App.syncNow()">🔄 Atualizar</button>
-        <button class="btn btn-dark" id="btnDarkMode" onclick="App.toggleDark()">🌙 Modo Escuro</button>
-        <button class="btn btn-ghost" id="btnAdmin" onclick="App.openAdminModal()" style="display:none">⚙️ Admin</button>
-        <button class="btn btn-danger" onclick="App.logout()">🚪 Sair</button>
-        <button class="btn btn-secondary" onclick="App.openPrintModal()">🖨️ Imprimir</button>
+      <button class="sb-btn" onclick="App.syncNow()" id="btnSync"><span>↺</span> Sincronizar</button>
+      <button class="sb-btn" onclick="App.toggleDark()" id="btnDarkMode"><span>◑</span> Modo Escuro</button>
+      <button class="sb-btn" onclick="App.openAdminModal()" id="btnAdmin" style="display:none"><span>⚙</span> Admin</button>
+      <button class="sb-btn" onclick="App.openPrintModal()"><span>⎙</span> Imprimir</button>
+      <button class="sb-btn danger" onclick="App.logout()"><span>→</span> Sair</button>
+    </div>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <div class="sb-main">
+
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-title" id="topbarTitle">Visão Geral</span>
+        <span id="headerPeriod" style="font-size:12px;color:var(--text-dim);font-weight:500"></span>
+      </div>
+      <div class="topbar-right">
+        <span class="sync-badge">
+          <span class="sync-dot idle" id="syncDot"></span>
+          <span id="syncStatusText">—</span>
+        </span>
+        <span id="headerTimestamp" style="font-size:11px;color:var(--text-dim)"></span>
+        <!-- hidden compat -->
+        <div id="userBadge" style="display:none"></div>
       </div>
     </div>
 
-    <!-- Overlay do drawer de filtros -->
-    <div class="filter-drawer-overlay" id="filterDrawerOverlay" onclick="FD.close()"></div>
-    <!-- Drawer de filtros -->
-    <div class="filter-drawer" id="filterDrawer">
-      <div class="filter-drawer-header">
-        <h3>🔍 Filtros</h3>
-        <button class="filter-drawer-close" onclick="FD.close()">✕</button>
-      </div>
-      <div class="filter-drawer-body">
-        <div class="filter-group ms-wrap" id="wrapVendedor">
-          <label class="filter-label">Vendedor</label>
-          <button class="ms-btn" id="btnVendedor" onclick="MF.toggle('Vendedor')"><span class="ms-label" id="lblVendedor">Todos</span><span class="ms-arrow">▼</span></button>
-          <div class="ms-dropdown" id="ddVendedor">
-            <label class="ms-item todos"><input type="checkbox" id="ckAllVendedor" checked onchange="MF.toggleAll('Vendedor',this)"> Todos</label>
-          </div>
-        </div>
-        <div class="filter-group ms-wrap" id="wrapDesigner">
-          <label class="filter-label">Designer</label>
-          <button class="ms-btn" id="btnDesigner" onclick="MF.toggle('Designer')"><span class="ms-label" id="lblDesigner">Todos</span><span class="ms-arrow">▼</span></button>
-          <div class="ms-dropdown" id="ddDesigner">
-            <label class="ms-item todos"><input type="checkbox" id="ckAllDesigner" checked onchange="MF.toggleAll('Designer',this)"> Todos</label>
-          </div>
-        </div>
-        <div class="filter-group ms-wrap" id="wrapUrgencia">
-          <label class="filter-label">Urgência</label>
-          <button class="ms-btn" id="btnUrgencia" onclick="MF.toggle('Urgencia')"><span class="ms-label" id="lblUrgencia">Todos</span><span class="ms-arrow">▼</span></button>
-          <div class="ms-dropdown" id="ddUrgencia">
-            <label class="ms-item todos"><input type="checkbox" id="ckAllUrgencia" checked onchange="MF.toggleAll('Urgencia',this)"> Todos</label>
-          </div>
-        </div>
-        <div class="filter-group ms-wrap" id="wrapTipo">
-          <label class="filter-label">Tipo de Pedido</label>
-          <button class="ms-btn" id="btnTipo" onclick="MF.toggle('Tipo')"><span class="ms-label" id="lblTipo">Todos</span><span class="ms-arrow">▼</span></button>
-          <div class="ms-dropdown" id="ddTipo">
-            <label class="ms-item todos"><input type="checkbox" id="ckAllTipo" checked onchange="MF.toggleAll('Tipo',this)"> Todos</label>
-            <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="NOVO" onchange="MF.onChange('Tipo')"> Novo</label>
-            <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="ALTERAÇÃO" onchange="MF.onChange('Tipo')"> Alteração</label>
-            <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="REPETIÇÃO" onchange="MF.onChange('Tipo')"> Repetição</label>
-            <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="REPOSIÇÃO" onchange="MF.onChange('Tipo')"> Reposição</label>
-          </div>
-        </div>
-        <div class="filter-group ms-wrap" id="wrapFase">
-          <label class="filter-label">Fase do Pedido</label>
-          <button class="ms-btn" id="btnFase" onclick="MF.toggle('Fase')"><span class="ms-label" id="lblFase">Todos</span><span class="ms-arrow">▼</span></button>
-          <div class="ms-dropdown" id="ddFase">
-            <label class="ms-item todos"><input type="checkbox" id="ckAllFase" checked onchange="MF.toggleAll('Fase',this)"> Todos</label>
-            <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="negociacao" onchange="MF.onChange('Fase')"> Em negociação</label>
-            <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="criacao" onchange="MF.onChange('Fase')"> Em criação</label>
-            <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="producao" onchange="MF.onChange('Fase')"> Em produção</label>
-            <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="entregues" onchange="MF.onChange('Fase')"> Entregues</label>
-          </div>
-        </div>
-      </div>
-      <div class="filter-drawer-footer">
-        <button class="btn" style="flex:1" onclick="App.clearFilters();FD.close()">✕ Limpar filtros</button>
-        <button class="btn btn-primary" style="flex:1" onclick="FD.close()">✅ Aplicar</button>
-      </div>
-    </div>
-
-    <!-- NAV CARD: filtros + pipeline + abas -->
-    <div style="background:var(--card-bg);border-radius:15px;box-shadow:0 4px 20px rgba(0,0,0,.08);margin-bottom:18px;overflow:visible;transition:background .3s">
-
-    <!-- Barra de trigger dos filtros + chips -->
-    <div class="filter-trigger-bar" id="filterTriggerBar">
-      <button class="btn-filter-open" onclick="FD.open()" id="btnOpenFilters">
-        <span>🔍</span><span>Filtros</span><span id="filterBadge" style="display:none;background:rgba(255,255,255,.3);border-radius:10px;padding:1px 7px;font-size:12px"></span>
-      </button>
-      <div class="filter-chips-row" id="filterChipsRow"></div>
-    </div>
-
-    <!-- Barra de pipeline / volume por etapa -->
-    <div class="pipeline-bar" id="pipelineBar" style="display:none"></div>
-
-    <!-- Filtros antigos (ocultos, mantidos para compatibilidade) -->
+    </div><!-- /topbar -->
+    <div class="sb-content">
     <div class="filters-bar">
-      <div class="filter-group ms-wrap" id="wrapVendedor2" style="display:none"></div>
+      <div class="filter-group ms-wrap" id="wrapVendedor">
+        <label class="filter-label">Vendedor</label>
+        <button class="ms-btn" id="btnVendedor" onclick="MF.toggle('Vendedor')"><span class="ms-label" id="lblVendedor">Todos</span><span class="ms-arrow">▼</span></button>
+        <div class="ms-dropdown" id="ddVendedor">
+          <label class="ms-item todos"><input type="checkbox" id="ckAllVendedor" checked onchange="MF.toggleAll('Vendedor',this)"> Todos</label>
+        </div>
+      </div>
+      <div class="filter-group ms-wrap" id="wrapDesigner">
+        <label class="filter-label">Designer</label>
+        <button class="ms-btn" id="btnDesigner" onclick="MF.toggle('Designer')"><span class="ms-label" id="lblDesigner">Todos</span><span class="ms-arrow">▼</span></button>
+        <div class="ms-dropdown" id="ddDesigner">
+          <label class="ms-item todos"><input type="checkbox" id="ckAllDesigner" checked onchange="MF.toggleAll('Designer',this)"> Todos</label>
+        </div>
+      </div>
+      <div class="filter-group ms-wrap" id="wrapUrgencia">
+        <label class="filter-label">Urgência</label>
+        <button class="ms-btn" id="btnUrgencia" onclick="MF.toggle('Urgencia')"><span class="ms-label" id="lblUrgencia">Todos</span><span class="ms-arrow">▼</span></button>
+        <div class="ms-dropdown" id="ddUrgencia">
+          <label class="ms-item todos"><input type="checkbox" id="ckAllUrgencia" checked onchange="MF.toggleAll('Urgencia',this)"> Todos</label>
+        </div>
+      </div>
+      <div class="filter-group ms-wrap" id="wrapTipo">
+        <label class="filter-label">Tipo de Pedido</label>
+        <button class="ms-btn" id="btnTipo" onclick="MF.toggle('Tipo')"><span class="ms-label" id="lblTipo">Todos</span><span class="ms-arrow">▼</span></button>
+        <div class="ms-dropdown" id="ddTipo">
+          <label class="ms-item todos"><input type="checkbox" id="ckAllTipo" checked onchange="MF.toggleAll('Tipo',this)"> Todos</label>
+          <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="NOVO" onchange="MF.onChange('Tipo')"> Novo</label>
+          <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="ALTERAÇÃO" onchange="MF.onChange('Tipo')"> Alteração</label>
+          <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="REPETIÇÃO" onchange="MF.onChange('Tipo')"> Repetição</label>
+          <label class="ms-item"><input type="checkbox" class="ms-opt-Tipo" value="REPOSIÇÃO" onchange="MF.onChange('Tipo')"> Reposição</label>
+        </div>
+      </div>
+      <div class="filter-group ms-wrap" id="wrapFase">
+        <label class="filter-label">Fase do Pedido</label>
+        <button class="ms-btn" id="btnFase" onclick="MF.toggle('Fase')"><span class="ms-label" id="lblFase">Todos</span><span class="ms-arrow">▼</span></button>
+        <div class="ms-dropdown" id="ddFase">
+          <label class="ms-item todos"><input type="checkbox" id="ckAllFase" checked onchange="MF.toggleAll('Fase',this)"> Todos</label>
+          <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="negociacao" onchange="MF.onChange('Fase')"> Em negociação</label>
+          <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="criacao" onchange="MF.onChange('Fase')"> Em criação</label>
+          <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="producao" onchange="MF.onChange('Fase')"> Em produção</label>
+          <label class="ms-item"><input type="checkbox" class="ms-opt-Fase" value="entregues" onchange="MF.onChange('Fase')"> Entregues</label>
+        </div>
+      </div>
+      <div class="filter-group" style="min-width:unset">
+        <label class="filter-label">&nbsp;</label>
+        <button class="btn" onclick="App.clearFilters()">✕ Limpar</button>
+      </div>
     </div>
 
     <div class="tabs" role="tablist">
@@ -712,57 +769,37 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
       <button class="tab-btn" onclick="App.switchTab(3)">🚨 Alertas & Ações</button>
     </div>
 
-    </div><!-- /NAV CARD -->
-
     <!-- TAB 0: Visão Geral -->
     <div class="tab-content active" id="tab-0">
-      <div id="skeletonGeral" class="skeleton-grid" style="display:none">
-        <div class="skeleton sk-card"></div><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div>
-      </div>
       <div class="cards-grid" id="geralCards"></div>
       <div class="chart-container">
-        <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">📊 Quantas vezes cada arte precisou de alteração</h3>
-          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Distribuição de Alterações','Este gráfico mostra quantas artes saíram na primeira tentativa (0 alterações), precisaram de 1, 2, 3–4 ou 5 ou mais revisões.','Como é calculado: conta o número de vezes que cada pedido voltou para alteração antes de ser aprovado.','Dica: se a maioria das artes estiver em 0 ou 1 alteração, o processo de briefing está funcionando bem. Se houver muitas com 3+, vale conversar com os vendedores sobre como melhorar as instruções no pedido.')">ℹ</button>
-        </div>
-        <p class="chart-subtitle">Ideal: maior parte das artes com 0 ou 1 alteração.</p>
+        <h3 class="chart-title">📊 Distribuição das Artes por Quantidade de Alterações</h3>
+        <p class="chart-subtitle">Quantas artes tiveram 0, 1, 2, 3–4 ou 5+ alterações. Ideal: maior parte na faixa 0.</p>
         <div class="chart-wrapper"><canvas id="chartDistribuicao"></canvas></div>
       </div>
       <div class="chart-container">
-        <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">📊 Quanto tempo cada pedido leva para ficar pronto</h3>
-          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Tempo de Criação','Este gráfico agrupa os pedidos por faixa de tempo: menos de 30 minutos, 30min–1h, 1–2h, e assim por diante.','Como é calculado: mede o tempo de expediente (segunda a sexta, 8h–18h) entre o início e o fim da criação de cada arte. Finais de semana não contam.','Dica: se muitos pedidos estão demorando mais de 4 horas, pode ser sinal de fila acumulada ou briefings incompletos que geram retrabalho durante a criação.')">ℹ</button>
-        </div>
-        <p class="chart-subtitle">Barras = quantidade de pedidos · Linha = arquivos de arte entregues</p>
+        <h3 class="chart-title">📊 Distribuição do Tempo de Criação (Pedidos × Layouts)</h3>
+        <p class="chart-subtitle">Faixas de duração de criação. Barras = qtd pedidos; Linha = layouts (arquivos ARTE*).</p>
         <div id="chartTempoCriacaoWrap"><div class="chart-wrapper"><canvas id="chartTempoCriacao"></canvas></div></div>
       </div>
       <div class="chart-container">
-        <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">⏳ Quanto tempo a equipe gasta em criação vs. correções</h3>
-          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Criação vs. Alterações','Este gráfico mostra como o tempo total da equipe está dividido: quanto é gasto criando artes novas e quanto é gasto corrigindo artes que voltaram para alteração.','Como é calculado: soma o tempo útil de todas as criações e de todas as alterações concluídas no período, e mostra a proporção de cada um.','Dica: idealmente, a maior parte do tempo deveria ser gasto em criação (roxo). Se as correções (vermelho) estiverem acima de 40%, pode indicar que os briefings precisam de mais detalhes.')">ℹ</button>
-        </div>
-        <p class="chart-subtitle">Clique nas barras para ver o detalhamento completo.</p>
+        <h3 class="chart-title">⏳ Tempo da Equipe: Criação vs Alterações</h3>
+        <p class="chart-subtitle">Proporção do tempo total gasto em criação vs retrabalho. Clique nas barras para detalhes.</p>
         <div id="chartTempoEquipeWrap"><div class="chart-wrapper" style="max-height:120px"><canvas id="chartTempoEquipe"></canvas></div></div>
       </div>
       <div class="chart-container">
-        <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">🚧 Onde os pedidos estão parados agora</h3>
-          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Gargalos do Fluxo','Este gráfico mostra em quais etapas do processo os pedidos estão acumulando e há quanto tempo estão parados ali.','Como é calculado: conta quantos cartões estão em cada etapa do Trello e calcula o tempo médio desde a última movimentação.','Dica: etapas com muitos pedidos parados por vários dias precisam de atenção imediata. Clique em qualquer barra para ver quais pedidos estão naquela etapa.')">ℹ</button>
-        </div>
-        <p class="chart-subtitle">Volume de pedidos por etapa e tempo médio parado. Clique para ver os detalhes.</p>
+        <h3 class="chart-title">🚧 Gargalos do Fluxo de Criação (Volume × Tempo)</h3>
+        <p class="chart-subtitle">Pedidos atuais por fase e tempo médio de permanência (dias desde última movimentação). Clique para detalhar.</p>
         <div id="chartGargalosWrap"><div class="chart-wrapper"><canvas id="chartGargalos"></canvas></div></div>
       </div>
       <div class="chart-container">
-        <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">🔥 Pedidos por nível de urgência</h3>
-          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Distribuição por Urgência','Este gráfico mostra como os pedidos de criação estão divididos entre urgência alta, média e baixa.','Como é calculado: conta quantos pedidos foram marcados com cada nível de urgência no Trello.','Dica: se muitos pedidos estiverem como urgência alta ao mesmo tempo, a equipe fica sobrecarregada. Revise com os vendedores quais pedidos realmente precisam de prioridade.')">ℹ</button>
-        </div>
-        <p class="chart-subtitle">Proporção das artes de criação por urgência.</p>
+        <h3 class="chart-title">🔥 Distribuição por Urgência</h3>
+        <p class="chart-subtitle">Proporção de artes de criação por nível de urgência.</p>
         <div class="chart-wrapper" style="max-width:460px;margin:0 auto"><canvas id="chartUrgencia"></canvas></div>
       </div>
       <div class="chart-container" id="criticosContainer">
         <h3 class="chart-title">🔴 Pedidos que Mais Precisam de Atenção</h3>
-        <p class="chart-subtitle">Artes com muitas alterações, tempo muito alto ou urgência ALTA com retrabalho.</p>
+        <p class="chart-subtitle">Artes com 4+ alterações, tempo muito alto ou urgência ALTA com retrabalho.</p>
         <div class="criticos-list" id="criticosList"></div>
       </div>
       <details class="debug-panel" id="debugPanel">
@@ -774,39 +811,29 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
 
     <!-- TAB 1: Designers -->
     <div class="tab-content" id="tab-1">
-      <div id="skeletonDesigners" class="skeleton-grid" style="display:none">
-        <div class="skeleton sk-card"></div><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div>
-      </div>
       <div class="cards-grid" id="designersCards"></div>
       <div class="chart-container">
-        <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">🎯 Artes que saíram aprovadas sem nenhuma alteração (por designer)</h3>
-          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Artes Aprovadas Sem Alteração','Este gráfico mostra qual porcentagem das artes de cada designer foi aprovada logo na primeira versão, sem precisar de correção.','Como é calculado: conta os pedidos que estão em produção ou já foram entregues e que não tiveram nenhuma rodada de alteração, dividido pelo total de pedidos do designer.','Dica: quanto mais alto, melhor. Verde (80%+) = ótimo. Amarelo (50–80%) = pode melhorar. Vermelho (abaixo de 50%) = vale conversar sobre o processo de briefing. Clique na barra para ver os pedidos.')">ℹ</button>
-        </div>
-        <p class="chart-subtitle">Verde ≥ 80% · Amarelo ≥ 50% · Vermelho &lt; 50%. Clique na barra para ver a lista.</p>
+        <h3 class="chart-title">🎯 Pedidos Sem Alteração por Designer (em produção)</h3>
+        <p class="chart-subtitle">% de pedidos <strong>em produção</strong> de cada designer que saíram sem nenhuma alteração. Verde ≥ 80% · Amarelo ≥ 50% · Vermelho &lt; 50%. Clique na barra para ver a lista.</p>
         <div class="chart-wrapper"><canvas id="chartDesignersAcerto"></canvas></div>
       </div>
       <div class="chart-container">
-        <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">📈 Pedidos concluídos ou em produção por designer</h3>
-          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Taxa de Avanço','Este gráfico mostra qual porcentagem dos pedidos de cada designer já avançou para produção ou foi entregue ao cliente.','Como é calculado: entre todos os pedidos com início de criação registrado, conta quantos já foram para produção ou entrega, dividido pelo total.','Dica: uma taxa alta significa que o designer está entregando bem. Uma taxa baixa pode indicar pedidos travados ou muita fila acumulada. Clique na barra para ver detalhes.')">ℹ</button>
-        </div>
-        <p class="chart-subtitle">% de pedidos com criação iniciada que já avançaram para produção ou entrega. Clique para ver.</p>
+        <h3 class="chart-title">📈 Pedidos que avançaram (produção + entregues) por Designer</h3>
+        <p class="chart-subtitle">% de pedidos com início de criação registrado que já avançaram para produção ou foram entregues. Quanto maior, melhor o fluxo de entrega. Clique na barra para ver a lista.</p>
         <div id="chartAvancouWrap"><div class="chart-wrapper"><canvas id="chartAvancou"></canvas></div></div>
       </div>
       <div class="chart-container">
-        <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">⚡ Velocidade vs. precisão — quem é rápido E preciso?</h3>
-          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Velocidade vs. Precisão','Este gráfico compara dois aspectos de cada designer: a velocidade (tempo mediano de criação) e a precisão (quantas alterações em média).','Como é calculado: as barras mostram o tempo mediano útil em minutos. A linha laranja mostra a média de alterações por arte.','Dica: o ideal é ter barras baixas (rápido) E linha baixa (poucas correções). 🟢 Rápido e preciso é o melhor cenário. 🔴 Lento com erros é o que mais precisa de atenção.')">ℹ</button>
-        </div>
-        <p class="chart-subtitle">Barras = tempo mediano · Linha = média de alterações por arte</p>
+        <h3 class="chart-title">⚡ Velocidade vs. Precisão por Designer</h3>
+        <p class="chart-subtitle">Barras = Tempo mediano útil (min). Linha laranja = Média de alterações por arte. 🟢 Rápido e preciso · 🟡 Rápido com erros · 🔵 Lento preciso · 🔴 Lento com erros</p>
         <div id="chartVQWrap"><div class="chart-wrapper-tall"><canvas id="chartVelocidadeQualidade"></canvas></div></div>
       </div>
       <div class="table-container">
-        <h3 class="chart-title">📋 Resumo detalhado por designer</h3>
-        <p class="chart-subtitle">Tempo mediano, pedidos demorados, % sem alterações e volume total.</p>
+        <h3 class="chart-title">📋 Eficiência Detalhada por Designer</h3>
+        <p class="chart-subtitle">Tempo mediano útil, casos demorados, % sem alterações e volume total.</p>
         <table id="tableDesigners"></table>
       </div>
+
+      <!-- ── NOVA SEÇÃO: Produção diária ── -->
       <div class="table-container" id="dailyProdContainer">
         <h3 class="chart-title">📆 Produção diária <span id="dailyPeriodLabel"></span></h3>
         <p class="chart-subtitle">Quantidade e tempo de criações concluídas por dia. Clique em qualquer número ou item para ver os pedidos.</p>
@@ -830,45 +857,34 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
         </div>
         <div id="dailyProdTable"></div>
       </div>
+      <!-- ── NOVA SEÇÃO: Média mensal ── -->
       <div class="table-container" id="wrapMonthlyAvg">
-        <div class="chart-title">📅 Média de criações por mês</div>
-        <div class="chart-subtitle">Total do período filtrado. Base: data de conclusão da criação. Média = artes por dias trabalhados no mês.</div>
+        <div class="chart-title">📅 Média de Criação Mensal (por dias trabalhados)</div>
+        <div class="chart-subtitle">Consolidado do filtro atual. Base: FIM CRIAÇÃO. Média = Artes / dias úteis do mês.</div>
         <div id="monthlyAvgBody"></div>
       </div>
     </div>
 
     <!-- TAB 2: Vendedores -->
     <div class="tab-content" id="tab-2">
-      <div id="skeletonVendedores" class="skeleton-grid" style="display:none">
-        <div class="skeleton sk-chart"></div><div class="skeleton sk-chart"></div>
-      </div>
       <div class="chart-container">
-        <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">📊 Quem mais gera retrabalho</h3>
-          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Retrabalho por Vendedor','Este gráfico mostra quantas alterações os pedidos de cada vendedor geraram no total, e quantos saíram sem nenhuma correção.','Como é calculado: soma todas as rodadas de alteração dos pedidos de cada vendedor.','Dica: vendedores com muitas alterações podem estar enviando briefings incompletos. Vale conversar sobre como detalhar melhor os pedidos antes de enviar para o designer. Clique nas barras para ver os pedidos.')">ℹ</button>
-        </div>
-        <p class="chart-subtitle">Total de alterações geradas e artes sem alteração, por vendedor. Clique para ver detalhes.</p>
+        <h3 class="chart-title">📊 Principais Responsáveis pelo Retrabalho</h3>
+        <p class="chart-subtitle">Vendedores por número total de alterações geradas.</p>
         <div class="chart-wrapper"><canvas id="chartVendedoresRetrabalho"></canvas></div>
       </div>
       <div class="table-container">
-        <h3 class="chart-title">👥 Resumo por vendedor</h3>
+        <h3 class="chart-title">👥 Análise Completa por Vendedor</h3>
         <p class="chart-subtitle">Volume, qualidade e taxa de retrabalho por vendedor.</p>
         <table id="tableVendedores"></table>
       </div>
       <div class="table-container">
-        <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">🔍 Os 10 pares vendedor + designer com mais retrabalho</h3>
-          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Pares com Mais Retrabalho','Mostra as combinações de vendedor e designer que mais geraram artes com 4 ou mais rodadas de revisão.','Como é calculado: agrupa os pedidos por par vendedor+designer e conta quantos tiveram 4+ alterações.','Dica: se um par específico aparece frequentemente, pode ser um problema de comunicação ou alinhamento entre eles. Clique no nome da dupla para ver os pedidos.')">ℹ</button>
-        </div>
+        <h3 class="chart-title">🔍 Top 10 Pares Vendedor × Designer com Mais Retrabalho</h3>
         <p class="chart-subtitle">Combinações com maior número de artes que precisaram de mais de 4 rodadas.</p>
         <table id="tableMatrizRetrabalho"></table>
       </div>
       <div class="chart-container">
-        <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">⏳ Pedidos aguardando resposta do cliente — há quanto tempo?</h3>
-          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Aguardando Resposta','Mostra há quantos dias cada pedido está parado esperando uma resposta do cliente, agrupados por faixas de tempo.','Como é calculado: conta os dias desde a última movimentação dos cartões que estão na coluna AGUARDANDO RESPOSTA.','Dica: pedidos aguardando há mais de 7 dias merecem um follow-up. Acima de 30 dias, pode ser que o cliente tenha desistido ou o pedido esteja perdido. Clique nas barras para ver quais pedidos estão em cada faixa.')">ℹ</button>
-        </div>
-        <p class="chart-subtitle">Pedidos agrupados por tempo de espera. Clique nas barras para ver os detalhes.</p>
+        <h3 class="chart-title">⏳ Análise de Permanência — AGUARDANDO RESPOSTA</h3>
+        <p class="chart-subtitle">Distribuição de pedidos por tempo desde a última movimentação. Utilize os filtros para analisar urgência, vendedor e impacto operacional.</p>
         <div id="aguardandoDorResumo" style="font-weight:800;font-size:13px;margin:6px 0 14px;color:var(--dark)"></div>
         <div id="chartAguardandoDorWrap"><div class="chart-wrapper-tall"><canvas id="chartAguardandoDor"></canvas></div></div>
       </div>
@@ -880,15 +896,11 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
       <div style="background:var(--card-bg);border-radius:15px;padding:14px 20px;margin-bottom:18px;box-shadow:0 4px 20px rgba(0,0,0,.08);display:flex;align-items:center;gap:14px;flex-wrap:wrap">
         <span style="font-size:26px">🤖</span>
         <div style="flex:1;min-width:180px">
-          <div style="font-size:13px;font-weight:700;color:var(--dark)">Análise Inteligente — Diretor de Operações</div>
+          <div style="font-size:13px;font-weight:700;color:var(--dark)">Análise Inteligente — Groq</div>
           <div id="aiStatus" style="font-size:12px;color:var(--text-light);margin-top:2px">Pronto para analisar.</div>
         </div>
         <button class="btn btn-secondary" onclick="App.runAIAnalysis()" id="btnAI">✨ Gerar Análise IA</button>
-        <button class="btn btn-ghost" onclick="App.openEquipeModal()" style="font-size:12px">👥 Configurar Equipe</button>
       </div>
-
-      <!-- Alertas automáticos -->
-      <div id="actionPlan"></div>
       <!-- Resultado IA -->
       <div id="aiResult" style="display:none" class="chart-container">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
@@ -1013,40 +1025,13 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
   </div>
 </div>
 
-<!-- MODAL CONFIGURAR EQUIPE -->
-<div class="modal-overlay" id="modalEquipe" onclick="if(event.target===this)App.closeEquipeModal()">
-  <div class="modal-box" style="max-width:520px">
-    <div class="modal-header" style="background:linear-gradient(135deg,#065f46,#10b981)">
-      <h2>👥 Configuração da Equipe</h2>
-      <button class="modal-close" onclick="App.closeEquipeModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;line-height:1.6">Membros <strong>inativos</strong> não aparecem em rankings, médias, gráficos ou análises da IA. Os dados históricos deles são preservados.</p>
-      <div id="equipeList" style="display:flex;flex-direction:column;gap:10px"></div>
-      <div style="margin-top:16px;padding:12px 14px;background:var(--light);border-radius:8px;border:1px solid var(--border)">
-        <div style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:8px">➕ Adicionar membro manualmente</div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <input type="text" id="equipeNomeInput" placeholder="Nome do membro" style="flex:1;min-width:150px;padding:8px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;background:var(--input-bg);color:var(--text)">
-          <select id="equipeCargoInput" style="padding:8px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;background:var(--input-bg);color:var(--text)">
-            <option value="designer">Designer</option>
-            <option value="vendedor">Vendedor</option>
-          </select>
-          <button class="btn btn-secondary" style="padding:8px 14px;font-size:13px" onclick="App.addEquipeMembro()">Adicionar</button>
-        </div>
-      </div>
-      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-secondary" onclick="App.saveEquipe()">💾 Salvar</button>
-        <button class="btn btn-ghost" onclick="App.closeEquipeModal()">Cancelar</button>
-        <span id="equipeSaveMsg" style="font-size:12px;color:var(--secondary);display:none;align-self:center">✅ Salvo!</span>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="loading" id="loading">
   <div class="spinner"></div>
   <div class="loading-text" id="loadingText">Sincronizando com o Trello…</div>
-</div>
+</div><!-- /sb-content -->
+  </div><!-- /sb-main -->
+ </div><!-- /sb-layout -->
+</div><!-- /dashboard -->
 <div id="syncToast"></div>
 <button id="btnScrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Voltar ao topo">&#8679;</button>
 
@@ -1062,226 +1047,6 @@ const DEBUG_TIME = false;
 /* NOTE: Trello object kept as dead code — all calls now go via /api/sync */
 const TRELLO_API = 'https://api.trello.com/1';
 const SK = { cfg:'sb_trello_cfg', dataset:'sb_last_dataset', ui:'sb_ui_state' };
-
-/* ══════════════════════════════════════════════
-   FD — Filter Drawer
-══════════════════════════════════════════════ */
-const FD = {
-  open(){
-    document.getElementById('filterDrawer').classList.add('open');
-    document.getElementById('filterDrawerOverlay').classList.add('open');
-    document.body.style.overflow='hidden';
-  },
-  close(){
-    document.getElementById('filterDrawer').classList.remove('open');
-    document.getElementById('filterDrawerOverlay').classList.remove('open');
-    document.body.style.overflow='';
-    MF.closeAll();
-  },
-  // Rebuild the chips row from current State.filters
-  updateChips(){
-    const row=document.getElementById('filterChipsRow');
-    const badge=document.getElementById('filterBadge');
-    if(!row) return;
-    const labels={vendedor:'Vendedor',designer:'Designer',urgencia:'Urgência',tipo:'Tipo',fase:'Fase'};
-    const chips=[];
-    Object.entries(State.filters||{}).forEach(([key,vals])=>{
-      if(!Array.isArray(vals)||!vals.length) return;
-      vals.forEach(v=>{
-        chips.push(`<span class="filter-chip">${labels[key]||key}: <strong>${v}</strong><button title="Remover filtro" onclick="FD._removeChip('${key}','${v.replace(/'/g,"\\'")}')">&times;</button></span>`);
-      });
-    });
-    row.innerHTML=chips.join('');
-    const n=chips.length;
-    if(badge){
-      badge.textContent=n?n:'';
-      badge.style.display=n?'inline':'none';
-    }
-  },
-  _removeChip(key,val){
-    if(!State.filters[key]) return;
-    State.filters[key]=State.filters[key].filter(v=>v!==val);
-    // Uncheck the checkbox
-    document.querySelectorAll(`.ms-opt-${key.charAt(0).toUpperCase()+key.slice(1)}`).forEach(c=>{ if(c.value===val) c.checked=false; });
-    const nameMap={vendedor:'Vendedor',designer:'Designer',urgencia:'Urgencia',tipo:'Tipo',fase:'Fase'};
-    const name=nameMap[key]||key;
-    MF.onChange(name);
-  }
-};
-
-/* ══════════════════════════════════════════════
-   ChartInfo — tooltip popup for chart info buttons
-══════════════════════════════════════════════ */
-const ChartInfo = {
-  _popup: null,
-  _active: null,
-  show(btn, titulo, oQue, comoCal, dica){
-    // Remove existing
-    if(this._popup){ this._popup.remove(); this._popup=null; }
-    if(this._active===btn){ this._active=null; return; }
-    this._active=btn;
-    const p=document.createElement('div');
-    p.className='chart-info-popup';
-    p.innerHTML=`<strong>${titulo}</strong>${oQue}<br><br><span style="font-size:12px;color:var(--text-light)">${comoCal}</span><div class="tip-dica">💡 Dica: ${dica}</div>`;
-    p.style.cssText='position:fixed;z-index:9000;background:var(--card-bg,#fff);border:1.5px solid #2563eb;border-radius:12px;padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,.22);max-width:290px;font-size:13px;line-height:1.65;color:var(--text,#374151)';
-    document.body.appendChild(p);
-    this._popup=p;
-    // Position near button
-    const r=btn.getBoundingClientRect();
-    let left=r.left;
-    let top=r.bottom+8;
-    if(left+300>window.innerWidth) left=window.innerWidth-308;
-    if(top+200>window.innerHeight) top=r.top-p.offsetHeight-8;
-    p.style.left=Math.max(8,left)+'px';
-    p.style.top=Math.max(8,top)+'px';
-    // Auto close on outside click
-    setTimeout(()=>{
-      const close=e=>{if(!p.contains(e.target)&&e.target!==btn){p.remove();this._popup=null;this._active=null;document.removeEventListener('click',close);}};
-      document.addEventListener('click',close);
-    },0);
-  }
-};
-
-/* ══════════════════════════════════════════════
-   PipelineBar — status circles / volume by stage
-══════════════════════════════════════════════ */
-const PipelineBar = {
-  STAGES:[
-    {key:'COLETA',    icon:'📋', label:'Coleta',         match:l=>l.includes('COLETA')},
-    {key:'FILA',      icon:'⏳', label:'Fila Criação',   match:l=>l.includes('FILA')&&(l.includes('CRIACAO')||l.includes('CRIAÇÃO')||l.includes('URGENCIA')||l.includes('URGÊNCIA'))},
-    {key:'EM_CRI',    icon:'🎨', label:'Em Criação',     match:l=>l==='EM CRIACAO'||l==='EM CRIAÇÃO'},
-    {key:'ALT_SOL',   icon:'✏️', label:'Alt. Solicitada',match:l=>l.includes('ALTERACAO SOLICITADA')||l.includes('ALTERAÇÃO SOLICITADA')},
-    {key:'EM_ALT',    icon:'🔄', label:'Em Alteração',   match:l=>l==='EM ALTERACAO'||l==='EM ALTERAÇÃO'},
-    {key:'ENVIAR',    icon:'📤', label:'Enviar Cliente', match:l=>l.includes('ENVIAR')},
-    {key:'AGUARD',    icon:'⏰', label:'Aguardando',     match:l=>l.includes('AGUARDANDO RESPOSTA')},
-    {key:'APROVADA',  icon:'✅', label:'Arte Aprovada',  match:l=>l.includes('LIBERAR')&&l.includes('PRODUCAO')||l==='EM PRODUCAO'||l==='EM PRODUÇÃO'}
-  ],
-
-  render(allRows){
-    const bar=document.getElementById('pipelineBar');
-    if(!bar) return;
-    // Exclude delivered (entregues)
-    const rows=allRows.filter(r=>r._fase!=='entregues');
-    const norm=s=>String(s||'').trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
-    const counts={};
-    const byStage={};
-    this.STAGES.forEach(s=>{ counts[s.key]=0; byStage[s.key]=[]; });
-    rows.forEach(r=>{
-      const l=norm(r.list||'');
-      for(const s of this.STAGES){
-        if(s.match(l)){ counts[s.key]++; byStage[s.key].push(r); break; }
-      }
-    });
-    bar.innerHTML=this.STAGES.map(s=>{
-      const n=counts[s.key];
-      const cls=n>=10?'ps-alert':n>=5?'ps-warn':'ps-ok';
-      return `<div class="pipeline-stage ${cls}" onclick="PipelineBar.openModal('${s.key}','${s.label}')">
-        <span class="ps-icon">${s.icon}</span>
-        <span class="ps-count">${n}</span>
-        <span class="ps-label">${s.label}</span>
-      </div>`;
-    }).join('');
-    bar.style.display='flex';
-    this._byStage=byStage;
-  },
-
-  _byStage:{},
-
-  openModal(key, label){
-    const rows=this._byStage[key]||[];
-    if(!rows.length){
-      App.openDetailModal(`${label} — Nenhum pedido`,'linear-gradient(135deg,#6b7280,#4b5563)',
-        `<div style="text-align:center;padding:32px 20px">
-          <div style="font-size:40px;margin-bottom:12px">☕</div>
-          <div style="font-size:15px;font-weight:700;color:var(--dark)">Tudo limpo por aqui!</div>
-          <div style="font-size:13px;color:var(--text-light);margin-top:6px">Nenhum pedido nesta etapa no momento.</div>
-        </div>`);
-      return;
-    }
-    const sorted=[...rows].sort((a,b)=>{
-      const da=a._createdObj instanceof Date?a._createdObj:new Date(0);
-      const db=b._createdObj instanceof Date?b._createdObj:new Date(0);
-      return db-da;
-    });
-    const total=sorted.length;
-    const rowHtml=(r)=>`<tr>
-      <td style="max-width:200px;word-break:break-word">${DL.pedidoLinkHTML(r)}</td>
-      <td>${r.designer||'—'}</td>
-      <td>${r.vendedor||'—'}</td>
-      <td><span class="badge badge-${r.urgencia==='ALTA'?'danger':r.urgencia==='MÉDIA'?'warning':'success'}">${r.urgencia||'—'}</span></td>
-      <td>${r.qtdeAlteracoes||0}</td>
-    </tr>`;
-    const thead=`<table class="detail-table"><thead><tr><th>Pedido</th><th>Designer</th><th>Vendedor</th><th>Urgência</th><th>Alt.</th></tr></thead><tbody>`;
-    const tbody=sorted.map(rowHtml).join('');
-    App.openDetailModal(`${label} — ${total} pedido${total!==1?'s':''}`,
-      'linear-gradient(135deg,#1e3a8a,#2563eb)',
-      `${thead}${tbody}</tbody></table>`);
-    this._modalRows=sorted;
-  },
-
-  _modalRows:[],
-  _expandModal(){}
-};
-
-/* ══════════════════════════════════════════════
-   EQUIPE — sistema de membros ativos/inativos
-══════════════════════════════════════════════ */
-// Lista padrão: Guilherme já vem inativo
-const EQUIPE_DEFAULT = [
-  { nome: 'Guilherme', cargo: 'designer', ativo: false }
-];
-const EQUIPE_SK = 'sb_equipe_config';
-
-const TeamFilter = {
-  _equipe: null,
-
-  load(){
-    const saved = Store.get(EQUIPE_SK);
-    this._equipe = saved && saved.length ? saved : [...EQUIPE_DEFAULT];
-    return this._equipe;
-  },
-
-  save(list){
-    this._equipe = list;
-    Store.set(EQUIPE_SK, list);
-  },
-
-  getInactiveNames(){
-    if(!this._equipe) this.load();
-    return this._equipe.filter(m=>!m.ativo).map(m=>DL.norm(m.nome));
-  },
-
-  isActiveDesigner(name){
-    const n = DL.norm(name||'');
-    if(!n) return true;
-    return !this.getInactiveNames().includes(n);
-  },
-
-  // Auto-detect and add members found in data that aren't in list yet
-  syncFromData(rows){
-    if(!this._equipe) this.load();
-    const existing = new Set(this._equipe.map(m=>DL.norm(m.nome)));
-    const newMembers = [];
-    rows.forEach(r=>{
-      if(r.designer){const n=DL.norm(r.designer); if(n&&!existing.has(n)){existing.add(n);newMembers.push({nome:r.designer,cargo:'designer',ativo:true});}}
-    });
-    if(newMembers.length){
-      this._equipe = [...this._equipe, ...newMembers];
-      Store.set(EQUIPE_SK, this._equipe);
-    }
-    return this._equipe;
-  },
-
-  // Filter rows for stats — removes rows where designer is inactive
-  filterForStats(rows){
-    const inactive = this.getInactiveNames();
-    if(!inactive.length) return rows;
-    return rows.filter(r => {
-      if(!r.designer) return true;
-      return !inactive.includes(DL.norm(r.designer));
-    });
-  }
-};
 
 const SCHEDULE = {
   1:[[480,1080]],2:[[480,1080]],3:[[480,1080]],
@@ -1334,7 +1099,7 @@ const WorkTime = {
 ══════════════════════════════════════════════ */
 const DL = {
   importTimestamp: null,
-  norm(s){ if(s==null)return''; return String(s).trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,''); },
+  norm(s){ if(s==null)return''; return String(s).trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); },
   normTipo(s){
     const n=this.norm(s);
     if(n.includes('REPOSICAO')||n.includes('REPOSI')) return 'REPOSIÇÃO';
@@ -1527,7 +1292,6 @@ const MF = {
 
     State.applyFilters();
     App.renderActiveTab();
-    FD.updateChips();
   },
 
   populate(name, opts){
@@ -1636,7 +1400,7 @@ const Trello = {
    * Normaliza string: uppercase + sem acentos + sem espaços extras.
    * Mesmo critério do DL.norm() — usado para comparação de chaves de CF.
    */
-  _n(s){ return String(s||'').trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,''); },
+  _n(s){ return String(s||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); },
 
   /**
    * Busca flexível em um objeto de Custom Fields (cf).
@@ -2006,12 +1770,6 @@ const RL = {
   /* ── TAB 0 ── */
   renderGeral(rows){
     const criacao=rows.filter(r=>DL.isCriacao(r));
-    // Render pipeline status bar using all rows (not filtered by creation type)
-    PipelineBar.render(rows);
-    // Hide skeleton if showing
-    const sk=document.getElementById('skeletonGeral');
-    if(sk) sk.style.display='none';
-    document.getElementById('geralCards').style.display='';
 
     // ── Painel de diagnóstico — sempre atualizado, nunca sobrescrito ──
     const diagId = '_diagPanel';
@@ -2211,31 +1969,19 @@ const RL = {
     RL._tempoEquipeAlt={total:_tempoTotalAlt,events:_altEvFilt,semPar:_altSemPar};
     const _fmtH=m=>{const h=Math.floor(m/60),mn=m%60;return h>0?`${h}h ${mn}min`:`${mn}min`;};
 
-    // Helper to render/update the chart with current data
-    const _renderTempoEquipeChart=()=>{
-      const evFiltered=_altEvents.filter(ev=>{
-        if(_dArr2.length&&!_dArr2.includes(ev.designer)) return false;
-        if(_vArr2.length&&!_vArr2.includes(ev.vendedor)) return false;
-        return true;
-      });
-      const altTotal=evFiltered.reduce((s,ev)=>s+(ev.durMin||0),0);
-      const total=_tempoTotalCri+altTotal;
-      RL._tempoEquipeAlt={total:altTotal,events:evFiltered,semPar:evFiltered.filter(ev=>ev.durMin==null).length};
-      this.restoreCanvas('chartTempoEquipeWrap','chartTempoEquipe');
-      if(!total){
-        this.showEmpty('chartTempoEquipeWrap','Sem dados de tempo de alterações disponíveis. Os dados de alterações são carregados automaticamente na aba Designers.');
-        return;
-      }
-      const pctCri=Math.round(_tempoTotalCri/total*100);
-      const pctAlt=100-pctCri;
+    this.restoreCanvas('chartTempoEquipeWrap','chartTempoEquipe');
+    if(!_total2){this.showEmpty('chartTempoEquipeWrap','Sem dados de tempo. Acesse a aba Designers primeiro para carregar alterações.');}
+    else{
+      const _pctCri=Math.round(_tempoTotalCri/_total2*100);
+      const _pctAlt=100-_pctCri;
       this.upsert('chartTempoEquipe',{
         type:'bar',
         data:{
           labels:['Tempo da Equipe'],
           datasets:[
-            {label:'Criação',data:[pctCri],backgroundColor:'rgba(99,102,241,.8)',stack:'t',
+            {label:'Criação',data:[_pctCri],backgroundColor:'rgba(99,102,241,.8)',stack:'t',
              borderRadius:{topLeft:6,bottomLeft:6},hoverBackgroundColor:'rgba(99,102,241,1)'},
-            {label:'Alterações',data:[pctAlt],backgroundColor:'rgba(239,68,68,.75)',stack:'t',
+            {label:'Alterações',data:[_pctAlt],backgroundColor:'rgba(239,68,68,.75)',stack:'t',
              borderRadius:{topRight:6,bottomRight:6},hoverBackgroundColor:'rgba(239,68,68,1)'}
           ]
         },
@@ -2244,15 +1990,14 @@ const RL = {
           plugins:{
             legend:{display:true,position:'top'},
             tooltip:{callbacks:{label:ctx=>{
-              const t=ctx.datasetIndex===0?_tempoTotalCri:altTotal;
+              const t=ctx.dataset.label==='Criação'?_tempoTotalCri:_tempoTotalAlt;
               return ` ${ctx.dataset.label}: ${ctx.parsed.x}% (${_fmtH(t)})`;
             }}}
           },
           scales:{x:{stacked:true,max:100,ticks:{callback:v=>v+'%'}},y:{stacked:true,display:false}},
           onClick:(evt,els)=>{
-            if(!els||!els.length) return;
-            const dsIdx=els[0].datasetIndex;
-            const seg=dsIdx===0?'Criação':'Alterações';
+            if(!els.length) return;
+            const seg=els[0].dataset.label;
             if(seg==='Criação'){
               const lista=(RL._tempoEquipeCri.rows||[]).slice().sort((a,b)=>(b._tempoUtil||0)-(a._tempoUtil||0));
               const semT=criacao.length-lista.length;
@@ -2264,7 +2009,7 @@ const RL = {
                 <td><span class="badge badge-${r.urgencia==='ALTA'?'danger':r.urgencia==='MÉDIA'?'warning':'success'}">${r.urgencia||'—'}</span></td>
                 <td style="text-align:center;font-weight:700;color:#7c3aed">${DL.countArteLayouts(r._attachments)}</td>
               </tr>`).join('');
-              App.openDetailModal('Detalhamento — Tempo gasto em Criação','linear-gradient(135deg,#4f46e5,#7c3aed)',
+              App.openDetailModal('Detalhamento \u2014 Tempo gasto em Criação','linear-gradient(135deg,#4f46e5,#7c3aed)',
                 `<div class="detail-row" style="margin-bottom:16px">
                   <div class="detail-stat"><div class="detail-stat-val">${_fmtH(RL._tempoEquipeCri.total)}</div><div class="detail-stat-lbl">Total</div></div>
                   <div class="detail-stat"><div class="detail-stat-val">${lista.length}</div><div class="detail-stat-lbl">Com tempo</div></div>
@@ -2282,7 +2027,7 @@ const RL = {
                   <td><span class="badge badge-${ev.urgencia==='ALTA'?'danger':ev.urgencia==='MÉDIA'?'warning':'success'}">${ev.urgencia||'—'}</span></td>
                 </tr>`;
               }).join('');
-              App.openDetailModal('Detalhamento — Tempo gasto em Alterações','linear-gradient(135deg,#065f46,#059669)',
+              App.openDetailModal('Detalhamento \u2014 Tempo gasto em Alterações','linear-gradient(135deg,#065f46,#059669)',
                 `<div class="detail-row" style="margin-bottom:16px">
                   <div class="detail-stat"><div class="detail-stat-val">${_fmtH(RL._tempoEquipeAlt.total)}</div><div class="detail-stat-lbl">Total</div></div>
                   <div class="detail-stat"><div class="detail-stat-val">${evs.length}</div><div class="detail-stat-lbl">Concluídos</div></div>
@@ -2292,45 +2037,6 @@ const RL = {
           }
         }
       });
-    };
-
-    // Render chart immediately with whatever data is available
-    this.restoreCanvas('chartTempoEquipeWrap','chartTempoEquipe');
-    if(!_total2){
-      this.showEmpty('chartTempoEquipeWrap','Carregando dados de alterações…');
-    } else {
-      _renderTempoEquipeChart();
-    }
-
-    // Background fetch alterações if not yet loaded (i.e. Designers tab not visited yet)
-    if(!RL._altIndexedByDay || Object.keys(RL._altIndexedByDay).length===0){
-      (async ()=>{
-        try{
-          const allRows=State.rowsAll||rows;
-          // Use a wide window: last 90 days
-          const _to=new Date(); _to.setHours(23,59,59,999);
-          const _from=new Date(_to); _from.setDate(_from.getDate()-90); _from.setHours(0,0,0,0);
-          const _rowsById={};
-          allRows.forEach(r=>{ if(r._trelloId) _rowsById[r._trelloId]=r; });
-          const _resp=await App._apiFetch('/api/comments',{
-            method:'POST',
-            body:JSON.stringify({fromISO:_from.toISOString(),toISO:_to.toISOString()})
-          });
-          if(_resp&&Array.isArray(_resp.actions)){
-            const _idx=DL.indexAlterationDone(_resp.actions,_rowsById);
-            RL._altIndexedByDay=_idx.byDay;
-            RL._altIndexedByMonth=_idx.byMonth;
-            // Rebuild _altEvents from fresh data
-            _altEvents=[];
-            Object.values(RL._altIndexedByDay).forEach(dd=>{ if(dd.doneEvents) _altEvents=_altEvents.concat(dd.doneEvents); });
-            _renderTempoEquipeChart();
-          }
-        }catch(e){
-          console.warn('[TempoEquipe background fetch]',e.message);
-          // Show chart with only criação data if we have it
-          if(_tempoTotalCri>0) _renderTempoEquipeChart();
-        }
-      })();
     }
 
     /* ── GRÁFICO 3: Gargalos do Fluxo ── */
@@ -2342,7 +2048,7 @@ const RL = {
       {key:'AGUARD',   label:'Aguardando Resposta',    match:l=>l.includes('AGUARDANDO RESPOSTA')},
       {key:'LIBERAR',  label:'Liberar para Produção',  match:l=>l.includes('LIBERAR')}
     ];
-    const _normLG=l=>String(l||'').trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+    const _normLG=l=>String(l||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
     const _agora=new Date();
     const _gargRows=_FASES_GARG.map(fase=>{
       const rr=rows.filter(r=>fase.match(_normLG(r.list)));
@@ -2413,7 +2119,7 @@ const RL = {
     /* Urgência — com clique */
     const urg={};criacao.forEach(r=>{if(r.urgencia&&r.urgencia!=='N/A')DL.inc(urg,r.urgencia);});
     const urgLabels=Object.keys(urg);
-    this.upsert('chartUrgencia',{type:'doughnut',data:{labels:urgLabels,datasets:[{data:Object.values(urg),backgroundColor:urgLabels.map(u=>URGENCY_COLORS[u]),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16}},tooltip:{callbacks:{label:ctx=>{const total=ctx.dataset.data.reduce((a,b)=>a+b,0);const pct=total>0?Math.round(ctx.raw/total*100):0;return ` ${ctx.label}: ${ctx.raw} artes (${pct}%)`;}}},},onClick:(evt,els)=>{if(els.length){const lbl=urgLabels[els[0].index];RL.showDetailUrgencia(lbl,rows);}}}});
+    this.upsert('chartUrgencia',{type:'doughnut',data:{labels:urgLabels,datasets:[{data:Object.values(urg),backgroundColor:urgLabels.map(u=>URGENCY_COLORS[u]),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16}},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw} artes`}}},onClick:(evt,els)=>{if(els.length){const lbl=urgLabels[els[0].index];RL.showDetailUrgencia(lbl,rows);}}}});
 
     /* Críticos */
     const top=criacao.map(r=>({...r,_scoreObj:DL.calcScore(r,tMed),_score:DL.calcScore(r,tMed).score})).filter(r=>r.qtdeAlteracoes>=4||(r._tempoUtil!=null&&tMed>0&&r._tempoUtil>tMed*2)||(r.urgencia==='ALTA'&&r.qtdeAlteracoes>=2)).sort((a,b)=>a._score-b._score).slice(0,10);
@@ -2471,10 +2177,6 @@ const RL = {
 
   /* ── TAB 1 ── */
   async renderDesigners(rows){
-    const sk=document.getElementById('skeletonDesigners');
-    if(sk) sk.style.display='none';
-    // Apply team filter so inactive designers don't appear in stats
-    rows = TeamFilter.filterForStats(rows);
     const criacao=rows.filter(r=>DL.isCriacao(r));
     const dS={};
     criacao.forEach(r=>{if(!r.designer)return;if(!dS[r.designer])dS[r.designer]={total:0,totalAlt:0,critico:0,tempos:[]};const d=dS[r.designer];d.total++;d.totalAlt+=r.qtdeAlteracoes;if(r.qtdeAlteracoes>=4)d.critico++;if(r._tempoUtil!=null)d.tempos.push(r._tempoUtil);});
@@ -3236,10 +2938,6 @@ const RL = {
   },
 
   renderVendedores(rows){
-    const sk=document.getElementById('skeletonVendedores');
-    if(sk) sk.style.display='none';
-    // Apply team filter so inactive designers don't skew stats
-    rows = TeamFilter.filterForStats(rows);
     const criacao=rows.filter(r=>DL.isCriacao(r));
     const vend={};
     criacao.forEach(r=>{if(!r.vendedor)return;if(!vend[r.vendedor])vend[r.vendedor]={total:0,alt:0,critico:0,sem:0};vend[r.vendedor].total++;vend[r.vendedor].alt+=r.qtdeAlteracoes;if(r.qtdeAlteracoes>=4)vend[r.vendedor].critico++;if(r.qtdeAlteracoes===0)vend[r.vendedor].sem++;});
@@ -3252,61 +2950,13 @@ const RL = {
     data.sort((a,b)=>b.total-a.total).forEach(v=>{const c1=criacao.filter(r=>r.vendedor===v.name&&r.qtdeAlteracoes===1).length;const p2=v.total>0?(v.total-v.sem-c1)/v.total*100:0;html+=`<tr><td><strong style="cursor:pointer;color:var(--primary);text-decoration:underline dotted" onclick="RL.showDetailVendedor('${v.name.replace(/'/g,"\\'")}',RL._lastRowsVendedor)">${v.name}</strong></td><td>${v.total}</td><td><span class="badge badge-${v.pSem>=80?'success':v.pSem>=60?'warning':'danger'}">${v.pSem.toFixed(0)}%</span></td><td><span class="badge badge-${p2<20?'success':p2<40?'warning':'danger'}">${p2.toFixed(0)}%</span></td><td><span class="badge badge-${v.media<0.5?'success':v.media<1.5?'warning':'danger'}">${v.media.toFixed(2)}</span></td><td>${v.critico>0?`<span class="badge badge-danger">${v.critico}</span>`:'<span class="badge badge-success">0</span>'}</td></tr>`;});
     html+='</tbody>';document.getElementById('tableVendedores').innerHTML=html;
 
-    const mat={};
-    criacao.forEach(r=>{
-      if(!r.designer||!r.vendedor)return;
-      const k=`${r.vendedor}|${r.designer}`;
-      if(!mat[k])mat[k]={vendedor:r.vendedor,designer:r.designer,total:0,critico:0,rows:[]};
-      mat[k].total++;
-      if(r.qtdeAlteracoes>=4)mat[k].critico++;
-      mat[k].rows.push(r);
-    });
-    RL._matrizRows=mat;
+    const mat={};criacao.forEach(r=>{if(!r.designer||!r.vendedor)return;const k=`${r.vendedor}|${r.designer}`;if(!mat[k])mat[k]={vendedor:r.vendedor,designer:r.designer,total:0,critico:0};mat[k].total++;if(r.qtdeAlteracoes>=4)mat[k].critico++;});
     let mh=`<thead><tr><th>Vendedor</th><th>Designer</th><th>Total</th><th>&gt; 4 Alt.</th><th>Taxa</th></tr></thead><tbody>`;
-    Object.values(mat).map(m=>({...m,taxa:m.total?m.critico/m.total*100:0})).sort((a,b)=>b.critico-a.critico).slice(0,10).forEach(m=>{
-      const kEsc=`${m.vendedor}|${m.designer}`.replace(/'/g,"\\'");
-      mh+=`<tr style="cursor:pointer" onclick="RL.showModalPar('${kEsc}')">
-        <td><strong style="color:var(--primary)">${m.vendedor}</strong></td>
-        <td>${m.designer}</td>
-        <td>${m.total}</td>
-        <td>${m.critico>0?`<span class="badge badge-danger">${m.critico}</span>`:'<span class="badge badge-success">0</span>'}</td>
-        <td><span class="badge badge-${m.taxa<10?'success':m.taxa<25?'warning':'danger'}">${m.taxa.toFixed(0)}%</span></td>
-      </tr>`;
-    });
+    Object.values(mat).map(m=>({...m,taxa:m.total?m.critico/m.total*100:0})).sort((a,b)=>b.critico-a.critico).slice(0,10).forEach(m=>{mh+=`<tr><td><strong>${m.vendedor}</strong></td><td>${m.designer}</td><td>${m.total}</td><td>${m.critico>0?`<span class="badge badge-danger">${m.critico}</span>`:'<span class="badge badge-success">0</span>'}</td><td><span class="badge badge-${m.taxa<10?'success':m.taxa<25?'warning':'danger'}">${m.taxa.toFixed(0)}%</span></td></tr>`;});
     mh+='</tbody>';document.getElementById('tableMatrizRetrabalho').innerHTML=mh;
 
     // ── Análise de Permanência — AGUARDANDO RESPOSTA ──
     this.renderAguardandoDor(rows);
-  },
-
-  _matrizRows: {},
-
-  showModalPar(key){
-    const entry=this._matrizRows[key];
-    if(!entry||!entry.rows||!entry.rows.length){
-      App.openDetailModal('Par sem pedidos','linear-gradient(135deg,#6b7280,#4b5563)','<p style="padding:20px;color:var(--text-light)">Nenhum pedido encontrado para esta dupla.</p>');
-      return;
-    }
-    const sorted=[...entry.rows].sort((a,b)=>b.qtdeAlteracoes-a.qtdeAlteracoes);
-    const thead=`<table class="detail-table"><thead><tr><th>Pedido</th><th>Urgência</th><th>Alterações</th><th>Fase</th></tr></thead><tbody>`;
-    const tbody=sorted.map(r=>`<tr>
-      <td style="max-width:220px;word-break:break-word">${DL.pedidoLinkHTML(r)}</td>
-      <td><span class="badge badge-${r.urgencia==='ALTA'?'danger':r.urgencia==='MÉDIA'?'warning':'success'}">${r.urgencia||'—'}</span></td>
-      <td><span class="badge badge-${r.qtdeAlteracoes>=4?'danger':r.qtdeAlteracoes>=2?'warning':'success'}">${r.qtdeAlteracoes}</span></td>
-      <td>${r._fase||'—'}</td>
-    </tr>`).join('');
-    const altTotal=sorted.reduce((s,r)=>s+r.qtdeAlteracoes,0);
-    const criticos=sorted.filter(r=>r.qtdeAlteracoes>=4).length;
-    App.openDetailModal(
-      `${entry.vendedor} × ${entry.designer}`,
-      'linear-gradient(135deg,#7c3aed,#4f46e5)',
-      `<div class="detail-row" style="margin-bottom:16px">
-        <div class="detail-stat"><div class="detail-stat-val">${sorted.length}</div><div class="detail-stat-lbl">Pedidos</div></div>
-        <div class="detail-stat"><div class="detail-stat-val">${altTotal}</div><div class="detail-stat-lbl">Total de alterações</div></div>
-        <div class="detail-stat"><div class="detail-stat-val">${criticos}</div><div class="detail-stat-lbl">Com 4+ alt.</div></div>
-        <div class="detail-stat"><div class="detail-stat-val">${sorted.length?(altTotal/sorted.length).toFixed(1):'—'}</div><div class="detail-stat-lbl">Média alt./pedido</div></div>
-      </div>${thead}${tbody}</tbody></table>`
-    );
   },
 
   renderAguardandoDor(rows){
@@ -3416,127 +3066,34 @@ const RL = {
     const el=document.getElementById('actionPlan');
     if(!el)return;
 
-    const inactive=snap.inactiveFiltered||[];
-    const inactiveBanner=inactive.length?`<div style="background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#92400e;display:flex;align-items:center;gap:8px">
-      <span>🔕</span><span><strong>Membros inativos (excluídos das análises):</strong> ${inactive.join(', ')}. Os dados históricos deles continuam salvos.</span>
-      <button onclick="App.openEquipeModal()" style="margin-left:auto;background:none;border:1px solid #f59e0b;border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;color:#92400e">Gerenciar</button>
-    </div>`:'';
-
-    const urgBadge=u=>u==='ALTA'?'<span class="badge badge-danger">🔴 Urgente</span>':u==='MÉDIA'?'<span class="badge badge-warning">🟡 Média</span>':'<span class="badge badge-success">🟢 Baixa</span>';
-    const stBadge=st=>st==='critico'?'<span class="badge badge-danger">🔴 Problema grave</span>':st==='atencao'?'<span class="badge badge-warning">🟡 Atenção</span>':'<span class="badge badge-success">🟢 Normal</span>';
+    const badgeScore=s=>s>=6?`<span class="badge badge-danger">Crítico ${s}</span>`:s>=3?`<span class="badge badge-warning">Atenção ${s}</span>`:`<span class="badge badge-success">OK ${s}</span>`;
+    const stBadge=st=>st==='critico'?'<span class="badge badge-danger">Crítico</span>':st==='atencao'?'<span class="badge badge-warning">Atenção</span>':'<span class="badge badge-success">OK</span>';
     const sec=(title,icon,cls,body,cnt='')=>`<div class="alert-section"><div class="alert-section-header ${cls}">${icon} ${title}${cnt?`<span class="alert-count-badge">${cnt}</span>`:''}</div><div class="alert-section-body">${body}</div></div>`;
 
-    // ── CATEGORIA: OPERACIONAL — Etapas mais lentas
-    const gargPhases=Object.entries(snap.byPhase)
-      .map(([ph,d])=>({ph,scoreG:d.p90Hours*d.count,...d}))
-      .sort((a,b)=>b.scoreG-a.scoreG).slice(0,3);
-    const gargHtml=gargPhases.length?gargPhases.map(g=>{
-      const sev=g.p90Hours>48?'high':g.p90Hours>24?'medium':'low';
-      const sevLabel=g.p90Hours>48?'🔴 Alta':g.p90Hours>24?'🟡 Média':'🟢 Baixa';
-      // Human-friendly time description
-      const midH=g.medianHours;
-      const maxH=g.p90Hours;
-      const midTxt=midH<1?`${Math.round(midH*60)} min`:midH<24?`${midH.toFixed(1).replace('.0','')} hora${midH>=2?'s':''}`:midH<48?`${(midH/24).toFixed(1).replace('.0','')} dia${midH>=48?'s':' e alguns horas'}`:  `${Math.round(midH/24)} dias`;
-      const maxTxt=maxH<1?`${Math.round(maxH*60)} min`:maxH<24?`${maxH.toFixed(0)} horas`:maxH<48?`quase 2 dias`:`${Math.round(maxH/24)} dias`;
-      return`<div class="action-item priority-${sev}">
-        <div class="action-header">
-          <div class="action-title">🚧 ${g.ph}</div>
-          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-            <span class="badge badge-${sev==='high'?'danger':sev==='medium'?'warning':'info'}">Urgência: ${sevLabel}</span>
-          </div>
-        </div>
-        <div class="action-description">
-          <strong>${g.count} pedido${g.count!==1?'s':''}</strong> estão parados aqui.
-          A maioria fica cerca de <strong>${midTxt}</strong> nessa etapa —
-          mas os mais demorados chegam a <strong>${maxTxt}</strong>.
-        </div>
-        <div class="action-metrics">⚡ O que fazer: revisar o que está bloqueando pedidos nessa etapa e priorizar a desobstrução.</div>
-      </div>`;}).join(''):'<div class="alert-section-empty">Nenhum dado de etapas disponível ainda.</div>';
+    // Seção 1: Gargalos top 3 fases por p90*count
+    const gargPhases=Object.entries(snap.byPhase).map(([ph,d])=>({ph,scoreG:d.p90Hours*d.count,...d})).sort((a,b)=>b.scoreG-a.scoreG).slice(0,3);
+    const gargHtml=gargPhases.length?gargPhases.map(g=>`<div class="action-item priority-${g.p90Hours>48?'high':g.p90Hours>24?'medium':'low'}"><div class="action-header"><div class="action-title">🚧 ${g.ph}</div><span class="badge badge-${g.p90Hours>48?'danger':g.p90Hours>24?'warning':'info'}">${g.p90Hours.toFixed(0)}h p90</span></div><div class="action-description">${g.count} cards · mediana ${g.medianHours.toFixed(1)}h · p90 ${g.p90Hours.toFixed(1)}h</div></div>`).join(''):'<div class="alert-section-empty">Sem dados de fase.</div>';
 
-    // ── CATEGORIA: COMERCIAL — Pedidos que precisam de atenção urgente
-    const critHtml=snap.alertasCriticos.length?snap.alertasCriticos.map(r=>{
-      const reasons=[];
-      if(r.urgencia==='ALTA') reasons.push('marcado como urgente');
-      if(r.qtdeAlteracoes>=3) reasons.push(`passou por ${r.qtdeAlteracoes} rodadas de alteração`);
-      if(r.designer) reasons.push(`atribuído a ${r.designer}`);
-      const faseLabel={'negociacao':'em negociação','criacao':'em criação','producao':'em produção','entregues':'entregue'}[r._fase]||r._fase||'fase desconhecida';
-      return`<div class="action-item priority-high">
-        <div class="action-header">
-          <div class="action-title">${DL.pedidoLinkHTML(r)}</div>
-          ${urgBadge(r.urgencia||'')}
-        </div>
-        <div class="action-description">
-          Este pedido está <strong>${faseLabel}</strong>${reasons.length?' e '+reasons.join(', '):''}. Precisa de acompanhamento imediato.
-        </div>
-        <div class="action-metrics">⚡ O que fazer: contatar o responsável e verificar o que está impedindo o avanço.</div>
-      </div>`}).join(''):'<div class="alert-section-empty">✅ Nenhum pedido em situação crítica no momento.</div>';
+    // Seção 2: Alertas críticos (score ≥ 6)
+    const critHtml=snap.alertasCriticos.length?snap.alertasCriticos.map(r=>`<div class="action-item priority-high"><div class="action-header"><div class="action-title">${DL.pedidoLinkHTML(r)}</div>${badgeScore(r._riskScore)}</div><div class="action-description">Fase: ${r._fase||'—'} · Urgência: ${r.urgencia||'—'} · ${r.qtdeAlteracoes} alt. · Designer: ${r.designer||'—'}</div></div>`).join(''):'<div class="alert-section-empty">✅ Nenhum card em estado crítico.</div>';
 
-    // ── CATEGORIA: QUALIDADE — Pedidos que merecem acompanhamento
-    const atHtml=snap.alertasAtencao.length?snap.alertasAtencao.slice(0,10).map(r=>{
-      const faseLabel={'negociacao':'em negociação','criacao':'em criação','producao':'em produção','entregues':'entregue'}[r._fase]||r._fase||'fase desconhecida';
-      const altTxt=r.qtdeAlteracoes>0?`Passou por <strong>${r.qtdeAlteracoes} rodada${r.qtdeAlteracoes>1?'s':''} de alteração</strong>. `:'';
-      return`<div class="action-item priority-medium">
-        <div class="action-header">
-          <div class="action-title">${DL.pedidoLinkHTML(r)}</div>
-          ${r.urgencia?urgBadge(r.urgencia):''}
-        </div>
-        <div class="action-description">
-          Pedido <strong>${faseLabel}</strong>${r.designer?`, designer: ${r.designer}`:''}. ${altTxt}Está acumulando sinais de atenção.
-        </div>
-        <div class="action-metrics">👀 O que fazer: monitorar e verificar se o briefing está completo.</div>
-      </div>`}).join(''):'<div class="alert-section-empty">✅ Nenhum pedido em situação de atenção no momento.</div>';
+    // Seção 3: Atenção (score 3–5)
+    const atHtml=snap.alertasAtencao.length?snap.alertasAtencao.slice(0,10).map(r=>`<div class="action-item priority-medium"><div class="action-header"><div class="action-title">${DL.pedidoLinkHTML(r)}</div>${badgeScore(r._riskScore)}</div><div class="action-description">Fase: ${r._fase||'—'} · ${r.qtdeAlteracoes} alt. · Designer: ${r.designer||'—'}</div></div>`).join(''):'<div class="alert-section-empty">✅ Nenhum card em atenção.</div>';
 
-    // ── CATEGORIA: EFICIÊNCIA — Como está cada designer
+    // Seção 4: Ranking designers
     const desRank=Object.entries(snap.byDesigner).sort((a,b)=>b[1].revisionsAvg-a[1].revisionsAvg);
-    const desHtml=desRank.length?desRank.map(([n,d])=>{
-      const st=d.revisionsAvg>=2?'critico':d.revisionsAvg>=1?'atencao':'ok';
-      const pri=st==='critico'?'high':st==='atencao'?'medium':'low';
-      const altMedia=d.revisionsAvg;
-      // Build a plain-language summary
-      let desc='';
-      if(st==='critico'){
-        desc=`Em média, cada arte deste designer passa por <strong>${altMedia.toFixed(1)} rodada${altMedia>=2?'s':''} de alteração</strong> — acima do ideal. Isso pode indicar briefings incompletos ou necessidade de alinhamento antes de começar.`;
-      } else if(st==='atencao'){
-        desc=`Média de <strong>${altMedia.toFixed(1)} alteração por arte</strong>. Está dentro do aceitável, mas vale ficar de olho.`;
-      } else {
-        desc=`Excelente! Média de <strong>${altMedia.toFixed(1)} alteração por arte</strong>. As artes saem corretas na primeira ou segunda tentativa.`;
-      }
-      if(d.stuckHigh>0) desc+=` Tem <strong>${d.stuckHigh} pedido${d.stuckHigh>1?'s':''} urgente${d.stuckHigh>1?'s':''} parado${d.stuckHigh>1?'s':''}</strong>.`;
-      const action=st==='critico'?'⚡ Revisar o processo de briefing com este designer.':st==='atencao'?'👀 Monitorar nas próximas semanas.':'✅ Nenhuma ação necessária.';
-      return`<div class="action-item priority-${pri}">
-        <div class="action-header"><div class="action-title">🎨 ${n}</div>${stBadge(st)}</div>
-        <div class="action-description">${desc} Total: ${d.cards} arte${d.cards!==1?'s':''}.</div>
-        <div class="action-metrics">${action}</div>
-      </div>`;}).join(''):'<div class="alert-section-empty">Sem dados de designers no período atual.</div>';
+    const desHtml=desRank.length?desRank.map(([n,d])=>{const st=d.revisionsAvg>=2?'critico':d.revisionsAvg>=1?'atencao':'ok';return`<div class="action-item priority-${st==='critico'?'high':st==='atencao'?'medium':'low'}"><div class="action-header"><div class="action-title">🎨 ${n}</div>${stBadge(st)}</div><div class="action-description">${d.cards} cards · ${d.revisionsAvg.toFixed(2)} alt/arte · mediana ${d.medianCycleHours.toFixed(1)}h ciclo · ${d.stuckHigh} urgAlta parados</div></div>`;}).join(''):'<div class="alert-section-empty">Sem dados de designers.</div>';
 
-    // ── CATEGORIA: PREDITIVO — Padrão por vendedor
+    // Seção 5: Ranking vendedores
     const vendRank=Object.entries(snap.byVendor).sort((a,b)=>b[1].revisionsAvg-a[1].revisionsAvg);
-    const vendHtml=vendRank.length?vendRank.map(([n,d])=>{
-      const st=d.revisionsAvg>=2?'critico':d.revisionsAvg>=1?'atencao':'ok';
-      const pri=st==='critico'?'high':st==='atencao'?'medium':'low';
-      const altMedia=d.revisionsAvg;
-      let desc='';
-      if(st==='critico'){
-        desc=`Os pedidos deste vendedor geram em média <strong>${altMedia.toFixed(1)} rodadas de alteração</strong>. Isso sugere que os briefings chegam incompletos ou com informações erradas.`;
-      } else if(st==='atencao'){
-        desc=`Média de <strong>${altMedia.toFixed(1)} alteração por pedido</strong>. Aceitável, mas pode melhorar com briefings mais detalhados.`;
-      } else {
-        desc=`<strong>${altMedia.toFixed(1)} alteração por pedido</strong> — ótimo! Os pedidos chegam com informações claras.`;
-      }
-      if(d.highUrgency>0) desc+=` Tem <strong>${d.highUrgency} pedido${d.highUrgency>1?'s':''} urgente${d.highUrgency>1?'s':''}</strong> em aberto.`;
-      const action=st==='critico'?'⚡ Conversar com este vendedor sobre como melhorar a qualidade dos briefings.':st==='atencao'?'👀 Sugerir um checklist de briefing para este vendedor.':'✅ Nenhuma ação necessária.';
-      return`<div class="action-item priority-${pri}">
-        <div class="action-header"><div class="action-title">👤 ${n}</div>${stBadge(st)}</div>
-        <div class="action-description">${desc} Total: ${d.cards} pedido${d.cards!==1?'s':''}.</div>
-        <div class="action-metrics">${action}</div>
-      </div>`;}).join(''):'<div class="alert-section-empty">Sem dados de vendedores no período atual.</div>';
+    const vendHtml=vendRank.length?vendRank.map(([n,d])=>{const st=d.revisionsAvg>=2?'critico':d.revisionsAvg>=1?'atencao':'ok';return`<div class="action-item priority-${st==='critico'?'high':st==='atencao'?'medium':'low'}"><div class="action-header"><div class="action-title">👤 ${n}</div>${stBadge(st)}</div><div class="action-description">${d.cards} cards · ${d.revisionsAvg.toFixed(2)} alt/arte · ${d.highUrgency} urgência-alta</div></div>`;}).join(''):'<div class="alert-section-empty">Sem dados de vendedores.</div>';
 
-    el.innerHTML= inactiveBanner +
-      sec('Etapas Mais Lentas (onde os pedidos estão travando)','🚧','operacional',gargHtml)+
-      sec('Pedidos que Precisam de Atenção Imediata','🔴','comercial',critHtml,snap.alertasCriticos.length||'')+
-      sec('Pedidos para Monitorar','🟡','prazo',atHtml,snap.alertasAtencao.length||'')+
-      sec('Como Está Cada Designer','🎨','qualidade',desHtml)+
-      sec('Padrão de Retrabalho por Vendedor','📈','preditivo',vendHtml);
+    el.innerHTML=
+      sec('Gargalos Agora (Top 3 Fases)','🚧','operacional',gargHtml)+
+      sec('Alertas Críticos','🔴','comercial',critHtml,snap.alertasCriticos.length||'')+
+      sec('Alertas de Atenção','🟡','prazo',atHtml,snap.alertasAtencao.length||'')+
+      sec('Ranking Designers','🎨','qualidade',desHtml)+
+      sec('Ranking Vendedores','👤','operacional',vendHtml);
   },
 
   /* ══════ MODAIS DE DETALHE ══════ */
@@ -3863,126 +3420,32 @@ const App = {
     const tsEl=document.getElementById('aiTimestamp');
     if(!contentEl)return;
 
-    const priBadge=p=>({critica:'<span class="badge badge-danger">🔴 Crítica</span>',alta:'<span class="badge badge-warning">🟠 Alta</span>',media:'<span class="badge badge-info">🟡 Média</span>',baixa:'<span class="badge badge-success">🟢 Baixa</span>'}[p]||'');
-    const nivelBadge=n=>({critico:'<span class="ai-nivel-badge ai-nivel-critico">⛔ Crítico</span>',atencao:'<span class="ai-nivel-badge ai-nivel-atencao">⚠️ Atenção</span>',estavel:'<span class="ai-nivel-badge ai-nivel-estavel">✅ Estável</span>'}[n]||'');
-
-    const sec=(cls,icon,title,body)=>`<div class="ai-director-section"><div class="ai-director-header ${cls}">${icon} ${title}</div><div class="ai-director-body">${body}</div></div>`;
-
+    const stBadge=st=>st==='critico'?'<span class="badge badge-danger">Crítico</span>':st==='atencao'?'<span class="badge badge-warning">Atenção</span>':'<span class="badge badge-success">OK</span>';
     let html='';
 
-    // ── RESUMO EXECUTIVO
-    if(parsed.resumo_executivo||parsed.resumo){
-      const re=parsed.resumo_executivo||{};
-      if(typeof re==='object'&&re.visao_geral){
-        const nivel=nivelBadge(re.nivel_operacao||'');
-        html+=sec('resumo','📋','Resumo Executivo',`
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:12px">
-            <div style="font-size:13px;color:var(--text);line-height:1.7">${re.visao_geral}</div>
-            ${nivel?`<div>${nivel}</div>`:''}
-          </div>
-          ${re.principal_risco?`<div class="ai-director-item critica"><div class="ai-director-item-title">⚠️ Principal Risco</div><div class="ai-director-item-body">${re.principal_risco}</div></div>`:''}
-          ${re.principal_oportunidade?`<div class="ai-director-item baixa"><div class="ai-director-item-title">💡 Principal Oportunidade</div><div class="ai-director-item-body">${re.principal_oportunidade}</div></div>`:''}`);
-      } else {
-        html+=sec('resumo','📋','Resumo Executivo',`<div class="ai-director-item"><div class="ai-director-item-body">${typeof re==='string'?re:(parsed.resumo||'')}</div></div>`);
-      }
+    if(parsed.resumo){
+      html+=`<div class="ai-section"><div class="ai-section-title">📋 Resumo Executivo</div><div class="ai-card">${parsed.resumo}</div></div>`;
     }
-
-    // ── DIAGNÓSTICO OPERACIONAL
-    if(parsed.diagnostico_operacional&&parsed.diagnostico_operacional.length){
-      const items=parsed.diagnostico_operacional.map(d=>`<div class="ai-director-item ${d.tipo||'media'}">
-        <div class="ai-director-item-title">${d.titulo||d.area||''}</div>
-        <div class="ai-director-item-body">${d.descricao||d.obs||''}</div>
-      </div>`).join('');
-      html+=sec('diagnostico','🔬','Diagnóstico Operacional',items);
-    } else if(parsed.gargalos?.length) {
-      const items=parsed.gargalos.map(g=>`<div class="ai-director-item alta">
-        <div class="ai-director-item-title">🚧 ${g.fase}</div>
-        <div class="ai-director-item-body">${g.problema}</div>
-        <div class="ai-director-item-meta"><span>➡ Ação: ${g.acao}</span></div>
-      </div>`).join('');
-      html+=sec('diagnostico','🔬','Diagnóstico Operacional',items);
+    if(parsed.gargalos?.length){
+      html+=`<div class="ai-section"><div class="ai-section-title">🚧 Gargalos Identificados</div>`;
+      parsed.gargalos.forEach(g=>{html+=`<div class="ai-card urgente"><div class="ai-card-title">🚧 ${g.fase}</div><div class="ai-card-body">${g.problema}</div><div class="ai-card-action">➡ ${g.acao}</div></div>`;});
+      html+='</div>';
     }
-
-    // ── ALERTAS CRÍTICOS
-    if(parsed.alertas_criticos&&parsed.alertas_criticos.length){
-      const items=parsed.alertas_criticos.map(a=>`<div class="ai-director-item ${a.prioridade==='critica'?'critica':a.prioridade==='alta'?'alta':a.prioridade==='media'?'media':'baixa'}">
-        <div class="ai-director-item-title">${a.titulo||''} ${priBadge(a.prioridade||'')}</div>
-        <div class="ai-director-item-body">${a.evidencia||a.descricao||''}</div>
-        <div class="ai-director-item-meta"><span>Impacto: ${a.impacto||'—'}</span></div>
-      </div>`).join('');
-      html+=sec('alertas','🚨','Alertas Críticos',items);
+    if(parsed.designers?.length){
+      html+=`<div class="ai-section"><div class="ai-section-title">🎨 Análise Designers</div>`;
+      parsed.designers.forEach(d=>{html+=`<div class="ai-card ${d.status==='critico'?'urgente':d.status==='atencao'?'atencao':'positivo'}"><div class="ai-card-title">${stBadge(d.status)} ${d.nome}</div><div class="ai-card-body">${d.obs}</div></div>`;});
+      html+='</div>';
     }
-
-    // ── CAUSAS PROVÁVEIS
-    if(parsed.causas_provaveis&&parsed.causas_provaveis.length){
-      const items=parsed.causas_provaveis.map(c=>`<div class="ai-director-item media">
-        <div class="ai-director-item-title">${c.causa||c}</div>
-        ${c.evidencia?`<div class="ai-director-item-body">${c.evidencia}</div>`:''}
-      </div>`).join('');
-      html+=sec('causas','🔍','Causas Prováveis',items);
+    if(parsed.vendedores?.length){
+      html+=`<div class="ai-section"><div class="ai-section-title">👥 Análise Vendedores</div>`;
+      parsed.vendedores.forEach(v=>{html+=`<div class="ai-card ${v.status==='critico'?'urgente':v.status==='atencao'?'atencao':'positivo'}"><div class="ai-card-title">${stBadge(v.status)} ${v.nome}</div><div class="ai-card-body">${v.obs}</div></div>`;});
+      html+='</div>';
     }
-
-    // ── AÇÕES RECOMENDADAS
-    if(parsed.acoes_recomendadas||(parsed.proximos_passos&&parsed.proximos_passos.length)){
-      const ar=parsed.acoes_recomendadas;
-      if(ar&&(ar.imediata||ar.curto_prazo||ar.estrutural)){
-        let body='';
-        if(ar.imediata?.length){
-          body+=`<div class="ai-acao-group"><div class="ai-acao-group-title">⚡ Ação Imediata (hoje)</div>`;
-          ar.imediata.forEach(a=>{body+=`<div class="ai-director-item critica"><div class="ai-director-item-body">${a}</div></div>`;});
-          body+='</div>';
-        }
-        if(ar.curto_prazo?.length){
-          body+=`<div class="ai-acao-group"><div class="ai-acao-group-title">📅 Curto Prazo (próximos dias)</div>`;
-          ar.curto_prazo.forEach(a=>{body+=`<div class="ai-director-item alta"><div class="ai-director-item-body">${a}</div></div>`;});
-          body+='</div>';
-        }
-        if(ar.estrutural?.length){
-          body+=`<div class="ai-acao-group"><div class="ai-acao-group-title">🏗️ Ação Estrutural (processo)</div>`;
-          ar.estrutural.forEach(a=>{body+=`<div class="ai-director-item baixa"><div class="ai-director-item-body">${a}</div></div>`;});
-          body+='</div>';
-        }
-        html+=sec('acoes','✅','Ações Recomendadas',body);
-      } else {
-        const pp=(parsed.proximos_passos||[]).map(p=>`<div class="ai-director-item baixa"><div class="ai-director-item-body">${p}</div></div>`).join('');
-        html+=sec('acoes','✅','Próximos Passos',pp);
-      }
+    if(parsed.proximos_passos?.length){
+      const pp=parsed.proximos_passos.map(p=>`<li style="font-size:13px;line-height:2">${p}</li>`).join('');
+      html+=`<div class="ai-section"><div class="ai-section-title">✅ Próximos Passos</div><div class="ai-card"><ol style="margin:0;padding-left:20px">${pp}</ol></div></div>`;
     }
-
-    // ── TENDÊNCIAS E PREVISÕES
-    if(parsed.tendencias&&parsed.tendencias.length){
-      const items=parsed.tendencias.map(t=>`<div class="ai-director-item ${t.direcao==='piora'?'alta':t.direcao==='melhora'?'baixa':'media'}">
-        <div class="ai-director-item-title">${t.direcao==='piora'?'📉':t.direcao==='melhora'?'📈':'➡'} ${t.titulo||t.area||''}</div>
-        <div class="ai-director-item-body">${t.descricao||t}</div>
-      </div>`).join('');
-      html+=sec('tendencias','📈','Tendências e Previsões',items);
-    }
-
-    // ── PERGUNTAS DE GESTÃO
-    if(parsed.perguntas_gestao&&parsed.perguntas_gestao.length){
-      const items=parsed.perguntas_gestao.map(q=>`<div class="ai-pergunta">❓ ${q}</div>`).join('');
-      html+=sec('perguntas','🤔','Perguntas Estratégicas de Gestão',items);
-    }
-
-    // ── DESIGNERS / VENDEDORES (fallback para schema legado)
-    if(!parsed.diagnostico_operacional&&parsed.designers?.length){
-      const stBadge=st=>st==='critico'?'<span class="badge badge-danger">Crítico</span>':st==='atencao'?'<span class="badge badge-warning">Atenção</span>':'<span class="badge badge-success">OK</span>';
-      const items=parsed.designers.map(d=>`<div class="ai-director-item ${d.status==='critico'?'critica':d.status==='atencao'?'alta':'baixa'}">
-        <div class="ai-director-item-title">${stBadge(d.status)} ${d.nome}</div>
-        <div class="ai-director-item-body">${d.obs}</div>
-      </div>`).join('');
-      html+=sec('diagnostico','🎨','Análise Designers',items);
-    }
-    if(!parsed.diagnostico_operacional&&parsed.vendedores?.length){
-      const stBadge=st=>st==='critico'?'<span class="badge badge-danger">Crítico</span>':st==='atencao'?'<span class="badge badge-warning">Atenção</span>':'<span class="badge badge-success">OK</span>';
-      const items=parsed.vendedores.map(v=>`<div class="ai-director-item ${v.status==='critico'?'critica':v.status==='atencao'?'alta':'baixa'}">
-        <div class="ai-director-item-title">${stBadge(v.status)} ${v.nome}</div>
-        <div class="ai-director-item-body">${v.obs}</div>
-      </div>`).join('');
-      html+=sec('tendencias','👥','Análise Vendedores',items);
-    }
-
-    if(!html)html='<div class="ai-director-item"><div class="ai-director-item-body">Sem dados suficientes para análise.</div></div>';
+    if(!html)html='<div class="ai-card">Sem dados suficientes para análise.</div>';
 
     contentEl.innerHTML=html;
     if(tsEl)tsEl.textContent=`${fromCache?'(cache) ':''}Gerado em ${DL.fmtDT(new Date())} · ${rowCount} pedidos · ${meta?.model||'Groq'}`;
@@ -4011,7 +3474,6 @@ const App = {
 
   /* Chamado após login bem-sucedido (reload) ou boot com sessão válida */
   _onSession(cfg){
-    TeamFilter.load();
     this._role      = cfg.role || 'viewer';
     this._userEmail = cfg.user?.email || cfg.user?.username || '';
     document.getElementById('connectScreen').style.display = 'none';
@@ -4045,12 +3507,15 @@ const App = {
     const nameEl = document.getElementById('userBadgeName');
     const roleEl = document.getElementById('userBadgeRole');
     const adminBtn = document.getElementById('btnAdmin');
+    const avatarEl = document.getElementById('sbAvatar');
     if(badge)  badge.style.display = 'flex';
     if(nameEl) nameEl.textContent = name;
     if(roleEl){
       roleEl.textContent = role.toUpperCase();
-      roleEl.style.background = role==='admin' ? '#7c3aed' : '#2563eb';
+      roleEl.style.background = 'transparent';
+      roleEl.style.color = role==='admin' ? 'var(--accent)' : 'rgba(255,255,255,.35)';
     }
+    if(avatarEl) avatarEl.textContent = (name||'?').charAt(0).toUpperCase();
     if(adminBtn) adminBtn.style.display = role==='admin' ? '' : 'none';
   },
 
@@ -4072,6 +3537,8 @@ const App = {
   _showDashboard(){
     document.getElementById('connectScreen').style.display='none';
     document.getElementById('dashboard').style.display='block';
+    // body bg handled by sidebar now
+    document.body.style.background='var(--bg-base)';
   },
 
   _showConnectScreen(){
@@ -4094,7 +3561,9 @@ const App = {
 
   _updateDarkBtn(){
     const btn=document.getElementById('btnDarkMode');
-    if(btn) btn.textContent=document.body.classList.contains('dark-mode')?'☀️ Modo Claro':'🌙 Modo Escuro';
+    const icon = document.body.classList.contains('dark-mode') ? '○' : '◑';
+    const label = document.body.classList.contains('dark-mode') ? ' Modo Claro' : ' Modo Escuro';
+    if(btn){ btn.innerHTML = icon + label; }
   },
 
   /* ── MODAL ── */
@@ -4111,68 +3580,6 @@ const App = {
   closeAdminModal(){
     document.getElementById('modalAdmin').classList.remove('active');
   },
-
-  // ── Equipe Modal ──────────────────────────────────────────────────────────
-  openEquipeModal(){
-    const list = TeamFilter.load();
-    this._renderEquipeList(list);
-    document.getElementById('equipeSaveMsg').style.display='none';
-    document.getElementById('modalEquipe').classList.add('active');
-  },
-
-  closeEquipeModal(){
-    document.getElementById('modalEquipe').classList.remove('active');
-  },
-
-  _renderEquipeList(list){
-    const el = document.getElementById('equipeList');
-    if(!el) return;
-    el.innerHTML = list.map((m,i)=>`
-      <div class="equipe-item ${m.ativo?'':'inativo'}" id="equipe-item-${i}">
-        <label class="equipe-toggle">
-          <input type="checkbox" ${m.ativo?'checked':''} onchange="App._toggleEquipeMembro(${i},this.checked)">
-          <span class="equipe-slider"></span>
-        </label>
-        <span class="equipe-nome">${String(m.nome).replace(/</g,'&lt;')}</span>
-        <span class="equipe-cargo">${m.cargo}</span>
-        <button class="equipe-del" title="Remover" onclick="App._removeEquipeMembro(${i})">✕</button>
-      </div>`).join('');
-  },
-
-  _toggleEquipeMembro(idx, ativo){
-    const list = TeamFilter._equipe || TeamFilter.load();
-    if(list[idx]) list[idx].ativo = ativo;
-    const item = document.getElementById('equipe-item-'+idx);
-    if(item) item.className = 'equipe-item'+(ativo?'':' inativo');
-  },
-
-  _removeEquipeMembro(idx){
-    const list = TeamFilter._equipe || TeamFilter.load();
-    list.splice(idx, 1);
-    this._renderEquipeList(list);
-  },
-
-  addEquipeMembro(){
-    const nome = (document.getElementById('equipeNomeInput').value||'').trim();
-    const cargo = document.getElementById('equipeCargoInput').value || 'designer';
-    if(!nome){ alert('Digite o nome do membro.'); return; }
-    const list = TeamFilter._equipe || TeamFilter.load();
-    if(list.some(m=>DL.norm(m.nome)===DL.norm(nome))){ alert('Membro já existe.'); return; }
-    list.push({nome, cargo, ativo: true});
-    document.getElementById('equipeNomeInput').value = '';
-    this._renderEquipeList(list);
-  },
-
-  saveEquipe(){
-    const list = TeamFilter._equipe || TeamFilter.load();
-    TeamFilter.save(list);
-    const msg = document.getElementById('equipeSaveMsg');
-    if(msg){ msg.style.display='inline'; setTimeout(()=>msg.style.display='none',2500); }
-    // Invalidate AI cache and re-render alerts
-    this._aiCachedResult = null;
-    if(State.rowsFiltered.length) RL.renderPlanoAcoes(State.rowsFiltered);
-  },
-  // ── End Equipe Modal ──────────────────────────────────────────────────────
 
   // legacy shim kept for safety
   openModal(){ this.openAdminModal(); },
@@ -4320,7 +3727,6 @@ const App = {
 
       State.reset();
       State.loadData(allRows);
-      TeamFilter.syncFromData(allRows);
 
       Store.set(SK.dataset,{rows:allRows,fetchedAt:new Date().toISOString()});
       const now=DL.fmtDT(new Date());
@@ -4345,7 +3751,7 @@ const App = {
 
   _lockSyncBtn(lock){
     const btn=document.getElementById('btnSync');
-    if(btn){ btn.disabled=lock; btn.textContent=lock?'⏳ Sincronizando…':'🔄 Atualizar'; }
+    if(btn){ btn.disabled=lock; btn.innerHTML=lock?'↺ Sincronizando…':'↺ Sincronizar'; }
     const bm=document.getElementById('btnModalSync');
     if(bm){ bm.disabled=lock; }
   },
@@ -4410,20 +3816,19 @@ const App = {
     this.renderActiveTab();
   },
 
-  clearFilters(){ State.clearFilters(); MF.resetAll(); FD.updateChips(); this.renderActiveTab(); },
+  clearFilters(){ State.clearFilters(); this.renderActiveTab(); },
 
   switchTab(index){
     document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===index));
     document.querySelectorAll('.tab-content').forEach((c,i)=>c.classList.toggle('active',i===index));
+    // Sidebar active state
+    document.querySelectorAll('.sb-tab-btn').forEach((b,i)=>b.classList.toggle('active',i===index));
+    // Topbar title
+    const _titles=['Visão Geral','Designers','Vendedores','Alertas & Ações'];
+    const _tEl=document.getElementById('topbarTitle');
+    if(_tEl) _tEl.textContent=_titles[index]||'';
     State.activeTab=index;
-    // Scroll to top on every tab change
-    window.scrollTo({top:0,behavior:'smooth'});
-    // Show skeleton for data-heavy tabs
-    if(index===0){ const sk=document.getElementById('skeletonGeral'); if(sk&&!State.rowsFiltered.length) sk.style.display=''; }
-    if(index===1){ const sk=document.getElementById('skeletonDesigners'); if(sk&&!State.rowsFiltered.length) sk.style.display=''; }
-    if(index===2){ const sk=document.getElementById('skeletonVendedores'); if(sk&&!State.rowsFiltered.length) sk.style.display=''; }
     this.renderActiveTab();
-    FD.updateChips();
     setTimeout(()=>{ Object.values(State.charts).forEach(c=>c&&c.resize&&c.resize()); },120);
   },
 
@@ -4830,19 +4235,16 @@ window.addEventListener('afterprint', ()=>{
 // buildSnapshot — gera JSON compacto para enviar à IA (sem todos os cards)
 // ═══════════════════════════════════════════════════════════════════
 function buildSnapshot(rows){
-  // Filter inactive team members from stats
-  const activeRows = TeamFilter.filterForStats(rows);
-
   const now=Date.now();
   function hoursStuck(r){const d=r._createdObj;if(!d||!(d instanceof Date))return 0;return(now-d.getTime())/3600000;}
   function cycleHours(r){if(r._tempoUtil!=null)return r._tempoUtil/60;return null;}
 
-  const criacao=activeRows.filter(r=>DL.isCriacao(r));
-  const aprovados=activeRows.filter(r=>DL.isCriacao(r)&&DL.isAprovado(r));
+  const criacao=rows.filter(r=>DL.isCriacao(r));
+  const aprovados=rows.filter(r=>DL.isCriacao(r)&&DL.isAprovado(r));
 
-  // byPhase (use all active rows)
+  // byPhase
   const phaseGroups={};
-  activeRows.forEach(r=>{const ph=r._fase||'outro';if(!phaseGroups[ph])phaseGroups[ph]=[];phaseGroups[ph].push(hoursStuck(r));});
+  rows.forEach(r=>{const ph=r._fase||'outro';if(!phaseGroups[ph])phaseGroups[ph]=[];phaseGroups[ph].push(hoursStuck(r));});
   const byPhase={},p90ByPhase={};
   Object.entries(phaseGroups).forEach(([ph,hrs])=>{
     hrs.sort((a,b)=>a-b);
@@ -4863,7 +4265,7 @@ function buildSnapshot(rows){
   }
 
   // topStuckCards
-  const topStuckCards=[...activeRows].map(r=>({...r,_hs:hoursStuck(r)}))
+  const topStuckCards=[...rows].map(r=>({...r,_hs:hoursStuck(r)}))
     .sort((a,b)=>b._hs-a._hs).slice(0,10)
     .map(r=>({title:r.title,hoursStuck:r._hs,phase:r._fase||'?',designer:r.designer||'',urgency:r.urgencia||'',revisions:r.qtdeAlteracoes,score:scoreCard(r)}));
 
@@ -4875,24 +4277,22 @@ function buildSnapshot(rows){
 
   // byVendor
   const vMap3={};
-  activeRows.forEach(r=>{if(!r.vendedor)return;if(!vMap3[r.vendedor])vMap3[r.vendedor]={cards:0,highUrgency:0,rev:0};vMap3[r.vendedor].cards++;vMap3[r.vendedor].rev+=r.qtdeAlteracoes;if(r.urgencia==='ALTA')vMap3[r.vendedor].highUrgency++;});
+  rows.forEach(r=>{if(!r.vendedor)return;if(!vMap3[r.vendedor])vMap3[r.vendedor]={cards:0,highUrgency:0,rev:0};vMap3[r.vendedor].cards++;vMap3[r.vendedor].rev+=r.qtdeAlteracoes;if(r.urgencia==='ALTA')vMap3[r.vendedor].highUrgency++;});
   const byVendor={};
   Object.entries(vMap3).forEach(([n,d])=>{byVendor[n]={cards:d.cards,highUrgency:d.highUrgency,revisionsAvg:d.cards?d.rev/d.cards:0};});
 
   // alertas
-  const scored=activeRows.map(r=>({r,s:scoreCard(r)}));
+  const scored=rows.map(r=>({r,s:scoreCard(r)}));
   const alertasCriticos=scored.filter(x=>x.s>=6).sort((a,b)=>b.s-a.s).slice(0,10).map(x=>({...x.r,_riskScore:x.s}));
   const alertasAtencao=scored.filter(x=>x.s>=3&&x.s<6).sort((a,b)=>b.s-a.s).slice(0,20).map(x=>({...x.r,_riskScore:x.s}));
   const allScores=scored.map(x=>x.s);
   const avgRisk=allScores.length?allScores.reduce((a,b)=>a+b,0)/allScores.length:0;
-  const inactiveMembers=TeamFilter.getInactiveNames();
 
   return{
-    totals:{total:activeRows.length,criacao:criacao.length,aprovados:aprovados.length,avgRisk},
+    totals:{total:rows.length,criacao:criacao.length,aprovados:aprovados.length,avgRisk},
     byPhase,topStuckCards,byDesigner,byVendor,
     riskSummary:{high:alertasCriticos.length,medium:alertasAtencao.length,thresholds:p90ByPhase},
-    alertasCriticos,alertasAtencao,_p90ByPhase:p90ByPhase,
-    inactiveFiltered:inactiveMembers
+    alertasCriticos,alertasAtencao,_p90ByPhase:p90ByPhase
   };
 }
 
