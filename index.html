@@ -50,7 +50,7 @@ body.dark-mode{
 body{
   font-family:'Outfit','Segoe UI',system-ui,sans-serif;
   background:var(--bg-base);
-  min-height:100vh;color:var(--text);
+  height:100vh;overflow:hidden;color:var(--text);
   transition:background .25s,color .25s;
   -webkit-font-smoothing:antialiased;
 }
@@ -135,7 +135,7 @@ body.dark-mode .login-err{background:rgba(248,113,113,.12);border-color:rgba(248
 .sb-btn.danger:hover{background:rgba(248,113,113,.1);color:#f87171}
 
 /* ── MAIN AREA ── */
-.sb-main{flex:1;margin-left:220px;min-height:100vh;display:flex;flex-direction:column}
+.sb-main{flex:1;margin-left:220px;height:100vh;overflow:hidden;display:flex;flex-direction:column}
 
 /* ── TOP BAR ── */
 .topbar{
@@ -159,7 +159,7 @@ body.dark-mode .login-err{background:rgba(248,113,113,.12);border-color:rgba(248
 #headerTimestamp{font-size:11px;color:var(--text-dim)}
 
 /* ── CONTENT ── */
-.sb-content{flex:1;padding:22px 24px}
+.sb-content{flex:1;padding:0;overflow-y:auto;min-height:0}
 
 /* ── BUTTONS ── */
 .btn{background:var(--primary);color:#fff;border:none;padding:8px 16px;border-radius:var(--radius);cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;transition:all .18s;white-space:nowrap}
@@ -183,7 +183,7 @@ body.dark-mode .login-err{background:rgba(248,113,113,.12);border-color:rgba(248
 #syncToast.toast-err{background:#b91c1c;border-color:#f87171}
 
 /* Filters */
-.filters-bar{background:var(--header-bg);border-radius:var(--radius-lg);padding:13px 18px;margin-bottom:16px;box-shadow:var(--shadow-sm);border:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;position:sticky;top:58px;z-index:190}
+.filters-bar{background:var(--header-bg);border-radius:0;padding:12px 24px;margin-bottom:0;box-shadow:none;border:none;border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;position:sticky;top:58px;z-index:190}
 #btnScrollTop{display:none;position:fixed;bottom:28px;right:28px;z-index:4000;width:40px;height:40px;border-radius:50%;background:var(--surface);color:var(--text);border:1.5px solid var(--border);font-size:18px;cursor:pointer;box-shadow:var(--shadow);transition:opacity .2s,transform .2s}
 #btnScrollTop:hover{transform:translateY(-2px);opacity:.85}
 .dh-alt{background:#065f46;color:#fff;border-right:2px solid #064e3b}
@@ -212,6 +212,7 @@ body.dark-mode .daily-table td.da{background:rgba(5,150,105,.12)}
 .tabs{display:none!important}
 .tab-btn{display:none!important}
 .tab-content{display:none;}
+.tab-content.active{display:block;padding:20px 24px}
 .tab-content.active{display:block}
 
 /* Cards */
@@ -708,9 +709,8 @@ body.dark-mode .daily-table td.da{background:rgba(74,222,128,.04)!important}
         <!-- hidden compat -->
         <div id="userBadge" style="display:none"></div>
       </div>
-    </div>
-
     </div><!-- /topbar -->
+
     <div class="sb-content">
     <div class="filters-bar">
       <div class="filter-group ms-wrap" id="wrapVendedor">
@@ -1025,13 +1025,15 @@ body.dark-mode .daily-table td.da{background:rgba(74,222,128,.04)!important}
   </div>
 </div>
 
-<div class="loading" id="loading">
-  <div class="spinner"></div>
-  <div class="loading-text" id="loadingText">Sincronizando com o Trello…</div>
-</div><!-- /sb-content -->
+    </div><!-- /sb-content -->
   </div><!-- /sb-main -->
  </div><!-- /sb-layout -->
 </div><!-- /dashboard -->
+
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">Sincronizando com o Trello…</div>
+</div>
 <div id="syncToast"></div>
 <button id="btnScrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Voltar ao topo">&#8679;</button>
 
