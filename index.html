@@ -20,27 +20,27 @@
   --info:#3b9eff;--orange:#ff8c42;
 
   /* Light mode — off-white, NOT pure white */
-  --bg-body:#f0f4f8;                    /* page background */
-  --surface:#f7fafd;                    /* topbar / sidebar-light */
-  --card-bg:#ffffff;                    /* cards slightly whiter than bg */
-  --surface-2:#edf2f7;                  /* subtle section bg */
-  --surface-3:#e4eaf2;
+  --bg-body:#e8edf4;                    /* page background */
+  --surface:#f0f4f9;                    /* topbar / sidebar-light */
+  --card-bg:#ffffff;                    /* cards */
+  --surface-2:#dde4ee;                  /* subtle section bg */
+  --surface-3:#d0d9e6;
   --sidebar-bg:#0d1117;                 /* always-dark sidebar */
   --sidebar-border:rgba(255,255,255,.07);
   --header-bg:#f7fafd;
   --input-bg:#edf2f7;
-  --border:#dde5f0;--border-strong:#c4d0e0;
+  --border:#c8d4e3;--border-strong:#a8bdd4;
 
   /* Text */
   --dark:#0d1117;--light:#f7fafd;
   --text:#1a2535;--text-light:#556070;--text-dim:#8a9eb0;
 
   /* Shadows */
-  --sh-xs:0 1px 3px rgba(13,17,23,.06);
-  --sh-sm:0 2px 8px rgba(13,17,23,.08),0 1px 2px rgba(13,17,23,.05);
-  --sh:0 4px 20px rgba(13,17,23,.1);
-  --sh-lg:0 16px 48px rgba(13,17,23,.15);
-  --sh-card:0 2px 12px rgba(13,17,23,.07),0 1px 3px rgba(13,17,23,.05);
+  --sh-xs:0 1px 3px rgba(13,17,23,.09);
+  --sh-sm:0 2px 8px rgba(13,17,23,.13),0 1px 2px rgba(13,17,23,.08);
+  --sh:0 4px 20px rgba(13,17,23,.14);
+  --sh-lg:0 16px 48px rgba(13,17,23,.18);
+  --sh-card:0 3px 14px rgba(13,17,23,.11),0 1px 4px rgba(13,17,23,.08);
 
   /* Glass */
   --glass-bg:rgba(255,255,255,.55);
@@ -186,14 +186,15 @@ body.dark-mode{
 
 /* Collapse toggle */
 .sb-collapse-btn{
-  position:absolute;right:-11px;top:66px;
-  width:22px;height:22px;border-radius:50%;
-  background:var(--sidebar-bg);border:1px solid var(--sidebar-border);
-  color:rgba(255,255,255,.45);font-size:10px;cursor:pointer;
+  position:absolute;right:-14px;top:62px;
+  width:28px;height:28px;border-radius:50%;
+  background:var(--accent);border:2px solid var(--sidebar-bg);
+  color:#080b11;font-size:10px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  transition:all .15s;z-index:10;
+  transition:all .2s;z-index:10;
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
 }
-.sb-collapse-btn:hover{background:#1a2535;color:#fff}
+.sb-collapse-btn:hover{background:var(--accent-dim);transform:scale(1.12)}
 
 /* Nav */
 .sb-nav{ flex:1;padding:12px 10px;overflow-y:auto;overflow-x:hidden; }
@@ -947,8 +948,8 @@ body.dark-mode .sb-layout{
 
 /* ── CONTENT MAX WIDTH ───────────────────────────────────────────── */
 .tab-content.active{
-  max-width:1380px;
-  margin:0 auto;
+  max-width:100%;
+  margin:0;
   width:100%;
 }
 
@@ -1195,8 +1196,8 @@ body.dark-mode .filter-trigger-bar{
         </div>
       </div>
       <div class="filter-drawer-footer">
-        <button class="btn" style="flex:1" onclick="App.clearFilters();FD.close()">✕ Limpar filtros</button>
-        <button class="btn btn-primary" style="flex:1" onclick="FD.close()">✅ Aplicar</button>
+        <button class="btn" style="flex:1" onclick="App.clearFilters();FD.close()"><svg style="display:inline-block;vertical-align:-2px;margin-right:4px" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Limpar filtros</button>
+        <button class="btn btn-primary" style="flex:1" onclick="FD.close()"><svg style="display:inline-block;vertical-align:-2px;margin-right:4px" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Aplicar</button>
       </div>
     </div>
 
@@ -1220,10 +1221,10 @@ body.dark-mode .filter-trigger-bar{
     </div>
 
     <div class="tabs" role="tablist">
-      <button class="tab-btn active" onclick="App.switchTab(0)">🎯 Visão Geral</button>
-      <button class="tab-btn" onclick="App.switchTab(1)">👨‍🎨 Designers</button>
-      <button class="tab-btn" onclick="App.switchTab(2)">👥 Vendedores</button>
-      <button class="tab-btn" onclick="App.switchTab(3)">🚨 Alertas & Ações</button>
+      <button class="tab-btn active" onclick="App.switchTab(0)">Visão Geral</button>
+      <button class="tab-btn" onclick="App.switchTab(1)">Designers</button>
+      <button class="tab-btn" onclick="App.switchTab(2)">Vendedores</button>
+      <button class="tab-btn" onclick="App.switchTab(3)">Alertas & Ações</button>
     </div>
 
     </div><!-- /NAV CARD -->
@@ -1236,7 +1237,7 @@ body.dark-mode .filter-trigger-bar{
       <div class="cards-grid" id="geralCards"></div>
       <div class="chart-container">
         <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">📊 Quantas vezes cada arte precisou de alteração</h3>
+          <h3 class="chart-title" style="margin:0"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/></svg>Quantas vezes cada arte precisou de alteração</h3>
           <button class="chart-info-btn" onclick="ChartInfo.show(this,'Distribuição de Alterações','Este gráfico mostra quantas artes saíram na primeira tentativa (0 alterações), precisaram de 1, 2, 3–4 ou 5 ou mais revisões.','Como é calculado: conta o número de vezes que cada pedido voltou para alteração antes de ser aprovado.','Dica: se a maioria das artes estiver em 0 ou 1 alteração, o processo de briefing está funcionando bem. Se houver muitas com 3+, vale conversar com os vendedores sobre como melhorar as instruções no pedido.')">ℹ</button>
         </div>
         <p class="chart-subtitle">Ideal: maior parte das artes com 0 ou 1 alteração.</p>
@@ -1244,7 +1245,7 @@ body.dark-mode .filter-trigger-bar{
       </div>
       <div class="chart-container">
         <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">📊 Quanto tempo cada pedido leva para ficar pronto</h3>
+          <h3 class="chart-title" style="margin:0"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Quanto tempo cada pedido leva para ficar pronto</h3>
           <button class="chart-info-btn" onclick="ChartInfo.show(this,'Tempo de Criação','Este gráfico agrupa os pedidos por faixa de tempo: menos de 30 minutos, 30min–1h, 1–2h, e assim por diante.','Como é calculado: mede o tempo de expediente (segunda a sexta, 8h–18h) entre o início e o fim da criação de cada arte. Finais de semana não contam.','Dica: se muitos pedidos estão demorando mais de 4 horas, pode ser sinal de fila acumulada ou briefings incompletos que geram retrabalho durante a criação.')">ℹ</button>
         </div>
         <p class="chart-subtitle">Barras = quantidade de pedidos · Linha = arquivos de arte entregues</p>
@@ -1252,7 +1253,7 @@ body.dark-mode .filter-trigger-bar{
       </div>
       <div class="chart-container">
         <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">⏳ Quanto tempo a equipe gasta em criação vs. correções</h3>
+          <h3 class="chart-title" style="margin:0"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Quanto tempo a equipe gasta em criação vs. correções</h3>
           <button class="chart-info-btn" onclick="ChartInfo.show(this,'Criação vs. Alterações','Este gráfico mostra como o tempo total da equipe está dividido: quanto é gasto criando artes novas e quanto é gasto corrigindo artes que voltaram para alteração.','Como é calculado: soma o tempo útil de todas as criações e de todas as alterações concluídas no período, e mostra a proporção de cada um.','Dica: idealmente, a maior parte do tempo deveria ser gasto em criação (roxo). Se as correções (vermelho) estiverem acima de 40%, pode indicar que os briefings precisam de mais detalhes.')">ℹ</button>
         </div>
         <p class="chart-subtitle">Clique nas barras para ver o detalhamento completo.</p>
@@ -1260,7 +1261,7 @@ body.dark-mode .filter-trigger-bar{
       </div>
       <div class="chart-container">
         <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">🚧 Onde os pedidos estão parados agora</h3>
+          <h3 class="chart-title" style="margin:0"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>Onde os pedidos estão parados agora</h3>
           <button class="chart-info-btn" onclick="ChartInfo.show(this,'Gargalos do Fluxo','Este gráfico mostra em quais etapas do processo os pedidos estão acumulando e há quanto tempo estão parados ali.','Como é calculado: conta quantos cartões estão em cada etapa do Trello e calcula o tempo médio desde a última movimentação.','Dica: etapas com muitos pedidos parados por vários dias precisam de atenção imediata. Clique em qualquer barra para ver quais pedidos estão naquela etapa.')">ℹ</button>
         </div>
         <p class="chart-subtitle">Volume de pedidos por etapa e tempo médio parado. Clique para ver os detalhes.</p>
@@ -1268,19 +1269,19 @@ body.dark-mode .filter-trigger-bar{
       </div>
       <div class="chart-container">
         <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">🔥 Pedidos por nível de urgência</h3>
+          <h3 class="chart-title" style="margin:0"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Pedidos por nível de urgência</h3>
           <button class="chart-info-btn" onclick="ChartInfo.show(this,'Distribuição por Urgência','Este gráfico mostra como os pedidos de criação estão divididos entre urgência alta, média e baixa.','Como é calculado: conta quantos pedidos foram marcados com cada nível de urgência no Trello.','Dica: se muitos pedidos estiverem como urgência alta ao mesmo tempo, a equipe fica sobrecarregada. Revise com os vendedores quais pedidos realmente precisam de prioridade.')">ℹ</button>
         </div>
         <p class="chart-subtitle">Proporção das artes de criação por urgência.</p>
         <div class="chart-wrapper" style="max-width:460px;margin:0 auto"><canvas id="chartUrgencia"></canvas></div>
       </div>
       <div class="chart-container" id="criticosContainer">
-        <h3 class="chart-title">🔴 Pedidos que Mais Precisam de Atenção</h3>
+        <h3 class="chart-title"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Pedidos que Mais Precisam de Atenção</h3>
         <p class="chart-subtitle">Artes com muitas alterações, tempo muito alto ou urgência ALTA com retrabalho.</p>
         <div class="criticos-list" id="criticosList"></div>
       </div>
       <details class="debug-panel" id="debugPanel">
-        <summary>🔧 Diagnóstico de Tempo (para validação dos cálculos)</summary>
+        <summary><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Diagnóstico de Tempo (para validação dos cálculos)</summary>
         <div id="debugContent"></div>
         <p class="debug-note">Expediente: Seg–Sex 08:00–18:00 (contínuo) · Sábado e Domingo não contam.<br>Tempos indefinidos (sem hora de início/fim) são excluídos de todos os cálculos.</p>
       </details>
@@ -1294,7 +1295,7 @@ body.dark-mode .filter-trigger-bar{
       <div class="cards-grid" id="designersCards"></div>
       <div class="chart-container">
         <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">🎯 Artes que saíram aprovadas sem nenhuma alteração (por designer)</h3>
+          <h3 class="chart-title" style="margin:0"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Artes que saíram aprovadas sem nenhuma alteração (por designer)</h3>
           <button class="chart-info-btn" onclick="ChartInfo.show(this,'Artes Aprovadas Sem Alteração','Este gráfico mostra qual porcentagem das artes de cada designer foi aprovada logo na primeira versão, sem precisar de correção.','Como é calculado: conta os pedidos que estão em produção ou já foram entregues e que não tiveram nenhuma rodada de alteração, dividido pelo total de pedidos do designer.','Dica: quanto mais alto, melhor. Verde (80%+) = ótimo. Amarelo (50–80%) = pode melhorar. Vermelho (abaixo de 50%) = vale conversar sobre o processo de briefing. Clique na barra para ver os pedidos.')">ℹ</button>
         </div>
         <p class="chart-subtitle">Verde ≥ 80% · Amarelo ≥ 50% · Vermelho &lt; 50%. Clique na barra para ver a lista.</p>
@@ -1302,7 +1303,7 @@ body.dark-mode .filter-trigger-bar{
       </div>
       <div class="chart-container">
         <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">📈 Pedidos concluídos ou em produção por designer</h3>
+          <h3 class="chart-title" style="margin:0"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Pedidos concluídos ou em produção por designer</h3>
           <button class="chart-info-btn" onclick="ChartInfo.show(this,'Taxa de Avanço','Este gráfico mostra qual porcentagem dos pedidos de cada designer já avançou para produção ou foi entregue ao cliente.','Como é calculado: entre todos os pedidos com início de criação registrado, conta quantos já foram para produção ou entrega, dividido pelo total.','Dica: uma taxa alta significa que o designer está entregando bem. Uma taxa baixa pode indicar pedidos travados ou muita fila acumulada. Clique na barra para ver detalhes.')">ℹ</button>
         </div>
         <p class="chart-subtitle">% de pedidos com criação iniciada que já avançaram para produção ou entrega. Clique para ver.</p>
@@ -1310,19 +1311,19 @@ body.dark-mode .filter-trigger-bar{
       </div>
       <div class="chart-container">
         <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">⚡ Velocidade vs. precisão — quem é rápido E preciso?</h3>
-          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Velocidade vs. Precisão','Este gráfico compara dois aspectos de cada designer: a velocidade (tempo mediano de criação) e a precisão (quantas alterações em média).','Como é calculado: as barras mostram o tempo mediano útil em minutos. A linha laranja mostra a média de alterações por arte.','Dica: o ideal é ter barras baixas (rápido) E linha baixa (poucas correções). 🟢 Rápido e preciso é o melhor cenário. 🔴 Lento com erros é o que mais precisa de atenção.')">ℹ</button>
+          <h3 class="chart-title" style="margin:0"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Velocidade vs. precisão — quem é rápido E preciso?</h3>
+          <button class="chart-info-btn" onclick="ChartInfo.show(this,'Velocidade vs. Precisão','Este gráfico compara dois aspectos de cada designer: a velocidade (tempo mediano de criação) e a precisão (quantas alterações em média).','Como é calculado: as barras mostram o tempo mediano útil em minutos. A linha laranja mostra a média de alterações por arte.','Dica: o ideal é ter barras baixas (rápido) E linha baixa (poucas correções). Rápido e preciso é o melhor cenário. Lento com erros é o que mais precisa de atenção.')">ℹ</button>
         </div>
         <p class="chart-subtitle">Barras = tempo mediano · Linha = média de alterações por arte</p>
         <div id="chartVQWrap"><div class="chart-wrapper-tall"><canvas id="chartVelocidadeQualidade"></canvas></div></div>
       </div>
       <div class="table-container">
-        <h3 class="chart-title">📋 Resumo detalhado por designer</h3>
+        <h3 class="chart-title"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Resumo detalhado por designer</h3>
         <p class="chart-subtitle">Tempo mediano, pedidos demorados, % sem alterações e volume total.</p>
         <table id="tableDesigners"></table>
       </div>
       <div class="table-container" id="dailyProdContainer">
-        <h3 class="chart-title">📆 Produção diária <span id="dailyPeriodLabel"></span></h3>
+        <h3 class="chart-title"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Produção diária <span id="dailyPeriodLabel"></span></h3>
         <p class="chart-subtitle">Quantidade e tempo de criações concluídas por dia. Clique em qualquer número ou item para ver os pedidos.</p>
         <div class="daily-toolbar">
           <label>Período</label>
@@ -1345,7 +1346,7 @@ body.dark-mode .filter-trigger-bar{
         <div id="dailyProdTable"></div>
       </div>
       <div class="table-container" id="wrapMonthlyAvg">
-        <h3 class="chart-title">📅 Média de criações por mês</h3>
+        <h3 class="chart-title"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Média de criações por mês</h3>
         <div class="chart-subtitle">Total do período filtrado. Base: data de conclusão da criação. Média = artes por dias trabalhados no mês.</div>
         <div id="monthlyAvgBody"></div>
       </div>
@@ -1358,20 +1359,20 @@ body.dark-mode .filter-trigger-bar{
       </div>
       <div class="chart-container">
         <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">📊 Quem mais gera retrabalho</h3>
+          <h3 class="chart-title" style="margin:0"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/></svg>Quem mais gera retrabalho</h3>
           <button class="chart-info-btn" onclick="ChartInfo.show(this,'Retrabalho por Vendedor','Este gráfico mostra quantas alterações os pedidos de cada vendedor geraram no total, e quantos saíram sem nenhuma correção.','Como é calculado: soma todas as rodadas de alteração dos pedidos de cada vendedor.','Dica: vendedores com muitas alterações podem estar enviando briefings incompletos. Vale conversar sobre como detalhar melhor os pedidos antes de enviar para o designer. Clique nas barras para ver os pedidos.')">ℹ</button>
         </div>
         <p class="chart-subtitle">Total de alterações geradas e artes sem alteração, por vendedor. Clique para ver detalhes.</p>
         <div class="chart-wrapper"><canvas id="chartVendedoresRetrabalho"></canvas></div>
       </div>
       <div class="table-container">
-        <h3 class="chart-title">👥 Resumo por vendedor</h3>
+        <h3 class="chart-title"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Resumo por vendedor</h3>
         <p class="chart-subtitle">Volume, qualidade e taxa de retrabalho por vendedor.</p>
         <table id="tableVendedores"></table>
       </div>
       <div class="table-container">
         <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">🔍 Os 10 pares vendedor + designer com mais retrabalho</h3>
+          <h3 class="chart-title" style="margin:0"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Os 10 pares vendedor + designer com mais retrabalho</h3>
           <button class="chart-info-btn" onclick="ChartInfo.show(this,'Pares com Mais Retrabalho','Mostra as combinações de vendedor e designer que mais geraram artes com 4 ou mais rodadas de revisão.','Como é calculado: agrupa os pedidos por par vendedor+designer e conta quantos tiveram 4+ alterações.','Dica: se um par específico aparece frequentemente, pode ser um problema de comunicação ou alinhamento entre eles. Clique no nome da dupla para ver os pedidos.')">ℹ</button>
         </div>
         <p class="chart-subtitle">Combinações com maior número de artes que precisaram de mais de 4 rodadas.</p>
@@ -1379,7 +1380,7 @@ body.dark-mode .filter-trigger-bar{
       </div>
       <div class="chart-container">
         <div class="chart-title-row">
-          <h3 class="chart-title" style="margin:0">⏳ Pedidos aguardando resposta do cliente — há quanto tempo?</h3>
+          <h3 class="chart-title" style="margin:0"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px;flex-shrink:0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Pedidos aguardando resposta do cliente — há quanto tempo?</h3>
           <button class="chart-info-btn" onclick="ChartInfo.show(this,'Aguardando Resposta','Mostra há quantos dias cada pedido está parado esperando uma resposta do cliente, agrupados por faixas de tempo.','Como é calculado: conta os dias desde a última movimentação dos cartões que estão na coluna AGUARDANDO RESPOSTA.','Dica: pedidos aguardando há mais de 7 dias merecem um follow-up. Acima de 30 dias, pode ser que o cliente tenha desistido ou o pedido esteja perdido. Clique nas barras para ver quais pedidos estão em cada faixa.')">ℹ</button>
         </div>
         <p class="chart-subtitle">Pedidos agrupados por tempo de espera. Clique nas barras para ver os detalhes.</p>
@@ -1392,13 +1393,13 @@ body.dark-mode .filter-trigger-bar{
     <div class="tab-content" id="tab-3">
       <!-- Barra de status IA -->
       <div style="background:var(--card-bg);border-radius:15px;padding:14px 20px;margin-bottom:18px;box-shadow:0 4px 20px rgba(0,0,0,.08);display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-        <span style="font-size:26px">🤖</span>
+        <span style="font-size:0;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:rgba(0,229,160,.12);border-radius:8px;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg></span>
         <div style="flex:1;min-width:180px">
           <div style="font-size:13px;font-weight:700;color:var(--dark)">Análise Inteligente — Diretor de Operações</div>
           <div id="aiStatus" style="font-size:12px;color:var(--text-light);margin-top:2px">Pronto para analisar.</div>
         </div>
-        <button class="btn btn-secondary" onclick="App.runAIAnalysis()" id="btnAI">✨ Gerar Análise IA</button>
-        <button class="btn btn-ghost" onclick="App.openEquipeModal()" style="font-size:12px">👥 Configurar Equipe</button>
+        <button class="btn btn-secondary" onclick="App.runAIAnalysis()" id="btnAI"><svg style="display:inline-block;vertical-align:-3px;margin-right:5px" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Gerar Análise IA</button>
+        <button class="btn btn-ghost" onclick="App.openEquipeModal()" style="font-size:12px"><svg style="display:inline-block;vertical-align:-3px;margin-right:5px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Configurar Equipe</button>
       </div>
 
       <!-- Alertas automáticos -->
@@ -1407,31 +1408,31 @@ body.dark-mode .filter-trigger-bar{
       <div id="aiResult" style="display:none" class="chart-container">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
           <div>
-            <h3 class="chart-title">✨ Análise Inteligente — Groq</h3>
+            <h3 class="chart-title"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Análise Inteligente — Groq</h3>
             <p class="chart-subtitle" id="aiTimestamp"></p>
           </div>
-          <button class="btn btn-ghost" onclick="App.runAIAnalysis()" id="btnAIRefresh">🔄 Reanalisar</button>
+          <button class="btn btn-ghost" onclick="App.runAIAnalysis()" id="btnAIRefresh"><svg style="display:inline-block;vertical-align:-3px;margin-right:5px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Reanalisar</button>
         </div>
         <div id="aiContent"></div>
         <!-- Feedback IA -->
         <div id="aiFeedbackBar" style="margin-top:18px;padding:14px 18px;background:var(--light);border-radius:10px;border:1px solid var(--border);display:none">
-          <div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:10px">💬 Esta análise foi útil?</div>
+          <div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:10px"><svg style="display:inline-block;vertical-align:-3px;margin-right:6px" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Esta análise foi útil?</div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-            <button class="btn btn-secondary" style="padding:5px 14px" onclick="App.submitFeedback('good'">👍 Útil</button>
-            <button class="btn btn-ghost" style="padding:5px 14px" onclick="App.submitFeedback('bad'">👎 Não útil</button>
+            <button class="btn btn-secondary" style="padding:5px 14px" onclick="App.submitFeedback('good'"><svg style="display:inline-block;vertical-align:-3px;margin-right:4px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>Útil</button>
+            <button class="btn btn-ghost" style="padding:5px 14px" onclick="App.submitFeedback('bad'"><svg style="display:inline-block;vertical-align:-3px;margin-right:4px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>Não útil</button>
             <input type="text" id="feedbackNote" placeholder="O que melhorar? (opcional)" style="flex:1;min-width:180px;border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;background:var(--input-bg);color:var(--text)">
           </div>
-          <div id="feedbackMsg" style="margin-top:8px;font-size:12px;color:var(--secondary);display:none">✅ Feedback salvo! A próxima análise será ajustada.</div>
+          <div id="feedbackMsg" style="margin-top:8px;font-size:12px;color:var(--secondary);display:none">Feedback salvo! A próxima análise será ajustada.</div>
         </div>
         <!-- Aperfeicor IA -->
         <div style="margin-top:12px">
-          <button class="btn btn-ghost" style="font-size:12px" onclick="App.toggleAIMemoryPanel()">🧠 Aperfeiçoar IA</button>
+          <button class="btn btn-ghost" style="font-size:12px" onclick="App.toggleAIMemoryPanel()"><svg style="display:inline-block;vertical-align:-3px;margin-right:5px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24A2.5 2.5 0 0 1 9.5 2z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24A2.5 2.5 0 0 0 14.5 2z"/></svg>Aperfeiçoar IA</button>
           <div id="aiMemoryPanel" style="display:none;margin-top:10px;padding:14px;background:var(--light);border-radius:10px;border:1px solid var(--border)">
             <div style="font-size:12px;font-weight:600;color:var(--dark);margin-bottom:6px">Instruções extras para a IA (opcional):</div>
             <textarea id="aiPromptAdditions" rows="3" placeholder="Ex: Foque mais em prazos urgentes. Destaque designers com baixo retrabalho." style="width:100%;border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;background:var(--input-bg);color:var(--text);resize:vertical"></textarea>
             <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
-              <button class="btn btn-secondary" style="padding:5px 14px;font-size:12px" onclick="App.saveAIMemory()">💾 Salvar</button>
-              <span id="aiMemorySavedMsg" style="font-size:12px;color:var(--secondary);display:none">✅ Salvo!</span>
+              <button class="btn btn-secondary" style="padding:5px 14px;font-size:12px" onclick="App.saveAIMemory()"><svg style="display:inline-block;vertical-align:-3px;margin-right:4px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Salvar</button>
+              <span id="aiMemorySavedMsg" style="font-size:12px;color:var(--secondary);display:none">Salvo!</span>
               <span id="aiMemoryCount" style="font-size:11px;color:var(--text-light);margin-left:auto"></span>
             </div>
           </div>
@@ -1458,25 +1459,25 @@ body.dark-mode .filter-trigger-bar{
 <div class="modal-overlay" id="modalAdmin">
   <div class="modal-box">
     <div class="modal-header" style="background:linear-gradient(135deg,#1e3a8a,#2563eb)">
-      <h2>⚙️ Painel Admin</h2>
+      <h2><svg style="display:inline-block;vertical-align:-3px;margin-right:7px" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Painel Admin</h2>
       <button class="modal-close" onclick="App.closeAdminModal()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="section-title">🔄 Sincronização</div>
+      <div class="section-title"><svg style="display:inline-block;vertical-align:-2px;margin-right:5px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Sincronização</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
-        <button class="btn btn-secondary" onclick="App.syncNow(false)">🔄 Forcar Resync</button>
-        <button class="btn btn-ghost" onclick="App.checkFunctionsStatus()">🧬 Verificar Functions</button>
+        <button class="btn btn-secondary" onclick="App.syncNow(false)"><svg style="display:inline-block;vertical-align:-2px;margin-right:4px" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Forçar Resync</button>
+        <button class="btn btn-ghost" onclick="App.checkFunctionsStatus()"><svg style="display:inline-block;vertical-align:-2px;margin-right:4px" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Verificar Functions</button>
       </div>
       <div id="adminFunctionsStatus" style="font-size:13px;color:var(--text-light);margin-bottom:16px">—</div>
-      <div class="section-title">🗂️ Mapeamento de Listas (opcional)</div>
+      <div class="section-title"><svg style="display:inline-block;vertical-align:-2px;margin-right:5px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Mapeamento de Listas (opcional)</div>
       <div class="form-group">
         <textarea class="form-input" id="adminColMapping" rows="5" placeholder="Uma por linha: ID_DA_LISTA=NOME_STATUS&#10;Ex: abc123=LIBERAR PARA PRODUCAO&#10;(Vazio = usar nomes originais do Trello)"></textarea>
         <div class="form-hint">Salvo localmente; enviado ao server no próximo sync.</div>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn btn-secondary" onclick="App.saveAdminColMapping()">💾 Salvar Mapeamento</button>
+        <button class="btn btn-secondary" onclick="App.saveAdminColMapping()"><svg style="display:inline-block;vertical-align:-3px;margin-right:4px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Salvar Mapeamento</button>
       </div>
-      <div id="adminSaveMsg" style="margin-top:10px;font-size:13px;color:var(--secondary);display:none">✅ Salvo! Será aplicado no próximo sync.</div>
+      <div id="adminSaveMsg" style="margin-top:10px;font-size:13px;color:var(--secondary);display:none">Salvo! Será aplicado no próximo sync.</div>
     </div>
   </div>
 </div>
@@ -1484,7 +1485,7 @@ body.dark-mode .filter-trigger-bar{
 <div class="modal-overlay" id="modalScore" onclick="if(event.target===this)App.closeScoreModal()">
   <div class="modal-box" style="max-width:480px">
     <div class="modal-header" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">
-      <h2>🎯 Detalhes do Score</h2>
+      <h2><svg style="display:inline-block;vertical-align:-3px;margin-right:7px" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Detalhes do Score</h2>
       <button class="modal-close" onclick="App.closeScoreModal()">✕</button>
     </div>
     <div class="modal-body" id="scoreModalBody"></div>
@@ -1495,12 +1496,12 @@ body.dark-mode .filter-trigger-bar{
 <div class="aidm-overlay" id="aidmOverlay" onclick="if(event.target===this)aidm.close()">
   <div class="aidm-box">
     <div class="aidm-head">
-      <h2 id="aidmTitle">🔍 Detalhamento</h2>
+      <h2 id="aidmTitle"><svg style="display:inline-block;vertical-align:-3px;margin-right:7px" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Detalhamento</h2>
       <button class="aidm-x" onclick="aidm.close()">✕</button>
     </div>
     <div class="aidm-body">
       <div class="aidm-preview" id="aidmPreview"></div>
-      <button class="aidm-deepbtn" id="aidmDeepBtn" onclick="aidm.deepen()">🤖 Aprofundar com IA</button>
+      <button class="aidm-deepbtn" id="aidmDeepBtn" onclick="aidm.deepen()"><svg style="display:inline-block;vertical-align:-2px;margin-right:5px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>Aprofundar com IA</button>
       <div id="aidmRes"></div>
     </div>
   </div>
@@ -1510,19 +1511,19 @@ body.dark-mode .filter-trigger-bar{
 <div class="modal-overlay" id="modalPrint" onclick="if(event.target===this)App.closePrintModal()">
   <div class="modal-box" style="max-width:560px">
     <div class="modal-header" style="background:linear-gradient(135deg,#1e3a8a,#2563eb)">
-      <h2>🖨️ Selecionar itens para impressão</h2>
+      <h2><svg style="display:inline-block;vertical-align:-3px;margin-right:7px" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Selecionar itens para impressão</h2>
       <button class="modal-close" onclick="App.closePrintModal()">✕</button>
     </div>
     <div class="modal-body" style="max-height:65vh;overflow-y:auto">
       <div class="pm-actions-top">
-        <button class="btn btn-ghost" onclick="App._pmSelectAll(true)">✅ Marcar tudo</button>
+        <button class="btn btn-ghost" onclick="App._pmSelectAll(true)"><svg style="display:inline-block;vertical-align:-2px;margin-right:4px" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Marcar tudo</button>
         <button class="btn btn-ghost" onclick="App._pmSelectAll(false)">⬜ Desmarcar tudo</button>
       </div>
       <div id="pmList"><!-- preenchido dinamicamente --></div>
     </div>
     <div class="modal-actions" style="padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end">
       <button class="btn btn-ghost" onclick="App.closePrintModal()">Cancelar</button>
-      <button class="btn btn-secondary" onclick="App._doPrint()">🖨️ Imprimir selecionados</button>
+      <button class="btn btn-secondary" onclick="App._doPrint()"><svg style="display:inline-block;vertical-align:-2px;margin-right:5px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Imprimir selecionados</button>
     </div>
   </div>
 </div>
@@ -1531,14 +1532,14 @@ body.dark-mode .filter-trigger-bar{
 <div class="modal-overlay" id="modalEquipe" onclick="if(event.target===this)App.closeEquipeModal()">
   <div class="modal-box" style="max-width:520px">
     <div class="modal-header" style="background:linear-gradient(135deg,#065f46,#10b981)">
-      <h2>👥 Configuração da Equipe</h2>
+      <h2><svg style="display:inline-block;vertical-align:-3px;margin-right:7px" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Configuração da Equipe</h2>
       <button class="modal-close" onclick="App.closeEquipeModal()">✕</button>
     </div>
     <div class="modal-body">
       <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;line-height:1.6">Membros <strong>inativos</strong> não aparecem em rankings, médias, gráficos ou análises da IA. Os dados históricos deles são preservados.</p>
       <div id="equipeList" style="display:flex;flex-direction:column;gap:10px"></div>
       <div style="margin-top:16px;padding:12px 14px;background:var(--light);border-radius:8px;border:1px solid var(--border)">
-        <div style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:8px">➕ Adicionar membro manualmente</div>
+        <div style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:8px"><svg style="display:inline-block;vertical-align:-2px;margin-right:5px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar membro manualmente</div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <input type="text" id="equipeNomeInput" placeholder="Nome do membro" style="flex:1;min-width:150px;padding:8px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;background:var(--input-bg);color:var(--text)">
           <select id="equipeCargoInput" style="padding:8px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;background:var(--input-bg);color:var(--text)">
@@ -1549,9 +1550,9 @@ body.dark-mode .filter-trigger-bar{
         </div>
       </div>
       <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-secondary" onclick="App.saveEquipe()">💾 Salvar</button>
+        <button class="btn btn-secondary" onclick="App.saveEquipe()"><svg style="display:inline-block;vertical-align:-3px;margin-right:4px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Salvar</button>
         <button class="btn btn-ghost" onclick="App.closeEquipeModal()">Cancelar</button>
-        <span id="equipeSaveMsg" style="font-size:12px;color:var(--secondary);display:none;align-self:center">✅ Salvo!</span>
+        <span id="equipeSaveMsg" style="font-size:12px;color:var(--secondary);display:none;align-self:center">Salvo!</span>
       </div>
     </div><!-- /tab-content -->
     </div><!-- /sb-content -->
@@ -1572,7 +1573,7 @@ body.dark-mode .filter-trigger-bar{
 /* ══════════════════════════════════════════════
    CONSTANTS
 ══════════════════════════════════════════════ */
-const URGENCY_COLORS = {'ALTA':'#ff4d6a','MÉDIA':'#ffcb47','BAIXA':'#00e5a0','N/A':'#5a7080'};
+const URGENCY_COLORS = {'ALTA':'#ff4d6a','MÉDIA':'#ffcb47','BAIXA':'#00e5a0','N/A':'#6080a0'};
 const LIST_LIBERACAO_NORM = ['LIBERAR PARA PRODUCAO','LIBERADO PARA PRODUCAO','LIBERAR P/ PRODUCAO','LIBERAR P/PRODUCAO'];
 const DEBUG_TIME = false;
 /* NOTE: Trello object kept as dead code — all calls now go via /api/sync */
@@ -2658,8 +2659,8 @@ const RL = {
         data:{
           labels: BINS_TEMPO.map(b=>b.label),
           datasets:[
-            {label:'Pedidos',data:_binCounts,backgroundColor:'rgba(59,158,255,.8)',borderRadius:6,yAxisID:'y'},
-            {label:'Layouts',data:_binLayouts,type:'line',borderColor:'#ffcb47',backgroundColor:'rgba(255,203,71,.15)',
+            {label:'Pedidos',data:_binCounts,backgroundColor:'#3b9eff',borderRadius:6,yAxisID:'y'},
+            {label:'Layouts',data:_binLayouts,type:'line',borderColor:'#ffcb47',backgroundColor:'rgba(255,203,71,.2)',
              pointRadius:5,pointHoverRadius:7,tension:0.3,fill:true,yAxisID:'y2'}
           ]
         },
@@ -2744,9 +2745,9 @@ const RL = {
         data:{
           labels:['Tempo da Equipe'],
           datasets:[
-            {label:'Criação',data:[pctCri],backgroundColor:'rgba(59,158,255,.85)',stack:'t',
+            {label:'Criação',data:[pctCri],backgroundColor:'#3b9eff',stack:'t',
              borderRadius:{topLeft:6,bottomLeft:6},hoverBackgroundColor:'rgba(99,102,241,1)'},
-            {label:'Alterações',data:[pctAlt],backgroundColor:'rgba(255,77,106,.8)',stack:'t',
+            {label:'Alterações',data:[pctAlt],backgroundColor:'#ff4d6a',stack:'t',
              borderRadius:{topRight:6,bottomRight:6},hoverBackgroundColor:'rgba(255,77,106,1)'}
           ]
         },
@@ -2875,9 +2876,9 @@ const RL = {
         data:{
           labels:_gargRows.map(f=>f.label),
           datasets:[
-            {label:'Pedidos',data:_gargRows.map(f=>f.count),backgroundColor:'rgba(59,158,255,.8)',borderRadius:5,yAxisID:'y'},
+            {label:'Pedidos',data:_gargRows.map(f=>f.count),backgroundColor:'#3b9eff',borderRadius:5,yAxisID:'y'},
             {label:'Dias médio',data:_gargRows.map(f=>parseFloat(f.mediaDias.toFixed(1))),
-             type:'line',borderColor:'#ff4d6a',backgroundColor:'rgba(255,77,106,.1)',
+             type:'line',borderColor:'#ff4d6a',backgroundColor:'rgba(255,77,106,.15)',
              pointRadius:5,pointHoverRadius:7,tension:0.3,fill:false,yAxisID:'y2'}
           ]
         },
@@ -3057,7 +3058,7 @@ const RL = {
     const vqCT=vqArr.filter(d=>d.temBase>0);
     this.restoreCanvas('chartVQWrap','chartVelocidadeQualidade','chart-wrapper-tall');
     if(!vqCT.length){this.showEmpty('chartVQWrap','Sem designers com horário de criação registrado.');}
-    else{const tGVQ=this.median(vqCT.map(d=>d.tMed)),aGVQ=this.median(vqCT.map(d=>d.mAlt));const bC=vqArr.map(d=>{if(d.temBase===0)return'#d1d5db';const rp=d.tMed<=tGVQ,pc=d.mAlt<=aGVQ;return rp&&pc?'#00e5a0':rp&&!pc?'#ffcb47':!rp&&pc?'#3b9eff':'#ff4d6a';});this.upsert('chartVelocidadeQualidade',{type:'bar',data:{labels:vqArr.map(d=>d.name),datasets:[{type:'bar',label:'Tempo Mediano (min)',data:vqArr.map(d=>d.temBase>0?d.tMed:null),backgroundColor:bC,borderRadius:5,yAxisID:'yL',order:2},{type:'line',label:'Média de Alterações',data:vqArr.map(d=>d.mAlt),borderColor:'#ff8c42',backgroundColor:'rgba(255,140,66,.15)',borderWidth:2.5,pointRadius:6,pointBackgroundColor:'#ff8c42',fill:false,tension:0.3,yAxisID:'yR',order:1}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top',labels:{padding:16}},tooltip:{callbacks:{label:ctx=>{if(ctx.dataset.type==='line')return` Média alt.: ${ctx.parsed.y.toFixed(2)}`;return ctx.parsed.y!=null?` Tempo mediano: ${ctx.parsed.y} min`:'Sem horário';}}}} ,scales:{yL:{type:'linear',position:'left',beginAtZero:true,title:{display:true,text:'Tempo Mediano (min)'},grid:{color:'#f0f0f0'}},yR:{type:'linear',position:'right',beginAtZero:true,title:{display:true,text:'Média de Alterações'},grid:{drawOnChartArea:false}},x:{title:{display:true,text:'Designer'}}}}});}
+    else{const tGVQ=this.median(vqCT.map(d=>d.tMed)),aGVQ=this.median(vqCT.map(d=>d.mAlt));const bC=vqArr.map(d=>{if(d.temBase===0)return'#d1d5db';const rp=d.tMed<=tGVQ,pc=d.mAlt<=aGVQ;return rp&&pc?'#00e5a0':rp&&!pc?'#ffcb47':!rp&&pc?'#3b9eff':'#ff4d6a';});this.upsert('chartVelocidadeQualidade',{type:'bar',data:{labels:vqArr.map(d=>d.name),datasets:[{type:'bar',label:'Tempo Mediano (min)',data:vqArr.map(d=>d.temBase>0?d.tMed:null),backgroundColor:bC,borderRadius:5,yAxisID:'yL',order:2},{type:'line',label:'Média de Alterações',data:vqArr.map(d=>d.mAlt),borderColor:'#ff8c42',backgroundColor:'rgba(255,140,66,.2)',borderWidth:2.5,pointRadius:6,pointBackgroundColor:'#ff8c42',fill:false,tension:0.3,yAxisID:'yR',order:1}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top',labels:{padding:16}},tooltip:{callbacks:{label:ctx=>{if(ctx.dataset.type==='line')return` Média alt.: ${ctx.parsed.y.toFixed(2)}`;return ctx.parsed.y!=null?` Tempo mediano: ${ctx.parsed.y} min`:'Sem horário';}}}} ,scales:{yL:{type:'linear',position:'left',beginAtZero:true,title:{display:true,text:'Tempo Mediano (min)'},grid:{color:'#f0f0f0'}},yR:{type:'linear',position:'right',beginAtZero:true,title:{display:true,text:'Média de Alterações'},grid:{drawOnChartArea:false}},x:{title:{display:true,text:'Designer'}}}}});}
 
     const tblArr=Object.entries(dS).map(([name,d])=>{const ap=dA[name];const ac=ap&&ap.total>0?ap.zero/ap.total*100:null;return{name,total:d.total,critico:d.critico,tMed:d.tempos.length>0?Math.round(this.median(d.tempos)):null,tDem:d.tempos.length>0?Math.round(this.pct(d.tempos,90)):null,mAlt:d.total>0?d.totalAlt/d.total:0,ac,bAp:ap?ap.total:0};}).sort((a,b)=>b.total-a.total);
     RL._lastRowsDesigner = rows; // salva para o click
@@ -5500,8 +5501,15 @@ Chart.defaults.plugins.tooltip.titleColor      = '#e8f0f8';
 Chart.defaults.plugins.tooltip.bodyColor       = '#8fa3b3';
 Chart.defaults.plugins.legend.labels.font      = { size: 11 };
 Chart.defaults.plugins.legend.labels.padding   = 12;
-Chart.defaults.scale.grid.color = 'rgba(160,185,210,.1)';
+Chart.defaults.scale.grid.color = 'rgba(160,185,210,.14)';
 Chart.defaults.scale.ticks.font = { size: 10 };
+// Vibrant palette used across all charts
+const CHART_COLORS = ['#00e5a0','#3b9eff','#ffcb47','#ff4d6a','#ff8c42','#b57bff','#00d4ff','#ff6b9d'];
+const CHART_VIBRANT = {
+  green:'#00e5a0', blue:'#3b9eff', yellow:'#ffcb47',
+  red:'#ff4d6a',   orange:'#ff8c42', purple:'#b57bff',
+  cyan:'#00d4ff',  pink:'#ff6b9d'
+};
 
 
 // ── Sidebar: mobile overlay + desktop collapse ──────────────────
