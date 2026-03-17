@@ -127,7 +127,7 @@ body.dark-mode{
   border-right:1px solid var(--sidebar-border);
   display:flex;flex-direction:column;
   position:fixed;top:0;left:0;bottom:0;
-  z-index:300;overflow:visible;
+  z-index:300;overflow:hidden;
   transition:var(--sb-transition);
 }
 /* Collapsed state */
@@ -187,15 +187,15 @@ body.dark-mode{
 
 /* Collapse toggle */
 .sb-collapse-btn{
-  position:absolute;right:-14px;top:62px;
-  width:28px;height:28px;border-radius:50%;
-  background:var(--accent);border:2px solid var(--sidebar-bg);
-  color:#080b11;font-size:10px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .2s;z-index:400;
-  box-shadow:0 2px 10px rgba(0,0,0,.5);
+  display:none; /* hidden on mobile — shown desktop only */
+  align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:var(--r);
+  background:var(--surface-2);border:1px solid var(--border);
+  color:var(--text-light);cursor:pointer;
+  transition:all .18s;flex-shrink:0;
 }
-.sb-collapse-btn:hover{background:var(--accent-dim);transform:scale(1.15)}
+.sb-collapse-btn:hover{background:var(--accent);border-color:var(--accent);color:#080b11}
+@media(min-width:861px){ .sb-collapse-btn{display:flex} }
 
 /* Nav */
 .sb-nav{ flex:1;padding:12px 10px;overflow-y:auto;overflow-x:hidden;min-height:0; }
@@ -252,9 +252,9 @@ body.dark-mode{
 .sb-action-label{ overflow:hidden;text-overflow:ellipsis; }
 
 /* Main area */
-.sb-main{ margin-left:var(--sb-w);display:flex;flex-direction:column;min-height:100vh;transition:margin-left var(--sb-transition);min-width:0;overflow-x:hidden; }
+.sb-main{ margin-left:var(--sb-w);display:flex;flex-direction:column;min-height:100vh;transition:margin-left var(--sb-transition);min-width:0;width:calc(100vw - var(--sb-w)); }
 .sidebar.collapsed ~ .sb-main,
-.sb-main.sb-shifted{ margin-left:var(--sb-w-col); }
+.sb-main.sb-shifted{ margin-left:var(--sb-w-col);width:calc(100vw - var(--sb-w-col)); }
 
 /* Topbar */
 .topbar{
@@ -869,7 +869,7 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
   }
   .sidebar.sb-open{transform:translateX(0)}
   .sb-overlay{display:block}
-  .sb-main{margin-left:0}
+  .sb-main{margin-left:0;width:100vw}
   .filter-trigger-bar{top:52px}
 
   /* Topbar: add hamburger */
@@ -1066,9 +1066,6 @@ body.dark-mode .filter-trigger-bar{
   <!-- SIDEBAR -->
   <nav class="sidebar" id="appSidebar">
 
-    <!-- Collapse toggle (desktop) -->
-    <button class="sb-collapse-btn" id="btnCollapse" onclick="SB.toggleCollapse()" title="Recolher menu"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-
     <!-- Logo + wordmark -->
     <div class="sb-logo-area">
       <!-- Icon shown always (acts as icon when collapsed) -->
@@ -1140,6 +1137,7 @@ body.dark-mode .filter-trigger-bar{
     <div class="topbar">
       <div class="topbar-left">
         <button class="sb-hamburger" id="btnHamburger" onclick="SB.toggle()" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <button class="sb-collapse-btn" id="btnCollapse" onclick="SB.toggleCollapse()" title="Recolher/expandir menu"><svg id="btnCollapseIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
         <span class="topbar-title" id="topbarTitle">Visão Geral</span>
         <span id="headerPeriod" style="font-size:11px;color:var(--text-dim);margin-left:6px"></span>
       </div>
@@ -1641,25 +1639,46 @@ const ChartInfo = {
   _popup: null,
   _active: null,
   show(btn, titulo, oQue, comoCal, dica){
-    // Remove existing
     if(this._popup){ this._popup.remove(); this._popup=null; }
     if(this._active===btn){ this._active=null; return; }
     this._active=btn;
     const p=document.createElement('div');
     p.className='chart-info-popup';
     p.innerHTML=`<strong>${titulo}</strong>${oQue}<br><br><span style="font-size:12px;color:var(--text-light)">${comoCal}</span><div class="tip-dica">Dica: ${dica}</div>`;
-    p.style.cssText='position:fixed;z-index:9000;background:var(--card-bg,#fff);border:1.5px solid #2563eb;border-radius:12px;padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,.22);max-width:290px;font-size:13px;line-height:1.65;color:var(--text,#374151)';
+    // Render offscreen first so we can measure real height
+    p.style.cssText='position:fixed;z-index:9000;background:var(--card-bg,#1e293b);border:1.5px solid var(--primary,#3b9eff);border-radius:12px;padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,.45);width:300px;max-width:calc(100vw - 24px);font-size:13px;line-height:1.65;color:var(--text,#b8cfe0);max-height:calc(100vh - 32px);overflow-y:auto;left:-9999px;top:-9999px';
     document.body.appendChild(p);
     this._popup=p;
-    // Position near button
+
+    // Now measure real dimensions
     const r=btn.getBoundingClientRect();
+    const pw=p.offsetWidth;
+    const ph=p.offsetHeight;
+    const vw=window.innerWidth;
+    const vh=window.innerHeight;
+    const gap=10;
+
+    // Horizontal: prefer aligning to button left, but clamp to viewport
     let left=r.left;
-    let top=r.bottom+8;
-    if(left+300>window.innerWidth) left=window.innerWidth-308;
-    if(top+200>window.innerHeight) top=r.top-p.offsetHeight-8;
-    p.style.left=Math.max(8,left)+'px';
-    p.style.top=Math.max(8,top)+'px';
-    // Auto close on outside click
+    if(left+pw+gap>vw) left=vw-pw-gap;
+    if(left<gap) left=gap;
+
+    // Vertical: prefer below button, flip above if not enough room
+    let top=r.bottom+gap;
+    if(top+ph>vh-gap){
+      // Try above
+      const topAbove=r.top-ph-gap;
+      if(topAbove>=gap){
+        top=topAbove;
+      } else {
+        // Not enough room above or below — center vertically in viewport
+        top=Math.max(gap, Math.round((vh-ph)/2));
+      }
+    }
+
+    p.style.left=left+'px';
+    p.style.top=top+'px';
+
     setTimeout(()=>{
       const close=e=>{if(!p.contains(e.target)&&e.target!==btn){p.remove();this._popup=null;this._active=null;document.removeEventListener('click',close);}};
       document.addEventListener('click',close);
