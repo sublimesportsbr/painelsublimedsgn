@@ -11,48 +11,67 @@
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  /* Accent */
-  --accent:#00e5a0;--accent-dim:#00c48a;--accent-glow:rgba(0,229,160,.15);
+  /* Brand accent */
+  --accent:#00e5a0;--accent-dim:#00c88e;--accent-glow:rgba(0,229,160,.18);
 
-  /* Semantic */
-  --primary:#3b82f6;--primary-dark:#1d4ed8;
-  --secondary:#00e5a0;--danger:#f87171;--warning:#fbbf24;--purple:#a78bfa;
+  /* Semantic palette — vibrant */
+  --primary:#3b9eff;--primary-dark:#1d7fe0;
+  --secondary:#00e5a0;--danger:#ff4d6a;--warning:#ffcb47;--purple:#b57bff;
+  --info:#3b9eff;--orange:#ff8c42;
 
-  /* Light surfaces */
-  --bg-body:#e8edf5;
-  --surface:#f8fbfe;--surface-2:#eef3f9;--surface-3:#e5ecf5;
-  --sidebar-bg:#0c0f16;--sidebar-border:rgba(255,255,255,.06);
-  --header-bg:#f8fbfe;--card-bg:#f8fbfe;--input-bg:#f0f4f9;
-  --border:#e1e8f0;--border-strong:#c8d5e3;
+  /* Light mode — off-white, NOT pure white */
+  --bg-body:#f0f4f8;                    /* page background */
+  --surface:#f7fafd;                    /* topbar / sidebar-light */
+  --card-bg:#ffffff;                    /* cards slightly whiter than bg */
+  --surface-2:#edf2f7;                  /* subtle section bg */
+  --surface-3:#e4eaf2;
+  --sidebar-bg:#0d1117;                 /* always-dark sidebar */
+  --sidebar-border:rgba(255,255,255,.07);
+  --header-bg:#f7fafd;
+  --input-bg:#edf2f7;
+  --border:#dde5f0;--border-strong:#c4d0e0;
 
   /* Text */
-  --dark:#0c0f16;--light:#f7f9fc;
-  --text:#1e293b;--text-light:#5a7080;--text-dim:#8fa3b3;
+  --dark:#0d1117;--light:#f7fafd;
+  --text:#1a2535;--text-light:#556070;--text-dim:#8a9eb0;
 
   /* Shadows */
-  --sh-xs:0 1px 2px rgba(0,0,0,.05);
-  --sh-sm:0 1px 4px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
-  --sh:0 4px 16px rgba(0,0,0,.08);
-  --sh-lg:0 12px 40px rgba(0,0,0,.12);
+  --sh-xs:0 1px 3px rgba(13,17,23,.06);
+  --sh-sm:0 2px 8px rgba(13,17,23,.08),0 1px 2px rgba(13,17,23,.05);
+  --sh:0 4px 20px rgba(13,17,23,.1);
+  --sh-lg:0 16px 48px rgba(13,17,23,.15);
+  --sh-card:0 2px 12px rgba(13,17,23,.07),0 1px 3px rgba(13,17,23,.05);
+
+  /* Glass */
+  --glass-bg:rgba(255,255,255,.55);
+  --glass-border:rgba(255,255,255,.7);
+  --glass-blur:blur(12px);
 
   --r:8px;--r-lg:12px;--r-xl:16px;
 
   --font:'JetBrains Mono','Fira Code','Cascadia Code',monospace;
-  --table-header:#f7f9fc;--table-hover:#f0f4f8;
+  --table-header:#edf2f7;--table-hover:#e8eff7;
+
+  /* Sidebar width tokens */
+  --sb-w:220px;--sb-w-col:56px;
+  --sb-transition:width .22s cubic-bezier(.4,0,.2,1),transform .22s cubic-bezier(.4,0,.2,1);
 }
 body.dark-mode{
-  --bg-body:#080b11;
-  --surface:#0f1520;--surface-2:#141b27;--surface-3:#0c1119;
-  --sidebar-bg:#080b11;
-  --header-bg:#0f1520;--card-bg:#0f1520;--input-bg:#0c1119;
-  --border:#1a2535;--border-strong:#243040;
-  --dark:#e8f0f8;--light:#0c1119;
-  --text:#c8d8e8;--text-light:#6080a0;--text-dim:#3a5060;
-  --table-header:#0c1119;--table-hover:#141b27;
-  --sh-xs:0 1px 2px rgba(0,0,0,.3);
-  --sh-sm:0 1px 4px rgba(0,0,0,.35);
-  --sh:0 4px 16px rgba(0,0,0,.4);
-  --sh-lg:0 12px 40px rgba(0,0,0,.55);
+  --bg-body:#070c14;
+  --surface:#0d1525;--surface-2:#111d30;--surface-3:#0a1120;
+  --sidebar-bg:#070c14;
+  --header-bg:#0d1525;--card-bg:#0d1525;--input-bg:#0a1120;
+  --border:#182438;--border-strong:#203050;
+  --dark:#dce8f5;--light:#0a1120;
+  --text:#b8cfe0;--text-light:#4a6a85;--text-dim:#2a4055;
+  --table-header:#0a1120;--table-hover:#111d30;
+  --sh-xs:0 1px 3px rgba(0,0,0,.4);
+  --sh-sm:0 2px 8px rgba(0,0,0,.5);
+  --sh:0 4px 20px rgba(0,0,0,.6);
+  --sh-lg:0 16px 48px rgba(0,0,0,.75);
+  --sh-card:0 2px 12px rgba(0,0,0,.5);
+  --glass-bg:rgba(13,21,37,.7);
+  --glass-border:rgba(255,255,255,.06);
 }
 body{
   font-family:var(--font);
@@ -61,6 +80,11 @@ body{
   font-size:13px;
   -webkit-font-smoothing:antialiased;
   letter-spacing:-.01em;
+  transition:background .3s,color .3s;
+}
+body.dark-mode{
+  background:linear-gradient(160deg,#070c14 0%,#0a1020 50%,#060b13 100%);
+  background-attachment:fixed;
 }
 .container{max-width:100%;margin:0;padding:0}
 
@@ -95,84 +119,149 @@ body{
 .sb-layout{display:flex;min-height:100vh}
 
 /* Sidebar */
+/* ── SIDEBAR ─────────────────────────────────────────────────────────── */
 .sidebar{
-  width:216px;flex-shrink:0;
+  width:var(--sb-w);
+  flex-shrink:0;
   background:var(--sidebar-bg);
   border-right:1px solid var(--sidebar-border);
   display:flex;flex-direction:column;
   position:fixed;top:0;left:0;bottom:0;
-  z-index:300;overflow-y:auto;
+  z-index:300;overflow:hidden;
+  transition:var(--sb-transition);
 }
+/* Collapsed state */
+.sidebar.collapsed{ width:var(--sb-w-col); }
+.sidebar.collapsed .sb-name,
+.sidebar.collapsed .sb-nav-label,
+.sidebar.collapsed .sb-tab-label,
+.sidebar.collapsed .sb-user-meta,
+.sidebar.collapsed .sb-action-label{ display:none; }
+.sidebar.collapsed .sb-tab-btn{ justify-content:center;padding:10px 0; }
+.sidebar.collapsed .sb-icon{ width:100%;text-align:center; }
+.sidebar.collapsed .sb-logo-area{ justify-content:center;padding:16px 0; }
+.sidebar.collapsed .sb-nav{ padding:10px 6px; }
+.sidebar.collapsed .sb-footer{ padding:10px 6px 14px; }
+.sidebar.collapsed .sb-action{ justify-content:center;padding:8px 0; }
+.sidebar.collapsed .sb-user-row{ justify-content:center; }
+.sidebar.collapsed .sb-avatar{ margin:0 auto; }
+
+/* Tooltip on collapsed */
+.sb-tab-btn{ position:relative; }
+.sidebar.collapsed .sb-tab-btn[data-tip]::after{
+  content:attr(data-tip);
+  position:absolute;left:calc(var(--sb-w-col) + 8px);top:50%;
+  transform:translateY(-50%);
+  background:#1a2535;color:#e8f0f8;
+  font-size:11px;font-weight:600;white-space:nowrap;
+  padding:5px 10px;border-radius:6px;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 4px 14px rgba(0,0,0,.5);
+  pointer-events:none;opacity:0;transition:opacity .15s;z-index:9999;
+}
+.sidebar.collapsed .sb-tab-btn[data-tip]:hover::after{ opacity:1; }
+
+/* Logo area */
 .sb-logo-area{
-  padding:20px 18px 16px;
+  padding:18px 16px 14px;
   border-bottom:1px solid var(--sidebar-border);
   display:flex;align-items:center;gap:10px;
+  overflow:hidden;
 }
-.sb-logo-area .sb-logo{height:22px;width:auto;color:#fff;opacity:.92;flex-shrink:0}
-.sb-logo-area .sb-name{
-  font-size:11px;font-weight:700;letter-spacing:.12em;
-  text-transform:uppercase;color:rgba(255,255,255,.35);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+.sb-logo-area .sb-logo{ height:22px;width:auto;color:#fff;opacity:.92;flex-shrink:0 }
+.sb-logo-area .sb-wordmark{
+  display:flex;flex-direction:column;gap:1px;overflow:hidden;
+  white-space:nowrap;
 }
-.sb-nav{flex:1;padding:12px 10px}
+.sb-logo-area .sb-wordmark-main{
+  font-size:13px;font-weight:800;letter-spacing:.04em;
+  color:rgba(255,255,255,.92);line-height:1;
+}
+.sb-logo-area .sb-wordmark-sub{
+  font-size:8.5px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(255,255,255,.32);line-height:1;
+}
+
+/* Collapse toggle */
+.sb-collapse-btn{
+  position:absolute;right:-11px;top:66px;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--sidebar-bg);border:1px solid var(--sidebar-border);
+  color:rgba(255,255,255,.45);font-size:10px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;z-index:10;
+}
+.sb-collapse-btn:hover{background:#1a2535;color:#fff}
+
+/* Nav */
+.sb-nav{ flex:1;padding:12px 10px;overflow-y:auto;overflow-x:hidden; }
 .sb-nav-label{
   font-size:9px;font-weight:700;letter-spacing:.14em;
-  text-transform:uppercase;color:rgba(255,255,255,.22);
-  padding:8px 8px 4px;display:block;
+  text-transform:uppercase;color:rgba(255,255,255,.2);
+  padding:8px 8px 4px;display:block;white-space:nowrap;overflow:hidden;
 }
 .sb-tab-btn{
   width:100%;display:flex;align-items:center;gap:9px;
   padding:8px 10px;border-radius:var(--r);
   background:transparent;border:none;cursor:pointer;
   font-family:var(--font);font-size:12px;font-weight:500;
-  color:rgba(255,255,255,.42);
-  transition:all .15s;text-align:left;letter-spacing:.01em;
-  margin-bottom:2px;
+  color:rgba(255,255,255,.4);
+  transition:background .15s,color .15s;text-align:left;
+  letter-spacing:.01em;margin-bottom:2px;overflow:hidden;
 }
-.sb-tab-btn:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.8)}
-.sb-tab-btn.active{background:rgba(0,229,160,.12);color:var(--accent);font-weight:600}
-.sb-tab-btn .sb-icon{font-size:14px;flex-shrink:0;width:18px;text-align:center;opacity:.7}
-.sb-tab-btn.active .sb-icon{opacity:1}
+.sb-tab-btn:hover{ background:rgba(255,255,255,.06);color:rgba(255,255,255,.82); }
+.sb-tab-btn.active{ background:rgba(0,229,160,.13);color:var(--accent);font-weight:600; }
+.sb-icon{ font-size:15px;flex-shrink:0;width:18px;text-align:center;opacity:.65;transition:opacity .15s; }
+.sb-tab-btn.active .sb-icon{ opacity:1; }
+.sb-tab-label{ white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
 
+/* Footer */
 .sb-footer{
-  padding:12px 10px 16px;
-  border-top:1px solid var(--sidebar-border);
+  padding:10px 10px 14px;
+  border-top:1px solid var(--sidebar-border);overflow:hidden;
 }
 .sb-user-row{
   display:flex;align-items:center;gap:8px;
-  padding:7px 8px;border-radius:var(--r);
-  margin-bottom:4px;
+  padding:6px 8px;border-radius:var(--r);margin-bottom:4px;
+  overflow:hidden;
 }
 .sb-avatar{
   width:28px;height:28px;border-radius:50%;
-  background:rgba(0,229,160,.18);
+  background:rgba(0,229,160,.18);flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
   font-size:12px;font-weight:700;color:var(--accent);
-  flex-shrink:0;
 }
-.sb-user-meta{flex:1;min-width:0}
-.sb-user-name{font-size:11px;font-weight:600;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sb-user-role{font-size:9px;color:rgba(255,255,255,.28);letter-spacing:.06em;text-transform:uppercase;margin-top:1px}
+.sb-user-meta{ flex:1;min-width:0; }
+.sb-user-name{ font-size:11px;font-weight:600;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.sb-user-role{ font-size:9px;color:rgba(255,255,255,.28);letter-spacing:.06em;text-transform:uppercase;margin-top:1px; }
 .sb-action{
   width:100%;display:flex;align-items:center;gap:8px;
   padding:7px 10px;border-radius:var(--r);
   background:transparent;border:none;cursor:pointer;
   font-family:var(--font);font-size:12px;font-weight:500;
-  color:rgba(255,255,255,.38);
-  transition:all .15s;text-align:left;
+  color:rgba(255,255,255,.36);transition:all .15s;text-align:left;
+  overflow:hidden;white-space:nowrap;
 }
-.sb-action:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.7)}
-.sb-action.sb-danger:hover{background:rgba(248,113,113,.1);color:#f87171}
+.sb-action:hover{ background:rgba(255,255,255,.05);color:rgba(255,255,255,.72); }
+.sb-action.sb-danger:hover{ background:rgba(255,77,106,.1);color:#ff4d6a; }
+.sb-action-icon{ flex-shrink:0;width:18px;text-align:center; }
+.sb-action-label{ overflow:hidden;text-overflow:ellipsis; }
 
 /* Main area */
-.sb-main{margin-left:216px;display:flex;flex-direction:column;min-height:100vh}
+.sb-main{ margin-left:var(--sb-w);display:flex;flex-direction:column;min-height:100vh;transition:margin-left var(--sb-transition); }
+.sidebar.collapsed ~ .sb-main,
+.sb-main.sb-shifted{ margin-left:var(--sb-w-col); }
 
 /* Topbar */
 .topbar{
   position:sticky;top:0;z-index:200;
-  background:var(--header-bg);border-bottom:1px solid var(--border);
+  background:var(--header-bg);
+  border-bottom:1px solid var(--border);
   height:52px;padding:0 20px;
   display:flex;align-items:center;justify-content:space-between;gap:12px;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  transition:background .3s;
 }
 .topbar-left{display:flex;align-items:center;gap:10px}
 .topbar-title{font-size:14px;font-weight:700;color:var(--dark);letter-spacing:-.2px}
@@ -192,8 +281,8 @@ body{
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* Buttons */
-.btn{background:var(--primary);color:#fff;border:none;padding:6px 13px;border-radius:var(--r);cursor:pointer;font-size:12px;font-weight:600;font-family:var(--font);transition:all .15s;white-space:nowrap;letter-spacing:.02em}
-.btn:hover:not(:disabled){background:var(--primary-dark);transform:translateY(-1px);box-shadow:0 4px 10px rgba(59,130,246,.3)}
+.btn{background:var(--primary);color:#fff;border:none;padding:6px 14px;border-radius:var(--r);cursor:pointer;font-size:12px;font-weight:600;font-family:var(--font);transition:all .2s;white-space:nowrap;letter-spacing:.02em}
+.btn:hover:not(:disabled){background:var(--primary-dark);transform:translateY(-2px);box-shadow:0 6px 14px rgba(59,158,255,.35)}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 .btn-secondary{background:var(--accent);color:#080b11}
 .btn-secondary:hover:not(:disabled){background:var(--accent-dim);box-shadow:0 4px 10px var(--accent-glow)}
@@ -293,7 +382,7 @@ body.dark-mode .daily-table td.da{background:rgba(5,150,105,.12)}
 /* Cards */
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
 .card{background:var(--card-bg);border-radius:var(--r-lg);padding:16px 18px;box-shadow:var(--sh-sm);transition:transform .15s,box-shadow .15s;position:relative;border:1px solid var(--border);border-top:2px solid var(--accent)}
-.card:hover{transform:translateY(-2px);box-shadow:var(--sh)}
+.card:hover{transform:translateY(-3px);box-shadow:var(--sh);border-top-color:var(--accent)}
 .card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
 .card-title-wrapper{display:flex;align-items:center;gap:5px}
 .card-title{font-size:10px;color:var(--text-light);font-weight:700;text-transform:uppercase;letter-spacing:.8px}
@@ -310,13 +399,13 @@ body.dark-mode .daily-table td.da{background:rgba(5,150,105,.12)}
 .tooltip-text::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1f2937}
 
 /* Charts & Tables */
-.chart-container{background:var(--card-bg);border-radius:12px;padding:22px 24px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:14px;transition:background .3s;border:1px solid var(--border)}
+.chart-container{background:var(--card-bg);border-radius:var(--r-lg);padding:20px 22px;box-shadow:var(--sh-card);margin-bottom:14px;border:1px solid var(--border);transition:box-shadow .2s}
 .chart-title{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:3px;letter-spacing:-.2px}
 .chart-subtitle{font-size:12px;color:var(--text-light);margin-bottom:16px;line-height:1.5}
 .chart-wrapper{position:relative;height:320px}
 .chart-wrapper-tall{position:relative;height:420px}
 .chart-empty{display:flex;align-items:center;justify-content:center;height:100px;color:var(--text-light);font-size:13px;font-style:italic;border:1.5px dashed var(--border);border-radius:8px;margin-top:8px}
-.table-container{background:var(--card-bg);border-radius:12px;padding:22px 24px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow-x:auto;margin-bottom:14px;transition:background .3s;border:1px solid var(--border)}
+.table-container{background:var(--card-bg);border-radius:var(--r-lg);padding:20px 22px;box-shadow:var(--sh-card);overflow-x:auto;margin-bottom:14px;border:1px solid var(--border)}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{background:var(--table-header);padding:10px 13px;text-align:left;font-weight:700;color:var(--text-light);border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
 td{padding:10px 13px;border-bottom:1px solid var(--border);color:var(--text)}
@@ -370,9 +459,9 @@ tbody tr:hover{background:var(--table-hover)}
 .debug-note{font-size:12px;color:#9ca3af;margin-top:10px;line-height:1.6}
 
 /* Loading overlay */
-.loading{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.loading{display:none;position:fixed;inset:0;background:rgba(7,12,20,.82);backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:16px}
 .loading.active{display:flex}
-.spinner{width:48px;height:48px;border:5px solid rgba(255,255,255,.25);border-top-color:white;border-radius:50%;animation:spin .9s linear infinite}
+.spinner{width:40px;height:40px;border:3px solid rgba(0,229,160,.2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
 .loading-text{color:white;font-size:14px;font-weight:600}
 @keyframes spin{to{transform:rotate(360deg)}}
 
@@ -380,7 +469,7 @@ tbody tr:hover{background:var(--table-hover)}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center}
 .modal-overlay.active{display:flex}
 .modal-box{background:var(--card-bg);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-width:560px;width:calc(100% - 32px);max-height:92vh;overflow-y:auto;border:1px solid var(--border)}
-.modal-header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);padding:18px 22px;border-radius:14px 14px 0 0;display:flex;justify-content:space-between;align-items:center}
+.modal-header{background:linear-gradient(135deg,var(--sidebar-bg),#1a2535);padding:18px 22px;border-radius:var(--r-lg) var(--r-lg) 0 0;display:flex;justify-content:space-between;align-items:center}
 .modal-header h2{color:white;font-size:16px;font-weight:700}
 .modal-close{background:rgba(255,255,255,.18);border:none;color:white;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background .15s}
 .modal-close:hover{background:rgba(255,255,255,.32)}
@@ -569,6 +658,7 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
    DARK MODE OVERRIDES — elementos hardcoded claros
 ═══════════════════════════════════════ */
 /* detail-table thead */
+body.dark-mode .chart-container,body.dark-mode .table-container{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-color:var(--glass-border)}
 body.dark-mode .detail-table th{background:#1e293b;color:#e5e7eb;border-bottom-color:#374151}
 body.dark-mode .detail-table td{border-bottom-color:#374151;color:var(--text)}
 body.dark-mode .detail-table tbody tr:hover{background:#263244}
@@ -729,7 +819,8 @@ body.dark-mode .badge-info{background:rgba(59,130,246,.12);color:#60a5fa}
 body.dark-mode .badge-gray{background:rgba(255,255,255,.06);color:rgba(255,255,255,.5)}
 
 /* ── AI cards dark ───────────────────────────────────────────────── */
-body.dark-mode .ai-card{background:var(--surface-2)}
+body.dark-mode .ai-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border)}
+body.dark-mode .card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-color:var(--glass-border)}
 body.dark-mode .ai-card.urgente{background:rgba(248,113,113,.08);border-left-color:#f87171}
 body.dark-mode .ai-card.atencao{background:rgba(251,191,36,.06);border-left-color:#fbbf24}
 body.dark-mode .ai-card.positivo{background:rgba(0,229,160,.06);border-left-color:var(--accent)}
@@ -828,8 +919,95 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
 @media(min-width:861px){
   .sb-hamburger{display:none!important}
   .sb-overlay{display:none!important}
-}
   .filter-trigger-bar{top:52px}
+}
+
+
+/* ── SIDEBAR COLLAPSIBLE EXTRAS ──────────────────────────────────── */
+.sb-main{ transition:margin-left .22s cubic-bezier(.4,0,.2,1); }
+
+/* ── TOPBAR: glass effect light mode ─────────────────────────────── */
+body:not(.dark-mode) .topbar{
+  background:rgba(247,250,253,.88);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+
+/* ── CARD HOVER ──────────────────────────────────────────────────── */
+.chart-container:hover,.table-container:hover{
+  box-shadow:var(--sh);
+}
+
+/* ── DARK MODE: gradient bg ──────────────────────────────────────── */
+body.dark-mode .sb-layout{
+  background:transparent;
+}
+
+/* ── CONTENT MAX WIDTH ───────────────────────────────────────────── */
+.tab-content.active{
+  max-width:1380px;
+  margin:0 auto;
+  width:100%;
+}
+
+/* ── PIPELINE STAGE HOVER ─────────────────────────────────────────── */
+.pipeline-stage:hover{ background:var(--surface-2); }
+
+/* ── FILTER BAR GLASS ─────────────────────────────────────────────── */
+.filter-trigger-bar{
+  background:rgba(247,250,253,.9);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+body.dark-mode .filter-trigger-bar{
+  background:rgba(13,17,37,.88);
+  backdrop-filter:blur(8px);
+}
+
+/* ── SYNC BADGE ───────────────────────────────────────────────────── */
+.sync-badge{
+  font-size:10.5px;
+  letter-spacing:.01em;
+}
+
+/* ── MODAL BACKDROP BLUR ──────────────────────────────────────────── */
+.modal-overlay.active{
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+}
+
+/* ── LOGIN SCREEN: bigger logo, "PAINEL SUBLIME" title ───────────── */
+.login-box h2{
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-.3px;
+  color:#e8f0f8;
+  margin-bottom:4px;
+}
+.login-box h2 span.login-subtitle{
+  display:block;
+  font-size:11px;
+  font-weight:400;
+  color:rgba(255,255,255,.3);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  margin-top:3px;
+}
+.connect-box h1{
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:-.3px;
+  color:#e8f0f8;
+  margin-bottom:4px;
+}
+.connect-box .connect-subtitle{
+  font-size:11px;
+  color:rgba(255,255,255,.3);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  margin-top:2px;
+  margin-bottom:0;
+  display:block;
 }
 
 </style>
@@ -840,7 +1018,7 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
 <div id="loginModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
   <div class="login-box">
     <svg class="login-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21193 22078" fill="currentColor" aria-label="Painel Sublime" style="height:40px;width:auto;display:block;margin:0 auto 24px"><path fill-rule="evenodd" d="M6318.85 22078.07l2812.4 -4794.73 -4434.06 1393.11 1897.81 -4123.03 -1606.66 454.93c-255.04,-758.27 -515.37,-2230.94 -661.32,-3185.15 -18.85,623.52 95.84,2038.32 181.18,2691.95l-4508.19 1380.91c424.2,-3170.04 2936.59,-11128.86 4789.53,-13436.51 147.35,-176.23 489.82,-188.48 678.99,-175.05 474.25,-347.9 321.18,-246.06 885.49,-235.83 386.34,-280.54 335.52,-185.46 805.75,-164.51l833.17 -1730.55c129.43,-211.69 493.55,-185.5 475.06,-37.1l-702.62 2644.39c-51.63,601.49 372.51,785 172.9,1148.52 -344.28,435.63 -688.62,871.31 -1032.9,1306.96l-1510.47 561.38c-692.18,1560.93 -1108.73,3328.54 -1276.32,5023.93 1781.31,-1062.53 2706.53,-1507.74 4657.23,-2002.92 -401.61,-543.49 -735.05,-1080.32 -861.75,-1759.6 -173.19,-929.31 -9.39,-1931.87 654.2,-2639.86 586.19,-625.2 1414.52,-852.3 2251.76,-783.46 294.05,24.62 661.66,69.99 900.31,254.28 132.18,102.08 203.98,211.86 243.01,371.04 334.66,222.54 638.92,502.19 920.2,787.51 86.34,87.9 171.39,171.32 238.82,275.68l197.63 730.44c30.98,72.63 88.55,138.24 135.51,200.26 132.59,176.05 198.68,347.48 217.64,567.75l-290.9 1667.11c2423.09,228.31 3528.62,502.19 5775.19,1272.76l-3035.06 3918.39 5070.99 -1340.56 -14874.52 9757.57z"/></svg>
-    <h2 id="loginTitle">Painel Sublime</h2>
+    <h2 id="loginTitle">Painel Sublime<span class="login-subtitle">Gestão de Design</span></h2>
     <p class="login-sub">Digite seu usuário para entrar</p>
     <input id="loginInput" class="login-input" type="text"
            autocomplete="off" autocorrect="off" autocapitalize="off"
@@ -856,7 +1034,8 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
   <div class="connect-box">
     <svg class="conn-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21193 22078" fill="currentColor" aria-label="Painel Sublime" style="height:44px;width:auto;display:block;margin:0 auto 28px"><path fill-rule="evenodd" d="M6318.85 22078.07l2812.4 -4794.73 -4434.06 1393.11 1897.81 -4123.03 -1606.66 454.93c-255.04,-758.27 -515.37,-2230.94 -661.32,-3185.15 -18.85,623.52 95.84,2038.32 181.18,2691.95l-4508.19 1380.91c424.2,-3170.04 2936.59,-11128.86 4789.53,-13436.51 147.35,-176.23 489.82,-188.48 678.99,-175.05 474.25,-347.9 321.18,-246.06 885.49,-235.83 386.34,-280.54 335.52,-185.46 805.75,-164.51l833.17 -1730.55c129.43,-211.69 493.55,-185.5 475.06,-37.1l-702.62 2644.39c-51.63,601.49 372.51,785 172.9,1148.52 -344.28,435.63 -688.62,871.31 -1032.9,1306.96l-1510.47 561.38c-692.18,1560.93 -1108.73,3328.54 -1276.32,5023.93 1781.31,-1062.53 2706.53,-1507.74 4657.23,-2002.92 -401.61,-543.49 -735.05,-1080.32 -861.75,-1759.6 -173.19,-929.31 -9.39,-1931.87 654.2,-2639.86 586.19,-625.2 1414.52,-852.3 2251.76,-783.46 294.05,24.62 661.66,69.99 900.31,254.28 132.18,102.08 203.98,211.86 243.01,371.04 334.66,222.54 638.92,502.19 920.2,787.51 86.34,87.9 171.39,171.32 238.82,275.68l197.63 730.44c30.98,72.63 88.55,138.24 135.51,200.26 132.59,176.05 198.68,347.48 217.64,567.75l-290.9 1667.11c2423.09,228.31 3528.62,502.19 5775.19,1272.76l-3035.06 3918.39 5070.99 -1340.56 -14874.52 9757.57z"/></svg>
     <h1>Painel Sublime</h1>
-    <p id="loginMsg">Verificando autenticação…</p>
+    <span class="connect-subtitle">Gestão de Design</span>
+    <p id="loginMsg" style="margin-top:16px">Verificando autenticação…</p>
     <div id="loginError" style="margin-top:12px;color:#f87171;font-size:12px;display:none"></div>
   </div>
 </div>
@@ -867,17 +1046,41 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
 
   <!-- SIDEBAR -->
   <nav class="sidebar" id="appSidebar">
+
+    <!-- Collapse toggle (desktop) -->
+    <button class="sb-collapse-btn" id="btnCollapse" onclick="SB.toggleCollapse()" title="Recolher menu"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+
+    <!-- Logo + wordmark -->
     <div class="sb-logo-area">
-      <svg class="sb-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21193 22078" fill="currentColor" aria-label="Painel Sublime" style="height:20px;width:auto;display:block;"><path fill-rule="evenodd" d="M6318.85 22078.07l2812.4 -4794.73 -4434.06 1393.11 1897.81 -4123.03 -1606.66 454.93c-255.04,-758.27 -515.37,-2230.94 -661.32,-3185.15 -18.85,623.52 95.84,2038.32 181.18,2691.95l-4508.19 1380.91c424.2,-3170.04 2936.59,-11128.86 4789.53,-13436.51 147.35,-176.23 489.82,-188.48 678.99,-175.05 474.25,-347.9 321.18,-246.06 885.49,-235.83 386.34,-280.54 335.52,-185.46 805.75,-164.51l833.17 -1730.55c129.43,-211.69 493.55,-185.5 475.06,-37.1l-702.62 2644.39c-51.63,601.49 372.51,785 172.9,1148.52 -344.28,435.63 -688.62,871.31 -1032.9,1306.96l-1510.47 561.38c-692.18,1560.93 -1108.73,3328.54 -1276.32,5023.93 1781.31,-1062.53 2706.53,-1507.74 4657.23,-2002.92 -401.61,-543.49 -735.05,-1080.32 -861.75,-1759.6 -173.19,-929.31 -9.39,-1931.87 654.2,-2639.86 586.19,-625.2 1414.52,-852.3 2251.76,-783.46 294.05,24.62 661.66,69.99 900.31,254.28 132.18,102.08 203.98,211.86 243.01,371.04 334.66,222.54 638.92,502.19 920.2,787.51 86.34,87.9 171.39,171.32 238.82,275.68l197.63 730.44c30.98,72.63 88.55,138.24 135.51,200.26 132.59,176.05 198.68,347.48 217.64,567.75l-290.9 1667.11c2423.09,228.31 3528.62,502.19 5775.19,1272.76l-3035.06 3918.39 5070.99 -1340.56 -14874.52 9757.57z"/></svg>
-      <span class="sb-name">Gestão de Design</span>
+      <svg class="sb-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21193 22078" fill="currentColor" aria-label="Painel Sublime" style="height:22px;width:auto;display:block;"><path fill-rule="evenodd" d="M6318.85 22078.07l2812.4 -4794.73 -4434.06 1393.11 1897.81 -4123.03 -1606.66 454.93c-255.04,-758.27 -515.37,-2230.94 -661.32,-3185.15 -18.85,623.52 95.84,2038.32 181.18,2691.95l-4508.19 1380.91c424.2,-3170.04 2936.59,-11128.86 4789.53,-13436.51 147.35,-176.23 489.82,-188.48 678.99,-175.05 474.25,-347.9 321.18,-246.06 885.49,-235.83 386.34,-280.54 335.52,-185.46 805.75,-164.51l833.17 -1730.55c129.43,-211.69 493.55,-185.5 475.06,-37.1l-702.62 2644.39c-51.63,601.49 372.51,785 172.9,1148.52 -344.28,435.63 -688.62,871.31 -1032.9,1306.96l-1510.47 561.38c-692.18,1560.93 -1108.73,3328.54 -1276.32,5023.93 1781.31,-1062.53 2706.53,-1507.74 4657.23,-2002.92 -401.61,-543.49 -735.05,-1080.32 -861.75,-1759.6 -173.19,-929.31 -9.39,-1931.87 654.2,-2639.86 586.19,-625.2 1414.52,-852.3 2251.76,-783.46 294.05,24.62 661.66,69.99 900.31,254.28 132.18,102.08 203.98,211.86 243.01,371.04 334.66,222.54 638.92,502.19 920.2,787.51 86.34,87.9 171.39,171.32 238.82,275.68l197.63 730.44c30.98,72.63 88.55,138.24 135.51,200.26 132.59,176.05 198.68,347.48 217.64,567.75l-290.9 1667.11c2423.09,228.31 3528.62,502.19 5775.19,1272.76l-3035.06 3918.39 5070.99 -1340.56 -14874.52 9757.57z"/></svg>
+      <div class="sb-wordmark">
+        <span class="sb-wordmark-main">Painel Sublime</span>
+        <span class="sb-wordmark-sub">Gestão de Design</span>
+      </div>
     </div>
+
+    <!-- Navigation -->
     <div class="sb-nav">
       <span class="sb-nav-label">Menu</span>
-      <button class="sb-tab-btn active" onclick="App.switchTab(0);SB.close()"><span class="sb-icon">⊞</span>Visão Geral</button>
-      <button class="sb-tab-btn" onclick="App.switchTab(1);SB.close()"><span class="sb-icon">◈</span>Designers</button>
-      <button class="sb-tab-btn" onclick="App.switchTab(2);SB.close()"><span class="sb-icon">◉</span>Vendedores</button>
-      <button class="sb-tab-btn" onclick="App.switchTab(3);SB.close()"><span class="sb-icon">⚡</span>Alertas &amp; Ações</button>
+      <button class="sb-tab-btn active" onclick="App.switchTab(0);SB.close()" data-tip="Visão Geral">
+        <span class="sb-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
+        <span class="sb-tab-label">Visão Geral</span>
+      </button>
+      <button class="sb-tab-btn" onclick="App.switchTab(1);SB.close()" data-tip="Designers">
+        <span class="sb-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+        <span class="sb-tab-label">Designers</span>
+      </button>
+      <button class="sb-tab-btn" onclick="App.switchTab(2);SB.close()" data-tip="Vendedores">
+        <span class="sb-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        <span class="sb-tab-label">Vendedores</span>
+      </button>
+      <button class="sb-tab-btn" onclick="App.switchTab(3);SB.close()" data-tip="Alertas &amp; Ações">
+        <span class="sb-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+        <span class="sb-tab-label">Alertas &amp; Ações</span>
+      </button>
     </div>
+
+    <!-- Footer -->
     <div class="sb-footer">
       <div class="sb-user-row">
         <div class="sb-avatar" id="sbAvatar">—</div>
@@ -886,11 +1089,26 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
           <div class="sb-user-role" id="userBadgeRole">—</div>
         </div>
       </div>
-      <button class="sb-action" onclick="App.syncNow()" id="btnSync">↺ Sincronizar</button>
-      <button class="sb-action" onclick="App.toggleDark()" id="btnDarkMode">◑ Modo Escuro</button>
-      <button class="sb-action" onclick="App.openAdminModal()" id="btnAdmin" style="display:none">⚙ Admin</button>
-      <button class="sb-action" onclick="App.openPrintModal()">⎙ Imprimir</button>
-      <button class="sb-action sb-danger" onclick="App.logout()">→ Sair</button>
+      <button class="sb-action" onclick="App.syncNow()" id="btnSync">
+        <span class="sb-action-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></span>
+        <span class="sb-action-label">Sincronizar</span>
+      </button>
+      <button class="sb-action" onclick="App.toggleDark()" id="btnDarkMode">
+        <span class="sb-action-icon" id="darkModeIcon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+        <span class="sb-action-label" id="darkModeLabel">Modo Escuro</span>
+      </button>
+      <button class="sb-action" onclick="App.openAdminModal()" id="btnAdmin" style="display:none">
+        <span class="sb-action-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        <span class="sb-action-label">Admin</span>
+      </button>
+      <button class="sb-action" onclick="App.openPrintModal()">
+        <span class="sb-action-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></span>
+        <span class="sb-action-label">Imprimir</span>
+      </button>
+      <button class="sb-action sb-danger" onclick="App.logout()">
+        <span class="sb-action-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
+        <span class="sb-action-label">Sair</span>
+      </button>
     </div>
   </nav>
 
@@ -900,7 +1118,7 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
     <!-- Topbar -->
     <div class="topbar">
       <div class="topbar-left">
-        <button class="sb-hamburger" id="btnHamburger" onclick="SB.toggle()" aria-label="Menu">☰</button>
+        <button class="sb-hamburger" id="btnHamburger" onclick="SB.toggle()" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
         <span class="topbar-title" id="topbarTitle">Visão Geral</span>
         <span id="headerPeriod" style="font-size:11px;color:var(--text-dim);margin-left:6px"></span>
       </div>
@@ -914,14 +1132,11 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
       </div>
     </div>
 
-    <!-- Overlay do drawer de filtros -->
-    <div class="filter-drawer-overlay" id="filterDrawerOverlay" onclick="FD.close()"></div>
-    <!-- Overlay do drawer de filtros -->
     <div class="filter-drawer-overlay" id="filterDrawerOverlay" onclick="FD.close()"></div>
     <!-- Drawer de filtros -->
     <div class="filter-drawer" id="filterDrawer">
       <div class="filter-drawer-header">
-        <h3>🔍 Filtros</h3>
+        <h3 style="display:flex;align-items:center;gap:8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Filtros</h3>
         <button class="filter-drawer-close" onclick="FD.close()">✕</button>
       </div>
       <div class="filter-drawer-body">
@@ -981,8 +1196,7 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
     <div class="sb-content">
     <!-- Barra de trigger dos filtros + chips -->
     <div class="filter-trigger-bar" id="filterTriggerBar">
-      <button class="btn-filter-open" onclick="FD.open()" id="btnOpenFilters">
-        <span>🔍</span><span>Filtros</span><span id="filterBadge" style="display:none;background:rgba(255,255,255,.3);border-radius:10px;padding:1px 7px;font-size:12px"></span>
+      <button class="btn-filter-open" onclick="FD.open()" id="btnOpenFilters"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Filtros<span id="filterBadge" style="display:none;background:rgba(255,255,255,.3);border-radius:10px;padding:1px 7px;font-size:12px"></span>
       </button>
       <div class="filter-chips-row" id="filterChipsRow"></div>
     </div>
@@ -2361,13 +2575,7 @@ const RL = {
           </div>
         </div>`;
       } else if(rows.length > 0) {
-        diagEl.innerHTML = `<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:7px 14px;background:rgba(0,229,160,.07);border:1px solid rgba(0,229,160,.25);border-radius:8px;font-size:11px;color:var(--text-light);letter-spacing:.01em">
-          <span style="color:var(--accent);font-weight:700;font-size:12px">${criacao.length}<span style="font-weight:400;color:var(--text-dim)"> / ${rows.length} cards</span></span>
-          <span style="color:var(--border-strong)">·</span>
-          <span>${tiposSample}</span>
-          <span style="color:var(--border-strong)">·</span>
-          <span>${urgSample}</span>
-        </div>`;
+        diagEl.innerHTML = '';  // info bar removida conforme solicitado
       } else {
         diagEl.innerHTML = '';
       }
@@ -4385,8 +4593,11 @@ const App = {
   },
 
   _updateDarkBtn(){
-    const btn=document.getElementById('btnDarkMode');
-    if(btn) btn.textContent=document.body.classList.contains('dark-mode')?'○ Modo Claro':'◑ Modo Escuro';
+    const isDark = document.body.classList.contains('dark-mode');
+    const iconEl  = document.getElementById('darkModeIcon');
+    const labelEl = document.getElementById('darkModeLabel');
+    if(iconEl)  iconEl.innerHTML  = isDark ? `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>` : `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+    if(labelEl) labelEl.textContent = isDark ? 'Modo Claro' : 'Modo Escuro';
   },
 
   /* ── MODAL ── */
@@ -4637,7 +4848,7 @@ const App = {
 
   _lockSyncBtn(lock){
     const btn=document.getElementById('btnSync');
-    if(btn){ btn.disabled=lock; btn.textContent=lock?'↺ Sincronizando…':'↺ Sincronizar'; }
+    if(btn){ btn.disabled=lock; const lb=btn.querySelector('.sb-action-label'); if(lb) lb.textContent=lock?'Sincronizando…':'Sincronizar'; }
     const bm=document.getElementById('btnModalSync');
     if(bm){ bm.disabled=lock; }
   },
@@ -5283,13 +5494,22 @@ Chart.defaults.scale.grid.color = 'rgba(160,185,210,.1)';
 Chart.defaults.scale.ticks.font = { size: 10 };
 
 
-// ── Sidebar mobile toggle ───────────────────────────────────────
+// ── Sidebar: mobile overlay + desktop collapse ──────────────────
 const SB = {
   _overlay: null,
+  _collapsed: false,
+  _MOON: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,
+  _SUN:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
+  _CHL:  `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`,
+  _CHR:  `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
   init(){
     this._overlay = document.getElementById('sbOverlay');
+    // Restore collapse state
+    const saved = localStorage.getItem('sb_collapsed');
+    if(saved === '1') this._applyCollapse(true, false);
   },
   toggle(){
+    // Mobile: slide in/out
     const sb = document.getElementById('appSidebar');
     if(!sb) return;
     const open = sb.classList.toggle('sb-open');
@@ -5299,6 +5519,28 @@ const SB = {
     const sb = document.getElementById('appSidebar');
     if(sb) sb.classList.remove('sb-open');
     if(this._overlay) this._overlay.style.display = 'none';
+  },
+  toggleCollapse(){
+    this._applyCollapse(!this._collapsed, true);
+  },
+  _applyCollapse(val, save){
+    this._collapsed = val;
+    const sb   = document.getElementById('appSidebar');
+    const main = document.querySelector('.sb-main');
+    const btn  = document.getElementById('btnCollapse');
+    if(!sb) return;
+    if(val){
+      sb.classList.add('collapsed');
+      if(main) main.classList.add('sb-shifted');
+      if(btn)  btn.innerHTML = this._CHR;
+    } else {
+      sb.classList.remove('collapsed');
+      if(main) main.classList.remove('sb-shifted');
+      if(btn)  btn.innerHTML = this._CHL;
+    }
+    if(save) localStorage.setItem('sb_collapsed', val ? '1' : '0');
+    // Resize charts after transition
+    setTimeout(()=>{ Object.values(State?.charts||{}).forEach(c=>c&&c.resize&&c.resize()); }, 260);
   }
 };
 document.addEventListener('DOMContentLoaded', () => { SB.init(); });
