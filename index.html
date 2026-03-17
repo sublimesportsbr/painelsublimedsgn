@@ -136,7 +136,8 @@ body.dark-mode{
 .sidebar.collapsed .sb-nav-label,
 .sidebar.collapsed .sb-tab-label,
 .sidebar.collapsed .sb-user-meta,
-.sidebar.collapsed .sb-action-label{ display:none; }
+.sidebar.collapsed .sb-action-label,
+.sidebar.collapsed .sb-wordmark{ display:none; }
 .sidebar.collapsed .sb-tab-btn{ justify-content:center;padding:10px 0; }
 .sidebar.collapsed .sb-icon{ width:100%;text-align:center; }
 .sidebar.collapsed .sb-logo-area{ justify-content:center;padding:16px 0; }
@@ -191,10 +192,10 @@ body.dark-mode{
   background:var(--accent);border:2px solid var(--sidebar-bg);
   color:#080b11;font-size:10px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  transition:all .2s;z-index:10;
-  box-shadow:0 2px 8px rgba(0,0,0,.4);
+  transition:all .2s;z-index:400;
+  box-shadow:0 2px 10px rgba(0,0,0,.5);
 }
-.sb-collapse-btn:hover{background:var(--accent-dim);transform:scale(1.12)}
+.sb-collapse-btn:hover{background:var(--accent-dim);transform:scale(1.15)}
 
 /* Nav */
 .sb-nav{ flex:1;padding:12px 10px;overflow-y:auto;overflow-x:hidden; }
@@ -251,7 +252,7 @@ body.dark-mode{
 .sb-action-label{ overflow:hidden;text-overflow:ellipsis; }
 
 /* Main area */
-.sb-main{ margin-left:var(--sb-w);display:flex;flex-direction:column;min-height:100vh;transition:margin-left var(--sb-transition); }
+.sb-main{ margin-left:var(--sb-w);display:flex;flex-direction:column;min-height:100vh;transition:margin-left var(--sb-transition);min-width:0;overflow-x:hidden; }
 .sidebar.collapsed ~ .sb-main,
 .sb-main.sb-shifted{ margin-left:var(--sb-w-col); }
 
@@ -337,12 +338,15 @@ body.dark-mode{
 .pipeline-stage{flex:1;min-width:78px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;cursor:pointer;transition:background .15s;position:relative;border-right:1px solid var(--border);gap:2px}
 .pipeline-stage:last-child{border-right:none}
 .pipeline-stage:hover{background:var(--light)}
-.pipeline-stage .ps-icon{font-size:16px;line-height:1}
+.pipeline-stage .ps-icon{font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;color:var(--text-light)}
 .pipeline-stage .ps-count{font-size:18px;font-weight:800;color:var(--dark);line-height:1;letter-spacing:-.5px}
 .pipeline-stage .ps-label{font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;text-align:center;line-height:1.2}
 .pipeline-stage.ps-alert .ps-count{color:#ef4444}
+.pipeline-stage.ps-alert .ps-icon{color:#ef4444}
 .pipeline-stage.ps-warn .ps-count{color:#f59e0b}
+.pipeline-stage.ps-warn .ps-icon{color:#f59e0b}
 .pipeline-stage.ps-ok .ps-count{color:#10b981}
+.pipeline-stage.ps-ok .ps-icon{color:#10b981}
 /* ── CHART INFO TOOLTIP ── */
 .chart-title-row{display:flex;align-items:center;gap:8px}
 .chart-info-btn{background:none;border:1.5px solid var(--border);border-radius:50%;width:22px;height:22px;font-size:11px;cursor:pointer;color:var(--text-light);display:inline-flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0}
@@ -950,6 +954,12 @@ body.dark-mode .sb-layout{
 .tab-content.active{
   max-width:100%;
   margin:0;
+  width:100%;
+  box-sizing:border-box;
+}
+/* Ensure filter bar and pipeline match tab width */
+.filter-trigger-bar,.pipeline-bar,.topbar{
+  box-sizing:border-box;
   width:100%;
 }
 
@@ -1639,7 +1649,7 @@ const ChartInfo = {
     this._active=btn;
     const p=document.createElement('div');
     p.className='chart-info-popup';
-    p.innerHTML=`<strong>${titulo}</strong>${oQue}<br><br><span style="font-size:12px;color:var(--text-light)">${comoCal}</span><div class="tip-dica">💡 Dica: ${dica}</div>`;
+    p.innerHTML=`<strong>${titulo}</strong>${oQue}<br><br><span style="font-size:12px;color:var(--text-light)">${comoCal}</span><div class="tip-dica">Dica: ${dica}</div>`;
     p.style.cssText='position:fixed;z-index:9000;background:var(--card-bg,#fff);border:1.5px solid #2563eb;border-radius:12px;padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,.22);max-width:290px;font-size:13px;line-height:1.65;color:var(--text,#374151)';
     document.body.appendChild(p);
     this._popup=p;
@@ -1664,14 +1674,14 @@ const ChartInfo = {
 ══════════════════════════════════════════════ */
 const PipelineBar = {
   STAGES:[
-    {key:'COLETA',    icon:'📋', label:'Coleta',         match:l=>l.includes('COLETA')},
-    {key:'FILA',      icon:'⏳', label:'Fila Criação',   match:l=>l.includes('FILA')&&(l.includes('CRIACAO')||l.includes('CRIAÇÃO')||l.includes('URGENCIA')||l.includes('URGÊNCIA'))},
-    {key:'EM_CRI',    icon:'🎨', label:'Em Criação',     match:l=>l==='EM CRIACAO'||l==='EM CRIAÇÃO'},
-    {key:'ALT_SOL',   icon:'✏️', label:'Alt. Solicitada',match:l=>l.includes('ALTERACAO SOLICITADA')||l.includes('ALTERAÇÃO SOLICITADA')},
-    {key:'EM_ALT',    icon:'🔄', label:'Em Alteração',   match:l=>l==='EM ALTERACAO'||l==='EM ALTERAÇÃO'},
-    {key:'ENVIAR',    icon:'📤', label:'Enviar Cliente', match:l=>l.includes('ENVIAR')},
-    {key:'AGUARD',    icon:'⏰', label:'Aguardando',     match:l=>l.includes('AGUARDANDO RESPOSTA')},
-    {key:'APROVADA',  icon:'✅', label:'Arte Aprovada',  match:l=>l.includes('LIBERAR')&&l.includes('PRODUCAO')||l==='EM PRODUCAO'||l==='EM PRODUÇÃO'}
+    {key:'COLETA',    icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>', label:'Coleta',         match:l=>l.includes('COLETA')},
+    {key:'FILA',      icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>', label:'Fila Criação',   match:l=>l.includes('FILA')&&(l.includes('CRIACAO')||l.includes('CRIAÇÃO')||l.includes('URGENCIA')||l.includes('URGÊNCIA'))},
+    {key:'EM_CRI',    icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>', label:'Em Criação',     match:l=>l==='EM CRIACAO'||l==='EM CRIAÇÃO'},
+    {key:'ALT_SOL',   icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>', label:'Alt. Solicitada',match:l=>l.includes('ALTERACAO SOLICITADA')||l.includes('ALTERAÇÃO SOLICITADA')},
+    {key:'EM_ALT',    icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>', label:'Em Alteração',   match:l=>l==='EM ALTERACAO'||l==='EM ALTERAÇÃO'},
+    {key:'ENVIAR',    icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>', label:'Enviar Cliente', match:l=>l.includes('ENVIAR')},
+    {key:'AGUARD',    icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>', label:'Aguardando',     match:l=>l.includes('AGUARDANDO RESPOSTA')},
+    {key:'APROVADA',  icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>', label:'Arte Aprovada',  match:l=>l.includes('LIBERAR')&&l.includes('PRODUCAO')||l==='EM PRODUCAO'||l==='EM PRODUÇÃO'}
   ],
 
   render(allRows){
@@ -2451,7 +2461,7 @@ const State = {
     if(dates.length){
       const ts=dates.map(d=>d.getTime());
       const el=document.getElementById('headerPeriod');
-      if(el) el.textContent=`📅 ${DL.fmtDate(new Date(Math.min(...ts)))} → ${DL.fmtDate(new Date(Math.max(...ts)))}`;
+      if(el) el.textContent=`${DL.fmtDate(new Date(Math.min(...ts)))} → ${DL.fmtDate(new Date(Math.max(...ts)))}`;
     }
     const el2=document.getElementById('headerTimestamp');
     if(el2) el2.textContent=`${this.rowsAll.length} cards carregados`;
@@ -2507,7 +2517,7 @@ const RL = {
     </div>`;
   },
 
-  showEmpty(wrapId,msg){ const w=document.getElementById(wrapId); if(w) w.innerHTML=`<div class="chart-empty">📭 ${msg}</div>`; },
+  showEmpty(wrapId,msg){ const w=document.getElementById(wrapId); if(w) w.innerHTML=`<div class="chart-empty">${msg}</div>`; },
 
   restoreCanvas(wrapId,canvasId,hc='chart-wrapper'){
     const w=document.getElementById(wrapId); if(!w)return;
@@ -2581,7 +2591,7 @@ const RL = {
             </tr>
           </table>
           <div style="margin-top:8px;font-size:12px">
-            💡 <strong>Ação:</strong> Se os CFs aparecem acima, abra o console do browser (F12) e veja os nomes exatos.<br>
+            <strong>Ação:</strong> Se os CFs aparecem acima, abra o console do browser (F12) e veja os nomes exatos.<br>
             Se a lista de CFs está vazia, o board pode não ter Custom Fields ou a API Key não tem permissão de leitura.
           </div>
         </div>`;
@@ -2616,16 +2626,16 @@ const RL = {
     RL._lastRowsGeral = rows;
     document.getElementById('geralCards').innerHTML=
       `<div style="cursor:pointer" onclick="RL.showDetailKPI('total',RL._lastRowsGeral)">` +
-      this.card('Total de Artes Criadas',total,'Novo + Alteração — clique para ver','📋','#3b82f6','Pedidos NOVO ou ALTERAÇÃO. Clique para ver a lista completa.') + `</div>` +
+      this.card('Total de Artes Criadas',total,'Novo + Alteração — clique para ver','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>','#3b82f6','Pedidos NOVO ou ALTERAÇÃO. Clique para ver a lista completa.') + `</div>` +
       `<div style="cursor:pointer" onclick="RL.showDetailKPI('semAlteracao',RL._lastRowsGeral)">` +
-      this.card('Artes Sem Alteração',pctSemAlt===null?'—':`${pctSemAlt.toFixed(0)}%`,`${aprovSemAlt} de ${aprovados.length} em produção/entregues`,'🎯',semAltBg,'Base: pedidos em produção ou entregues. Meta: ≥ 80%.',`Base: ${aprovados.length} pedidos`) + `</div>` +
+      this.card('Artes Sem Alteração',pctSemAlt===null?'—':`${pctSemAlt.toFixed(0)}%`,`${aprovSemAlt} de ${aprovados.length} em produção/entregues`,'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',semAltBg,'Base: pedidos em produção ou entregues. Meta: ≥ 80%.',`Base: ${aprovados.length} pedidos`) + `</div>` +
       `<div style="cursor:pointer" onclick="RL.showDetailKPI('retrabalho',RL._lastRowsGeral)">` +
-      this.card('Pedidos com Retrabalho',pctRet!==null?`${pctRet.toFixed(0)}%`:'—',`${comRet} de ${total} — clique para ver`,'🔄',retBg,'Base: TODOS os pedidos de criação. Clique para ver a lista.','Inclui abertos e aprovados') + `</div>` +
+      this.card('Pedidos com Retrabalho',pctRet!==null?`${pctRet.toFixed(0)}%`:'—',`${comRet} de ${total} — clique para ver`,'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',retBg,'Base: TODOS os pedidos de criação. Clique para ver a lista.','Inclui abertos e aprovados') + `</div>` +
       `<div style="cursor:pointer" onclick="RL.showDetailKPI('criticos',RL._lastRowsGeral)">` +
-      this.card('Artes com 4+ Alterações',`${p4.toFixed(0)}%`,`${com4mais} artes críticas — clique`,'🚨',p4Bg,'Retrabalho crítico — 4 ou mais rodadas de ajuste. Clique para ver.') + `</div>` +
-      this.card('Média de Alterações',mediaAlt.toFixed(2),'Por arte criada — meta: < 0,5','📊',mediaBg,'Média de rodadas de ajuste. Quanto mais perto de zero, melhor.')+
-      this.card('Duração Mediana',tValidos.length>0?DL.fmtMin(tMed):'—','Tempo útil de expediente','⏱️','#8b5cf6','Mediana em minutos de expediente (seg–sex 08–18h (contínuo)).',tNote,tWarn)+
-      this.card('Casos Mais Demorados',tValidos.length>0?DL.fmtMin(tTop):'—','10% das artes levam até','📈','#f59e0b','Os 10% mais lentos levam até este tempo.',tNote,tWarn);
+      this.card('Artes com 4+ Alterações',`${p4.toFixed(0)}%`,`${com4mais} artes críticas — clique`,'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',p4Bg,'Retrabalho crítico — 4 ou mais rodadas de ajuste. Clique para ver.') + `</div>` +
+      this.card('Média de Alterações',mediaAlt.toFixed(2),'Por arte criada — meta: < 0,5','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/></svg>',mediaBg,'Média de rodadas de ajuste. Quanto mais perto de zero, melhor.')+
+      this.card('Duração Mediana',tValidos.length>0?DL.fmtMin(tMed):'—','Tempo útil de expediente','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>','#8b5cf6','Mediana em minutos de expediente (seg–sex 08–18h (contínuo)).',tNote,tWarn)+
+      this.card('Casos Mais Demorados',tValidos.length>0?DL.fmtMin(tTop):'—','10% das artes levam até','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>','#f59e0b','Os 10% mais lentos levam até este tempo.',tNote,tWarn);
 
     /* Distribuição */
     const fC=['#00e5a0','#3b9eff','#ffcb47','#ff8c42','#ff4d6a'];
@@ -2951,7 +2961,7 @@ const RL = {
                 <span>Designer: ${r.designer||'—'}</span>
                 <span>Vendedor: ${r.vendedor||'—'}</span>
                 <span style="font-weight:700;color:${scoreColor}">Score: ${r._score}/100</span>
-                <span style="font-size:11px;color:var(--text-light);cursor:pointer" onclick="App.openScoreModal(${i})">🔍 ver detalhes</span>
+                <span style="font-size:11px;color:var(--text-light);cursor:pointer" onclick="App.openScoreModal(${i})">ver detalhes</span>
               </div>
             </div>
           </div>`;
@@ -3008,10 +3018,10 @@ const RL = {
     // Salvar dados para os modais dos cards
     RL._cardDataDesigners = { rows, criacao, totCri, tG, totT, totST, totAp, totApOk, acG };
     document.getElementById('designersCards').innerHTML=
-      this.card('Total de Criações',totCri,'Atribuídos a designers','📋','#3b82f6','Total de pedidos NOVO+ALTERAÇÃO com urgência por designers.','','','RL.showModalTotalCriacoes()')+
-      this.card('Artes Sem Alteração',acG!==null?`${acG.toFixed(0)}%`:'—','Em produção + entregues','🎯',acBg,'% de pedidos em produção ou entregues que saíram sem alteração.',`Base: ${totAp} pedidos`,'','RL.showModalArtesSemAlteracao()')+
-      this.card('Tempo Mediano',totT>0?DL.fmtMin(tG):'—','Minutos úteis de expediente','⏱️','#8b5cf6','Mediana do tempo útil de todos os designers.',`Base: ${totT} artes`,totST>0?`⚠ ${totST} sem hora`:'  ','RL.showModalTempoMediano()')+
-      this.card('Retrabalho Crítico',totCrit,'Artes com 4+ alterações','🚨',totCrit===0?'#10b981':'#ef4444','Total de artes com 4+ rodadas de revisão.','','','RL.showModalRetrabalho()');
+      this.card('Total de Criações',totCri,'Atribuídos a designers','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>','#3b82f6','Total de pedidos NOVO+ALTERAÇÃO com urgência por designers.','','','RL.showModalTotalCriacoes()')+
+      this.card('Artes Sem Alteração',acG!==null?`${acG.toFixed(0)}%`:'—','Em produção + entregues','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',acBg,'% de pedidos em produção ou entregues que saíram sem alteração.',`Base: ${totAp} pedidos`,'','RL.showModalArtesSemAlteracao()')+
+      this.card('Tempo Mediano',totT>0?DL.fmtMin(tG):'—','Minutos úteis de expediente','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>','#8b5cf6','Mediana do tempo útil de todos os designers.',`Base: ${totT} artes`,totST>0?`⚠ ${totST} sem hora`:'  ','RL.showModalTempoMediano()')+
+      this.card('Retrabalho Crítico',totCrit,'Artes com 4+ alterações','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',totCrit===0?'#10b981':'#ef4444','Total de artes com 4+ rodadas de revisão.','','','RL.showModalRetrabalho()');
 
     // ── Gráfico 1: Pedidos SEM ALTERAÇÃO — base: EM PRODUÇÃO ──
     const emProducao = rows.filter(r=>r._fase==='producao');
@@ -3030,7 +3040,7 @@ const RL = {
     } else {
       if(State.charts['chartDesignersAcerto']){State.charts['chartDesignersAcerto'].destroy();delete State.charts['chartDesignersAcerto'];}
       const cv=document.getElementById('chartDesignersAcerto');
-      if(cv&&cv.parentNode) cv.parentNode.innerHTML=`<div class="chart-empty">📭 Sem pedidos em produção com designer definido.</div>`;
+      if(cv&&cv.parentNode) cv.parentNode.innerHTML=`<div class="chart-empty">Sem pedidos em produção com designer definido.</div>`;
     }
 
     // ── Gráfico 2: Pedidos que AVANÇARAM (produção + entregues) ──
@@ -3272,10 +3282,10 @@ const RL = {
     <table class="daily-table">
       <thead>
         <tr>
-          <th class="dh-date" rowspan="2">📅 Data</th>
-          <th class="dh-cri" colspan="7">🖌️ Criações concluídas no dia</th>
+          <th class="dh-date" rowspan="2">Data</th>
+          <th class="dh-cri" colspan="7">Criações concluídas no dia</th>
           <th class="dh-alt" colspan="2">✏️ Alterações concluídas</th>
-          <th class="dh-top" colspan="1">🏆 Mais demorado</th>
+          <th class="dh-top" colspan="1">Mais demorado</th>
         </tr>
         <tr>
           <th class="dc">Qtd</th>
@@ -3354,7 +3364,7 @@ const RL = {
 
     // Nota de rodapé
     const notaDesigner = designerFiltro
-      ? `<p style="margin-top:10px;font-size:12px;color:var(--primary)">🔎 Filtrado por designer: <strong>${designerFiltro}</strong></p>`
+      ? `<p style="margin-top:10px;font-size:12px;color:var(--primary)">Filtrado por designer: <strong>${designerFiltro}</strong></p>`
       : '';
     html += `${notaDesigner}
     <p style="margin-top:10px;font-size:11px;color:var(--text-light);line-height:1.8">
@@ -3437,7 +3447,7 @@ const RL = {
     }).filter(d => d.dias > 0);
 
     if(!dados.length || dados.every(d => d.total === 0 && d.altConcluidas === 0)){
-      bodyEl.innerHTML = '<div class="chart-empty">📭 Sem dados nos últimos 6 meses com os filtros atuais.</div>';
+      bodyEl.innerHTML = '<div class="chart-empty">Sem dados nos últimos 6 meses com os filtros atuais.</div>';
       return;
     }
 
@@ -3619,7 +3629,7 @@ const RL = {
       <table class="detail-table"><thead><tr><th>Pedido</th><th>Quadro / Lista</th><th>Status</th></tr></thead><tbody>${semAlt.map(mkRow).join('')}</tbody></table>`:''}
       ${comAlt.length?`<p style="font-weight:700;color:#991b1b;margin:14px 0 6px">⚠️ Com alteração (${comAlt.length})</p>
       <table class="detail-table"><thead><tr><th>Pedido</th><th>Quadro / Lista</th><th>Status</th></tr></thead><tbody>${comAlt.map(mkRow).join('')}</tbody></table>`:''}`;
-    App.openDetailModal(`🎯 Pedidos em produção — ${item.name}`,'linear-gradient(135deg,#047857,#059669)',body);
+    App.openDetailModal(`Pedidos em produção — ${item.name}`,'linear-gradient(135deg,#047857,#059669)',body);
   },
 
   /* ── Modal: Total de Criações ── */
@@ -3637,7 +3647,7 @@ const RL = {
       +`<td>${r.urgencia||'—'}</td><td><span class="badge badge-${r.qtdeAlteracoes===0?'success':r.qtdeAlteracoes<=2?'warning':'danger'}">${r.qtdeAlteracoes}</span></td></tr>`
     ).join('');
     App.openDetailModal(
-      '📋 Total de Criações',
+      'Total de Criações',
       'linear-gradient(135deg,#2563eb,#1e40af)',
       `<div class="detail-row" style="margin-bottom:16px">
         <div class="detail-stat"><div class="detail-stat-val">${cd.totCri}</div><div class="detail-stat-lbl">Total de criações</div></div>
@@ -3661,7 +3671,7 @@ const RL = {
       +`<td>${r.designer||'—'}</td><td>${r.vendedor||'—'}</td><td>${r.urgencia||'—'}</td></tr>`
     ).join('');
     App.openDetailModal(
-      '🎯 Artes Sem Alteração',
+      'Artes Sem Alteração',
       'linear-gradient(135deg,#059669,#047857)',
       `<div class="detail-row" style="margin-bottom:16px">
         <div class="detail-stat"><div class="detail-stat-val">${base.length}</div><div class="detail-stat-lbl">Base (produção + entregues)</div></div>
@@ -3686,7 +3696,7 @@ const RL = {
       +`<td>${r.designer||'—'}</td><td>${r.urgencia||'—'}</td></tr>`
     ).join('');
     App.openDetailModal(
-      '⏱️ Tempo Mediano de Criação',
+      'Tempo Mediano de Criação',
       'linear-gradient(135deg,#7c3aed,#6d28d9)',
       `<div class="detail-row" style="margin-bottom:16px">
         <div class="detail-stat"><div class="detail-stat-val">${cd.totT > 0 ? DL.fmtMin(cd.tG) : '—'}</div><div class="detail-stat-lbl">Mediana</div></div>
@@ -3712,13 +3722,13 @@ const RL = {
       +`<td>${r.designer||'—'}</td><td>${r.urgencia||'—'}</td></tr>`
     ).join('');
     App.openDetailModal(
-      '🚨 Retrabalho Crítico (4+ alterações)',
+      'Retrabalho Crítico (4+ alterações)',
       'linear-gradient(135deg,#dc2626,#991b1b)',
       `<div class="detail-row" style="margin-bottom:16px">
         <div class="detail-stat"><div class="detail-stat-val">${criticos.length}</div><div class="detail-stat-lbl">Pedidos críticos</div></div>
       </div>
       ${criticos.length === 0
-        ? '<div style="padding:20px;text-align:center;color:var(--text-light);font-style:italic">Nenhum pedido com 4+ alterações. 🎉</div>'
+        ? '<div style="padding:20px;text-align:center;color:var(--text-light);font-style:italic">Nenhum pedido com 4+ alterações.</div>'
         : `<table class="detail-table"><thead><tr><th>Pedido</th><th>Alt.</th><th>Designer</th><th>Urgência</th></tr></thead>
            <tbody>${rHtml}</tbody></table>`}`
     );
@@ -3741,10 +3751,10 @@ const RL = {
         <div class="detail-stat" style="color:#10b981"><div class="detail-stat-val">${item.avancou.length}</div><div class="detail-stat-lbl">Avançaram</div></div>
         <div class="detail-stat" style="color:#6b7280"><div class="detail-stat-val">${nao.length}</div><div class="detail-stat-lbl">Ainda em criação</div></div>
       </div>
-      ${mk(prod,'🏭 Avançaram para produção','#1e40af')}
-      ${mk(entregues,'📦 Entregues','#065f46')}
+      ${mk(prod,'Avançaram para produção','#1e40af')}
+      ${mk(entregues,'Entregues','#065f46')}
       ${mk(nao,'⏳ Ainda não avançaram','#6b7280')}`;
-    App.openDetailModal(`📈 Pedidos que avançaram — ${item.name}`,'linear-gradient(135deg,#1e40af,#2563eb)',body);
+    App.openDetailModal(`Pedidos que avançaram — ${item.name}`,'linear-gradient(135deg,#1e40af,#2563eb)',body);
   },
 
   renderVendedores(rows){
@@ -3891,7 +3901,7 @@ const RL = {
     var label=data.labels[bucketIndex]||'Bucket';
     var rows=(data.rowsByBucket[bucketIndex]||[]).slice();
     rows.sort(function(a,b){return(b._diasParado||0)-(a._diasParado||0);});
-    var title='📌 AGUARDANDO RESPOSTA — '+label+' ('+rows.length+' pedido(s))';
+    var title='AGUARDANDO RESPOSTA — '+label+' ('+rows.length+' pedido(s))';
     var rowsHtml=rows.map(function(r){
       var name=String(r.title||r.name||'(sem título)').replace(/</g,'&lt;').replace(/>/g,'&gt;');
       var url=String(r.cardUrl||'');
@@ -3930,12 +3940,12 @@ const RL = {
 
     const inactive=snap.inactiveFiltered||[];
     const inactiveBanner=inactive.length?`<div style="background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#92400e;display:flex;align-items:center;gap:8px">
-      <span>🔕</span><span><strong>Membros inativos (excluídos das análises):</strong> ${inactive.join(', ')}. Os dados históricos deles continuam salvos.</span>
+      <span><strong>Membros inativos (excluídos das análises):</strong> ${inactive.join(', ')}. Os dados históricos deles continuam salvos.</span>
       <button onclick="App.openEquipeModal()" style="margin-left:auto;background:none;border:1px solid #f59e0b;border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;color:#92400e">Gerenciar</button>
     </div>`:'';
 
-    const urgBadge=u=>u==='ALTA'?'<span class="badge badge-danger">🔴 Urgente</span>':u==='MÉDIA'?'<span class="badge badge-warning">🟡 Média</span>':'<span class="badge badge-success">🟢 Baixa</span>';
-    const stBadge=st=>st==='critico'?'<span class="badge badge-danger">🔴 Problema grave</span>':st==='atencao'?'<span class="badge badge-warning">🟡 Atenção</span>':'<span class="badge badge-success">🟢 Normal</span>';
+    const urgBadge=u=>u==='ALTA'?'<span class="badge badge-danger">Urgente</span>':u==='MÉDIA'?'<span class="badge badge-warning">Média</span>':'<span class="badge badge-success">Baixa</span>';
+    const stBadge=st=>st==='critico'?'<span class="badge badge-danger">Problema grave</span>':st==='atencao'?'<span class="badge badge-warning">Atenção</span>':'<span class="badge badge-success">Normal</span>';
     const sec=(title,icon,cls,body,cnt='')=>`<div class="alert-section"><div class="alert-section-header ${cls}">${icon} ${title}${cnt?`<span class="alert-count-badge">${cnt}</span>`:''}</div><div class="alert-section-body">${body}</div></div>`;
 
     // ── CATEGORIA: OPERACIONAL — Etapas mais lentas
@@ -3944,7 +3954,7 @@ const RL = {
       .sort((a,b)=>b.scoreG-a.scoreG).slice(0,3);
     const gargHtml=gargPhases.length?gargPhases.map(g=>{
       const sev=g.p90Hours>48?'high':g.p90Hours>24?'medium':'low';
-      const sevLabel=g.p90Hours>48?'🔴 Alta':g.p90Hours>24?'🟡 Média':'🟢 Baixa';
+      const sevLabel=g.p90Hours>48?'Alta':g.p90Hours>24?'Média':'Baixa';
       // Human-friendly time description
       const midH=g.medianHours;
       const maxH=g.p90Hours;
@@ -3952,7 +3962,7 @@ const RL = {
       const maxTxt=maxH<1?`${Math.round(maxH*60)} min`:maxH<24?`${maxH.toFixed(0)} horas`:maxH<48?`quase 2 dias`:`${Math.round(maxH/24)} dias`;
       return`<div class="action-item priority-${sev}">
         <div class="action-header">
-          <div class="action-title">🚧 ${g.ph}</div>
+          <div class="action-title">${g.ph}</div>
           <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
             <span class="badge badge-${sev==='high'?'danger':sev==='medium'?'warning':'info'}">Urgência: ${sevLabel}</span>
           </div>
@@ -3962,7 +3972,7 @@ const RL = {
           A maioria fica cerca de <strong>${midTxt}</strong> nessa etapa —
           mas os mais demorados chegam a <strong>${maxTxt}</strong>.
         </div>
-        <div class="action-metrics">⚡ O que fazer: revisar o que está bloqueando pedidos nessa etapa e priorizar a desobstrução.</div>
+        <div class="action-metrics">O que fazer: revisar o que está bloqueando pedidos nessa etapa e priorizar a desobstrução.</div>
       </div>`;}).join(''):'<div class="alert-section-empty">Nenhum dado de etapas disponível ainda.</div>';
 
     // ── CATEGORIA: COMERCIAL — Pedidos que precisam de atenção urgente
@@ -3980,7 +3990,7 @@ const RL = {
         <div class="action-description">
           Este pedido está <strong>${faseLabel}</strong>${reasons.length?' e '+reasons.join(', '):''}. Precisa de acompanhamento imediato.
         </div>
-        <div class="action-metrics">⚡ O que fazer: contatar o responsável e verificar o que está impedindo o avanço.</div>
+        <div class="action-metrics">O que fazer: contatar o responsável e verificar o que está impedindo o avanço.</div>
       </div>`}).join(''):'<div class="alert-section-empty">✅ Nenhum pedido em situação crítica no momento.</div>';
 
     // ── CATEGORIA: QUALIDADE — Pedidos que merecem acompanhamento
@@ -3995,7 +4005,7 @@ const RL = {
         <div class="action-description">
           Pedido <strong>${faseLabel}</strong>${r.designer?`, designer: ${r.designer}`:''}. ${altTxt}Está acumulando sinais de atenção.
         </div>
-        <div class="action-metrics">👀 O que fazer: monitorar e verificar se o briefing está completo.</div>
+        <div class="action-metrics">O que fazer: monitorar e verificar se o briefing está completo.</div>
       </div>`}).join(''):'<div class="alert-section-empty">✅ Nenhum pedido em situação de atenção no momento.</div>';
 
     // ── CATEGORIA: EFICIÊNCIA — Como está cada designer
@@ -4014,9 +4024,9 @@ const RL = {
         desc=`Excelente! Média de <strong>${altMedia.toFixed(1)} alteração por arte</strong>. As artes saem corretas na primeira ou segunda tentativa.`;
       }
       if(d.stuckHigh>0) desc+=` Tem <strong>${d.stuckHigh} pedido${d.stuckHigh>1?'s':''} urgente${d.stuckHigh>1?'s':''} parado${d.stuckHigh>1?'s':''}</strong>.`;
-      const action=st==='critico'?'⚡ Revisar o processo de briefing com este designer.':st==='atencao'?'👀 Monitorar nas próximas semanas.':'✅ Nenhuma ação necessária.';
+      const action=st==='critico'?'Revisar o processo de briefing com este designer.':st==='atencao'?'Monitorar nas próximas semanas.':'Nenhuma ação necessária.';
       return`<div class="action-item priority-${pri}">
-        <div class="action-header"><div class="action-title">🎨 ${n}</div>${stBadge(st)}</div>
+        <div class="action-header"><div class="action-title">${n}</div>${stBadge(st)}</div>
         <div class="action-description">${desc} Total: ${d.cards} arte${d.cards!==1?'s':''}.</div>
         <div class="action-metrics">${action}</div>
       </div>`;}).join(''):'<div class="alert-section-empty">Sem dados de designers no período atual.</div>';
@@ -4036,19 +4046,19 @@ const RL = {
         desc=`<strong>${altMedia.toFixed(1)} alteração por pedido</strong> — ótimo! Os pedidos chegam com informações claras.`;
       }
       if(d.highUrgency>0) desc+=` Tem <strong>${d.highUrgency} pedido${d.highUrgency>1?'s':''} urgente${d.highUrgency>1?'s':''}</strong> em aberto.`;
-      const action=st==='critico'?'⚡ Conversar com este vendedor sobre como melhorar a qualidade dos briefings.':st==='atencao'?'👀 Sugerir um checklist de briefing para este vendedor.':'✅ Nenhuma ação necessária.';
+      const action=st==='critico'?'Conversar com este vendedor sobre como melhorar a qualidade dos briefings.':st==='atencao'?'Sugerir um checklist de briefing para este vendedor.':'Nenhuma ação necessária.';
       return`<div class="action-item priority-${pri}">
-        <div class="action-header"><div class="action-title">👤 ${n}</div>${stBadge(st)}</div>
+        <div class="action-header"><div class="action-title">${n}</div>${stBadge(st)}</div>
         <div class="action-description">${desc} Total: ${d.cards} pedido${d.cards!==1?'s':''}.</div>
         <div class="action-metrics">${action}</div>
       </div>`;}).join(''):'<div class="alert-section-empty">Sem dados de vendedores no período atual.</div>';
 
     el.innerHTML= inactiveBanner +
-      sec('Etapas Mais Lentas (onde os pedidos estão travando)','🚧','operacional',gargHtml)+
-      sec('Pedidos que Precisam de Atenção Imediata','🔴','comercial',critHtml,snap.alertasCriticos.length||'')+
-      sec('Pedidos para Monitorar','🟡','prazo',atHtml,snap.alertasAtencao.length||'')+
-      sec('Como Está Cada Designer','🎨','qualidade',desHtml)+
-      sec('Padrão de Retrabalho por Vendedor','📈','preditivo',vendHtml);
+      sec('Etapas Mais Lentas (onde os pedidos estão travando)','<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>','operacional',gargHtml)+
+      sec('Pedidos que Precisam de Atenção Imediata','<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>','comercial',critHtml,snap.alertasCriticos.length||'')+
+      sec('Pedidos para Monitorar','<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>','prazo',atHtml,snap.alertasAtencao.length||'')+
+      sec('Como Está Cada Designer','<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>','qualidade',desHtml)+
+      sec('Padrão de Retrabalho por Vendedor','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>','preditivo',vendHtml);
   },
 
   /* ══════ MODAIS DE DETALHE ══════ */
@@ -4137,7 +4147,7 @@ const RL = {
         <td><span class="badge badge-${r.urgencia==='ALTA'?'danger':r.urgencia==='MÉDIA'?'warning':'success'}">${r.urgencia||'—'}</span></td>
       </tr>`).join('');
     App.openDetailModal(
-      `🎨 Designer: ${nome}`,
+      `Designer: ${nome}`,
       'linear-gradient(135deg,#2563eb,#1e40af)',
       `<div class="detail-row">
         <div class="detail-stat"><div class="detail-stat-val">${criacao.length}</div><div class="detail-stat-lbl">Criações</div></div>
@@ -4147,7 +4157,7 @@ const RL = {
         <div class="detail-stat"><div class="detail-stat-val">${criticos.length}</div><div class="detail-stat-lbl">4+ alt.</div></div>
       </div>
       ${criticos.length>0?`<div style="background:#fee2e2;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#991b1b">
-        <strong>🚨 Casos críticos (4+ alt.):</strong> ${criticos.slice(0,5).map(r=>`${r.title} (${r.qtdeAlteracoes} alt.)`).join(' · ')}${criticos.length>5?' · …':''}</div>`:''}
+        <strong>Casos críticos (4+ alt.):</strong> ${criticos.slice(0,5).map(r=>`${r.title} (${r.qtdeAlteracoes} alt.)`).join(' · ')}${criticos.length>5?' · …':''}</div>`:''}
       <table class="detail-table"><thead><tr><th>Pedido</th><th>Vendedor</th><th>Alt.</th><th>Tempo</th><th>Urgência</th></tr></thead>
       <tbody>${rows_html}</tbody></table>`
     );
@@ -4168,7 +4178,7 @@ const RL = {
         <td>${r.list||'—'}</td>
       </tr>`).join('');
     App.openDetailModal(
-      `👤 Vendedor: ${nome}`,
+      `Vendedor: ${nome}`,
       'linear-gradient(135deg,#059669,#047857)',
       `<div class="detail-row">
         <div class="detail-stat"><div class="detail-stat-val">${criacao.length}</div><div class="detail-stat-lbl">Total</div></div>
@@ -4194,7 +4204,7 @@ const RL = {
       <td><strong>${r.qtdeAlteracoes}</strong></td>
       <td>${r._tempoUtil!=null?DL.fmtMin(r._tempoUtil):'—'}</td></tr>`).join('');
     App.openDetailModal(
-      `📊 Faixa: ${faixa}`,
+      `Faixa: ${faixa}`,
       'linear-gradient(135deg,#3b82f6,#2563eb)',
       `<div class="detail-row">
         <div class="detail-stat"><div class="detail-stat-val">${lista.length}</div><div class="detail-stat-lbl">Total</div></div>
@@ -4223,7 +4233,7 @@ const RL = {
         <td style="font-size:11px;color:var(--text-light)">${r._fase==='entregues'?'Entregue':'Em produção'}</td>
         </tr>`).join('');
       App.openDetailModal(
-        '🎯 Artes Sem Alteração (Em produção + Entregues)',
+        'Artes Sem Alteração (Em produção + Entregues)',
         'linear-gradient(135deg,#059669,#0284c7)',
         `<div class="detail-row" style="margin-bottom:16px">
           <div class="detail-stat"><div class="detail-stat-val">${base.length}</div><div class="detail-stat-lbl">Base (prod+entregues)</div></div>
@@ -4239,13 +4249,13 @@ const RL = {
       return;
     } else if(tipo==='retrabalho'){
       lista = criacao.filter(r=>r.qtdeAlteracoes>=1).sort((a,b)=>b.qtdeAlteracoes-a.qtdeAlteracoes);
-      title='🔄 Pedidos com Retrabalho'; gradient='linear-gradient(135deg,#ef4444,#dc2626)';
+      title='Pedidos com Retrabalho'; gradient='linear-gradient(135deg,#ef4444,#dc2626)';
     } else if(tipo==='criticos'){
       lista = criacao.filter(r=>r.qtdeAlteracoes>=4).sort((a,b)=>b.qtdeAlteracoes-a.qtdeAlteracoes);
-      title='🚨 Artes com 4+ Alterações'; gradient='linear-gradient(135deg,#f59e0b,#d97706)';
+      title='Artes com 4+ Alterações'; gradient='linear-gradient(135deg,#f59e0b,#d97706)';
     } else {
       lista = criacao.sort((a,b)=>b.qtdeAlteracoes-a.qtdeAlteracoes);
-      title='📋 Total de Artes Criadas'; gradient='linear-gradient(135deg,#3b82f6,#2563eb)';
+      title='Total de Artes Criadas'; gradient='linear-gradient(135deg,#3b82f6,#2563eb)';
     }
     // Média SEMPRE calculada sobre todas as criações (mesma base do KPI do dashboard)
     const mediaGeral = criacao.length ? criacao.reduce((s,r)=>s+r.qtdeAlteracoes,0)/criacao.length : 0;
@@ -4375,7 +4385,7 @@ const App = {
     const tsEl=document.getElementById('aiTimestamp');
     if(!contentEl)return;
 
-    const priBadge=p=>({critica:'<span class="badge badge-danger">🔴 Crítica</span>',alta:'<span class="badge badge-warning">🟠 Alta</span>',media:'<span class="badge badge-info">🟡 Média</span>',baixa:'<span class="badge badge-success">🟢 Baixa</span>'}[p]||'');
+    const priBadge=p=>({critica:'<span class="badge badge-danger">Crítica</span>',alta:'<span class="badge badge-warning">Alta</span>',media:'<span class="badge badge-info">Média</span>',baixa:'<span class="badge badge-success">Baixa</span>'}[p]||'');
     const nivelBadge=n=>({critico:'<span class="ai-nivel-badge ai-nivel-critico">⛔ Crítico</span>',atencao:'<span class="ai-nivel-badge ai-nivel-atencao">⚠️ Atenção</span>',estavel:'<span class="ai-nivel-badge ai-nivel-estavel">✅ Estável</span>'}[n]||'');
 
     const sec=(cls,icon,title,body)=>`<div class="ai-director-section"><div class="ai-director-header ${cls}">${icon} ${title}</div><div class="ai-director-body">${body}</div></div>`;
@@ -4387,15 +4397,15 @@ const App = {
       const re=parsed.resumo_executivo||{};
       if(typeof re==='object'&&re.visao_geral){
         const nivel=nivelBadge(re.nivel_operacao||'');
-        html+=sec('resumo','📋','Resumo Executivo',`
+        html+=sec('resumo','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>','Resumo Executivo',`
           <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:12px">
             <div style="font-size:13px;color:var(--text);line-height:1.7">${re.visao_geral}</div>
             ${nivel?`<div>${nivel}</div>`:''}
           </div>
           ${re.principal_risco?`<div class="ai-director-item critica"><div class="ai-director-item-title">⚠️ Principal Risco</div><div class="ai-director-item-body">${re.principal_risco}</div></div>`:''}
-          ${re.principal_oportunidade?`<div class="ai-director-item baixa"><div class="ai-director-item-title">💡 Principal Oportunidade</div><div class="ai-director-item-body">${re.principal_oportunidade}</div></div>`:''}`);
+          ${re.principal_oportunidade?`<div class="ai-director-item baixa"><div class="ai-director-item-title">Principal Oportunidade</div><div class="ai-director-item-body">${re.principal_oportunidade}</div></div>`:''}`);
       } else {
-        html+=sec('resumo','📋','Resumo Executivo',`<div class="ai-director-item"><div class="ai-director-item-body">${typeof re==='string'?re:(parsed.resumo||'')}</div></div>`);
+        html+=sec('resumo','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>','Resumo Executivo',`<div class="ai-director-item"><div class="ai-director-item-body">${typeof re==='string'?re:(parsed.resumo||'')}</div></div>`);
       }
     }
 
@@ -4405,14 +4415,14 @@ const App = {
         <div class="ai-director-item-title">${d.titulo||d.area||''}</div>
         <div class="ai-director-item-body">${d.descricao||d.obs||''}</div>
       </div>`).join('');
-      html+=sec('diagnostico','🔬','Diagnóstico Operacional',items);
+      html+=sec('diagnostico','<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2 20 7.5l-15 15-5.5-5.5z"/><path d="m8 8 1.5 1.5"/></svg>','Diagnóstico Operacional',items);
     } else if(parsed.gargalos?.length) {
       const items=parsed.gargalos.map(g=>`<div class="ai-director-item alta">
-        <div class="ai-director-item-title">🚧 ${g.fase}</div>
+        <div class="ai-director-item-title">${g.fase}</div>
         <div class="ai-director-item-body">${g.problema}</div>
         <div class="ai-director-item-meta"><span>➡ Ação: ${g.acao}</span></div>
       </div>`).join('');
-      html+=sec('diagnostico','🔬','Diagnóstico Operacional',items);
+      html+=sec('diagnostico','<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2 20 7.5l-15 15-5.5-5.5z"/><path d="m8 8 1.5 1.5"/></svg>','Diagnóstico Operacional',items);
     }
 
     // ── ALERTAS CRÍTICOS
@@ -4422,7 +4432,7 @@ const App = {
         <div class="ai-director-item-body">${a.evidencia||a.descricao||''}</div>
         <div class="ai-director-item-meta"><span>Impacto: ${a.impacto||'—'}</span></div>
       </div>`).join('');
-      html+=sec('alertas','🚨','Alertas Críticos',items);
+      html+=sec('alertas','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>','Alertas Críticos',items);
     }
 
     // ── CAUSAS PROVÁVEIS
@@ -4431,7 +4441,7 @@ const App = {
         <div class="ai-director-item-title">${c.causa||c}</div>
         ${c.evidencia?`<div class="ai-director-item-body">${c.evidencia}</div>`:''}
       </div>`).join('');
-      html+=sec('causas','🔍','Causas Prováveis',items);
+      html+=sec('causas','<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>','Causas Prováveis',items);
     }
 
     // ── AÇÕES RECOMENDADAS
@@ -4445,12 +4455,12 @@ const App = {
           body+='</div>';
         }
         if(ar.curto_prazo?.length){
-          body+=`<div class="ai-acao-group"><div class="ai-acao-group-title">📅 Curto Prazo (próximos dias)</div>`;
+          body+=`<div class="ai-acao-group"><div class="ai-acao-group-title">Curto Prazo (próximos dias)</div>`;
           ar.curto_prazo.forEach(a=>{body+=`<div class="ai-director-item alta"><div class="ai-director-item-body">${a}</div></div>`;});
           body+='</div>';
         }
         if(ar.estrutural?.length){
-          body+=`<div class="ai-acao-group"><div class="ai-acao-group-title">🏗️ Ação Estrutural (processo)</div>`;
+          body+=`<div class="ai-acao-group"><div class="ai-acao-group-title">Ação Estrutural (processo)</div>`;
           ar.estrutural.forEach(a=>{body+=`<div class="ai-director-item baixa"><div class="ai-director-item-body">${a}</div></div>`;});
           body+='</div>';
         }
@@ -4464,16 +4474,16 @@ const App = {
     // ── TENDÊNCIAS E PREVISÕES
     if(parsed.tendencias&&parsed.tendencias.length){
       const items=parsed.tendencias.map(t=>`<div class="ai-director-item ${t.direcao==='piora'?'alta':t.direcao==='melhora'?'baixa':'media'}">
-        <div class="ai-director-item-title">${t.direcao==='piora'?'📉':t.direcao==='melhora'?'📈':'➡'} ${t.titulo||t.area||''}</div>
+        <div class="ai-director-item-title">${t.direcao==='piora'?'-':t.direcao==='melhora'?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>':'➡'} ${t.titulo||t.area||''}</div>
         <div class="ai-director-item-body">${t.descricao||t}</div>
       </div>`).join('');
-      html+=sec('tendencias','📈','Tendências e Previsões',items);
+      html+=sec('tendencias','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>','Tendências e Previsões',items);
     }
 
     // ── PERGUNTAS DE GESTÃO
     if(parsed.perguntas_gestao&&parsed.perguntas_gestao.length){
       const items=parsed.perguntas_gestao.map(q=>`<div class="ai-pergunta">❓ ${q}</div>`).join('');
-      html+=sec('perguntas','🤔','Perguntas Estratégicas de Gestão',items);
+      html+=sec('perguntas','<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>','Perguntas Estratégicas de Gestão',items);
     }
 
     // ── DESIGNERS / VENDEDORES (fallback para schema legado)
@@ -4483,7 +4493,7 @@ const App = {
         <div class="ai-director-item-title">${stBadge(d.status)} ${d.nome}</div>
         <div class="ai-director-item-body">${d.obs}</div>
       </div>`).join('');
-      html+=sec('diagnostico','🎨','Análise Designers',items);
+      html+=sec('diagnostico','<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>','Análise Designers',items);
     }
     if(!parsed.diagnostico_operacional&&parsed.vendedores?.length){
       const stBadge=st=>st==='critico'?'<span class="badge badge-danger">Crítico</span>':st==='atencao'?'<span class="badge badge-warning">Atenção</span>':'<span class="badge badge-success">OK</span>';
@@ -4491,7 +4501,7 @@ const App = {
         <div class="ai-director-item-title">${stBadge(v.status)} ${v.nome}</div>
         <div class="ai-director-item-body">${v.obs}</div>
       </div>`).join('');
-      html+=sec('tendencias','👥','Análise Vendedores',items);
+      html+=sec('tendencias','<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>','Análise Vendedores',items);
     }
 
     if(!html)html='<div class="ai-director-item"><div class="ai-director-item-body">Sem dados suficientes para análise.</div></div>';
@@ -4738,7 +4748,7 @@ const App = {
     const barColor = scoreColor;
 
     // Linha de início de pontuação
-    let rows = `<tr style="background:#f9fafb"><td colspan="2" style="padding:8px 12px;font-weight:700;color:#374151;font-size:13px">📊 Pontuação Base</td><td style="padding:8px 12px;text-align:right;font-weight:700;color:#10b981">+100</td></tr>`;
+    let rows = `<tr style="background:#f9fafb"><td colspan="2" style="padding:8px 12px;font-weight:700;color:#374151;font-size:13px">Pontuação Base</td><td style="padding:8px 12px;text-align:right;font-weight:700;color:#10b981">+100</td></tr>`;
 
     // Descontos
     s.items.forEach(item=>{
@@ -4754,9 +4764,9 @@ const App = {
       <div style="margin-bottom:20px">
         <div style="font-weight:700;font-size:15px;color:#1f2937;margin-bottom:4px;line-height:1.4">${DL.pedidoLinkHTML(r)}</div>
         <div style="font-size:13px;color:#6b7280">
-          📋 Lista: ${r.list||'—'} &nbsp;·&nbsp;
-          🎨 Designer: ${r.designer||'—'} &nbsp;·&nbsp;
-          👤 Vendedor: ${r.vendedor||'—'}
+          Lista: ${r.list||'—'} &nbsp;·&nbsp;
+          Designer: ${r.designer||'—'} &nbsp;·&nbsp;
+          Vendedor: ${r.vendedor||'—'}
         </div>
       </div>
 
@@ -5194,7 +5204,7 @@ const aidm = {
     this._item=item;
 
     const t=document.getElementById('aidmTitle');
-    if(t) t.textContent='🔍 '+(item.titulo||'Detalhe');
+    if(t) t.textContent=(item.titulo||'Detalhe');
 
     const p=document.getElementById('aidmPreview');
     if(p){
@@ -5311,17 +5321,17 @@ const aidm = {
 
       const tagStyle=v=>v==='alto'?'background:#d1fae5;color:#065f46':v==='medio'?'background:#fef3c7;color:#92400e':'background:#fee2e2;color:#991b1b';
       let h='';
-      if(p2.causa_raiz) h+=`<h4>🎯 Causa-Raiz</h4><div class="aidm-card r">${p2.causa_raiz}</div>`;
-      if(p2.evidencias?.length) h+=`<h4>📊 Evidências</h4><ul style="margin:0;padding-left:18px;line-height:2">${p2.evidencias.map(e=>`<li style="font-size:13px">${e}</li>`).join('')}</ul>`;
+      if(p2.causa_raiz) h+=`<h4>Causa-Raiz</h4><div class="aidm-card r">${p2.causa_raiz}</div>`;
+      if(p2.evidencias?.length) h+=`<h4>Evidências</h4><ul style="margin:0;padding-left:18px;line-height:2">${p2.evidencias.map(e=>`<li style="font-size:13px">${e}</li>`).join('')}</ul>`;
       if(p2.hipoteses?.length){
-        h+=`<h4>💭 Hipóteses e Validação</h4>`;
+        h+=`<h4>Hipóteses e Validação</h4>`;
         p2.hipoteses.forEach(hi=>{h+=`<div class="aidm-card a"><strong>${hi.h}</strong><br><em style="font-size:12px;color:var(--text-light)">Como validar: ${hi.validar}</em></div>`;});
       }
       if(p2.acoes?.length){
         h+=`<h4>✅ Ações Recomendadas</h4>`;
         p2.acoes.forEach(a=>{h+=`<div class="aidm-card g"><strong>${a.acao}</strong><div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px"><span class="aidm-tag" style="${tagStyle(a.impacto)}">Impacto: ${a.impacto||'—'}</span><span class="aidm-tag" style="${tagStyle(a.esforco)}">Esforço: ${a.esforco||'—'}</span>${a.prazo?`<span class="aidm-tag" style="background:#ede9fe;color:#4f46e5">Prazo: ${a.prazo}</span>`:''}</div></div>`;});
       }
-      if(p2.metricas?.length) h+=`<h4>📈 Métricas de Acompanhamento</h4><ul style="margin:0;padding-left:18px;line-height:2">${p2.metricas.map(m=>`<li style="font-size:13px">${m}</li>`).join('')}</ul>`;
+      if(p2.metricas?.length) h+=`<h4>Métricas de Acompanhamento</h4><ul style="margin:0;padding-left:18px;line-height:2">${p2.metricas.map(m=>`<li style="font-size:13px">${m}</li>`).join('')}</ul>`;
       res.innerHTML=h||'<em style="color:var(--text-light)">Sem dados.</em>';
     }catch(e){
       res.innerHTML=`<div style="background:#fee2e2;border-radius:8px;padding:12px;color:#991b1b;font-size:13px"><strong>❌ Erro:</strong> ${e.message}</div>`;
