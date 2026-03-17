@@ -19,10 +19,10 @@
   --secondary:#00e5a0;--danger:#f87171;--warning:#fbbf24;--purple:#a78bfa;
 
   /* Light surfaces */
-  --bg-body:#f0f4f8;
-  --surface:#ffffff;--surface-2:#f7f9fc;--surface-3:#eef2f7;
+  --bg-body:#e8edf5;
+  --surface:#f8fbfe;--surface-2:#eef3f9;--surface-3:#e5ecf5;
   --sidebar-bg:#0c0f16;--sidebar-border:rgba(255,255,255,.06);
-  --header-bg:#ffffff;--card-bg:#ffffff;--input-bg:#f7f9fc;
+  --header-bg:#f8fbfe;--card-bg:#f8fbfe;--input-bg:#f0f4f9;
   --border:#e1e8f0;--border-strong:#c8d5e3;
 
   /* Text */
@@ -473,7 +473,7 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
   /* PRINT LIGHT — neutraliza dark mode no PDF */
   body.printing{
     --bg-body-1:#ffffff;--bg-body-2:#ffffff;
-    --card-bg:#ffffff;--header-bg:#ffffff;--input-bg:#ffffff;
+    --card-bg:#f8fbfe;--header-bg:#f8fbfe;--input-bg:#ffffff;
     --border:#e5e7eb;--text:#111827;--text-light:#4b5563;
     --dark:#111827;--light:#f9fafb;
     --table-header:#f3f4f6;--table-hover:#f9fafb;
@@ -759,9 +759,76 @@ body.dark-mode .alert-section-header.operacional{background:rgba(59,130,246,.1);
 body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);border-bottom-color:var(--border)}
 
 /* ── Sidebar responsive ──────────────────────────────────────────── */
+/* ── MOBILE ──────────────────────────────────────────────────────────────── */
+
+/* Sidebar: overlay mode ≤860px */
 @media(max-width:860px){
-  .sidebar{transform:translateX(-100%)}
+  .sidebar{
+    transform:translateX(-100%);
+    transition:transform .25s cubic-bezier(.4,0,.2,1);
+    z-index:400;
+    box-shadow:4px 0 24px rgba(0,0,0,.5);
+  }
+  .sidebar.sb-open{transform:translateX(0)}
+  .sb-overlay{display:block}
   .sb-main{margin-left:0}
+  .filter-trigger-bar{top:52px}
+
+  /* Topbar: add hamburger */
+  .topbar{padding:0 14px}
+  .sb-hamburger{
+    display:flex;align-items:center;justify-content:center;
+    width:36px;height:36px;border-radius:var(--r);
+    background:transparent;border:1px solid var(--border);
+    cursor:pointer;color:var(--text);font-size:18px;flex-shrink:0;
+    transition:background .15s;
+  }
+  .sb-hamburger:hover{background:var(--surface-2)}
+
+  /* Cards: 2 col on tablet */
+  .cards-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  /* Charts: reduce height */
+  .chart-wrapper{height:240px}
+  .chart-wrapper-tall{height:320px}
+  /* Table overflow */
+  .table-container{padding:14px 12px}
+  th,td{padding:7px 10px;font-size:11px}
+  /* Daily table */
+  .daily-wrap{border-radius:6px}
+  .daily-table{font-size:11px}
+  /* Topbar title shorter */
+  .topbar-title{font-size:13px}
+  /* Tab content padding */
+  .tab-content.active{padding:12px 14px}
+}
+
+/* Small phones ≤480px */
+@media(max-width:480px){
+  .cards-grid{grid-template-columns:1fr}
+  .chart-wrapper{height:200px}
+  .chart-wrapper-tall{height:260px}
+  .topbar{height:48px}
+  .filter-trigger-bar{top:48px}
+  .tab-content.active{padding:10px 12px}
+  .card{padding:13px 14px}
+  .card-value{font-size:22px}
+  .form-row{grid-template-columns:1fr}
+  .modal-box{width:calc(100% - 16px)}
+  th{font-size:9px}
+  td{font-size:11px}
+}
+
+/* Sidebar overlay backdrop */
+.sb-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(8,11,17,.65);
+  z-index:350;backdrop-filter:blur(2px);
+}
+/* Desktop: always show sidebar, hide hamburger */
+@media(min-width:861px){
+  .sb-hamburger{display:none!important}
+  .sb-overlay{display:none!important}
+}
   .filter-trigger-bar{top:52px}
 }
 
@@ -783,6 +850,7 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
   </div>
 </div>
 
+<div class="sb-overlay" id="sbOverlay" onclick="SB.close()"></div>
 <!-- CONNECT SCREEN -->
 <div id="connectScreen">
   <div class="connect-box">
@@ -805,10 +873,10 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
     </div>
     <div class="sb-nav">
       <span class="sb-nav-label">Menu</span>
-      <button class="sb-tab-btn active" onclick="App.switchTab(0)"><span class="sb-icon">⊞</span>Visão Geral</button>
-      <button class="sb-tab-btn" onclick="App.switchTab(1)"><span class="sb-icon">◈</span>Designers</button>
-      <button class="sb-tab-btn" onclick="App.switchTab(2)"><span class="sb-icon">◉</span>Vendedores</button>
-      <button class="sb-tab-btn" onclick="App.switchTab(3)"><span class="sb-icon">⚡</span>Alertas &amp; Ações</button>
+      <button class="sb-tab-btn active" onclick="App.switchTab(0);SB.close()"><span class="sb-icon">⊞</span>Visão Geral</button>
+      <button class="sb-tab-btn" onclick="App.switchTab(1);SB.close()"><span class="sb-icon">◈</span>Designers</button>
+      <button class="sb-tab-btn" onclick="App.switchTab(2);SB.close()"><span class="sb-icon">◉</span>Vendedores</button>
+      <button class="sb-tab-btn" onclick="App.switchTab(3);SB.close()"><span class="sb-icon">⚡</span>Alertas &amp; Ações</button>
     </div>
     <div class="sb-footer">
       <div class="sb-user-row">
@@ -832,6 +900,7 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
     <!-- Topbar -->
     <div class="topbar">
       <div class="topbar-left">
+        <button class="sb-hamburger" id="btnHamburger" onclick="SB.toggle()" aria-label="Menu">☰</button>
         <span class="topbar-title" id="topbarTitle">Visão Geral</span>
         <span id="headerPeriod" style="font-size:11px;color:var(--text-dim);margin-left:6px"></span>
       </div>
@@ -1052,7 +1121,7 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
         <div id="dailyProdTable"></div>
       </div>
       <div class="table-container" id="wrapMonthlyAvg">
-        <div class="chart-title">📅 Média de criações por mês</div>
+        <h3 class="chart-title">📅 Média de criações por mês</h3>
         <div class="chart-subtitle">Total do período filtrado. Base: data de conclusão da criação. Média = artes por dias trabalhados no mês.</div>
         <div id="monthlyAvgBody"></div>
       </div>
@@ -1279,7 +1348,7 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
 /* ══════════════════════════════════════════════
    CONSTANTS
 ══════════════════════════════════════════════ */
-const URGENCY_COLORS = {'ALTA':'#ef4444','MÉDIA':'#f59e0b','BAIXA':'#10b981','N/A':'#6b7280'};
+const URGENCY_COLORS = {'ALTA':'#ff4d6a','MÉDIA':'#ffcb47','BAIXA':'#00e5a0','N/A':'#5a7080'};
 const LIST_LIBERACAO_NORM = ['LIBERAR PARA PRODUCAO','LIBERADO PARA PRODUCAO','LIBERAR P/ PRODUCAO','LIBERAR P/PRODUCAO'];
 const DEBUG_TIME = false;
 /* NOTE: Trello object kept as dead code — all calls now go via /api/sync */
@@ -2292,11 +2361,12 @@ const RL = {
           </div>
         </div>`;
       } else if(rows.length > 0) {
-        // KPIs ok: mostra barra de saúde compacta
-        diagEl.innerHTML = `<div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:10px 16px;font-size:12px;color:#065f46;display:flex;gap:20px;flex-wrap:wrap">
-          <span>✅ <strong>${criacao.length}</strong> artes reconhecidas de ${rows.length} cards</span>
-          <span>📋 Tipos: <code>${tiposSample}</code></span>
-          <span>⚡ Urgências: <code>${urgSample}</code></span>
+        diagEl.innerHTML = `<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:7px 14px;background:rgba(0,229,160,.07);border:1px solid rgba(0,229,160,.25);border-radius:8px;font-size:11px;color:var(--text-light);letter-spacing:.01em">
+          <span style="color:var(--accent);font-weight:700;font-size:12px">${criacao.length}<span style="font-weight:400;color:var(--text-dim)"> / ${rows.length} cards</span></span>
+          <span style="color:var(--border-strong)">·</span>
+          <span>${tiposSample}</span>
+          <span style="color:var(--border-strong)">·</span>
+          <span>${urgSample}</span>
         </div>`;
       } else {
         diagEl.innerHTML = '';
@@ -2310,12 +2380,12 @@ const RL = {
     const mediaAlt=total?criacao.reduce((s,r)=>s+r.qtdeAlteracoes,0)/total:0;
     const aprovSemAlt=aprovados.filter(r=>r.qtdeAlteracoes===0).length;
     const pctSemAlt=aprovados.length>0?aprovSemAlt/aprovados.length*100:null;
-    const semAltBg=pctSemAlt===null?'#6b7280':pctSemAlt>=80?'#10b981':pctSemAlt>=50?'#f59e0b':'#ef4444';
+    const semAltBg=pctSemAlt===null?'#5a7080':pctSemAlt>=80?'#00e5a0':pctSemAlt>=50?'#ffcb47':'#ff4d6a';
     const pctRet=total>0?comRet/total*100:null;
-    const retBg=pctRet===null?'#6b7280':pctRet<20?'#10b981':pctRet<50?'#f59e0b':'#ef4444';
+    const retBg=pctRet===null?'#5a7080':pctRet<20?'#00e5a0':pctRet<50?'#ffcb47':'#ff4d6a';
     const p4=total?com4mais/total*100:0;
-    const p4Bg=p4<10?'#10b981':p4<20?'#f59e0b':'#ef4444';
-    const mediaBg=mediaAlt<0.5?'#10b981':mediaAlt<1.5?'#f59e0b':'#ef4444';
+    const p4Bg=p4<10?'#00e5a0':p4<20?'#ffcb47':'#ff4d6a';
+    const mediaBg=mediaAlt<0.5?'#00e5a0':mediaAlt<1.5?'#ffcb47':'#ff4d6a';
 
     const tValidos=criacao.filter(r=>r._tempoUtil!=null).map(r=>r._tempoUtil);
     const semHorario=criacao.filter(r=>r.inicioCriacao&&(!r._iniConfiavel||!r._fimConfiavel)).length;
@@ -2339,7 +2409,7 @@ const RL = {
       this.card('Casos Mais Demorados',tValidos.length>0?DL.fmtMin(tTop):'—','10% das artes levam até','📈','#f59e0b','Os 10% mais lentos levam até este tempo.',tNote,tWarn);
 
     /* Distribuição */
-    const fC=['#10b981','#60a5fa','#fbbf24','#fb923c','#ef4444'];
+    const fC=['#00e5a0','#3b9eff','#ffcb47','#ff8c42','#ff4d6a'];
     const distLabels=['0 alt.','1 alt.','2 alt.','3–4 alt.','5+ alt.'];
     this.upsert('chartDistribuicao',{type:'bar',data:{labels:distLabels,datasets:[{label:'Artes',data:[criacao.filter(r=>r.qtdeAlteracoes===0).length,criacao.filter(r=>r.qtdeAlteracoes===1).length,criacao.filter(r=>r.qtdeAlteracoes===2).length,criacao.filter(r=>r.qtdeAlteracoes>=3&&r.qtdeAlteracoes<=4).length,criacao.filter(r=>r.qtdeAlteracoes>=5).length],backgroundColor:fC,borderRadius:7}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const p=total>0?(ctx.parsed.y/total*100).toFixed(0):0;return` ${ctx.parsed.y} artes (${p}%)`;}}}}  ,scales:{y:{beginAtZero:true,title:{display:true,text:'Quantidade'}},x:{title:{display:true,text:'Faixa de alterações'}}},onClick:(evt,els)=>{if(els.length){const lbl=distLabels[els[0].index];RL.showDetailDistribuicao(lbl,rows);}}}});
 
@@ -2370,8 +2440,8 @@ const RL = {
         data:{
           labels: BINS_TEMPO.map(b=>b.label),
           datasets:[
-            {label:'Pedidos',data:_binCounts,backgroundColor:'rgba(99,102,241,.75)',borderRadius:6,yAxisID:'y'},
-            {label:'Layouts',data:_binLayouts,type:'line',borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.15)',
+            {label:'Pedidos',data:_binCounts,backgroundColor:'rgba(59,158,255,.8)',borderRadius:6,yAxisID:'y'},
+            {label:'Layouts',data:_binLayouts,type:'line',borderColor:'#ffcb47',backgroundColor:'rgba(255,203,71,.15)',
              pointRadius:5,pointHoverRadius:7,tension:0.3,fill:true,yAxisID:'y2'}
           ]
         },
@@ -2456,10 +2526,10 @@ const RL = {
         data:{
           labels:['Tempo da Equipe'],
           datasets:[
-            {label:'Criação',data:[pctCri],backgroundColor:'rgba(99,102,241,.8)',stack:'t',
+            {label:'Criação',data:[pctCri],backgroundColor:'rgba(59,158,255,.85)',stack:'t',
              borderRadius:{topLeft:6,bottomLeft:6},hoverBackgroundColor:'rgba(99,102,241,1)'},
-            {label:'Alterações',data:[pctAlt],backgroundColor:'rgba(239,68,68,.75)',stack:'t',
-             borderRadius:{topRight:6,bottomRight:6},hoverBackgroundColor:'rgba(239,68,68,1)'}
+            {label:'Alterações',data:[pctAlt],backgroundColor:'rgba(255,77,106,.8)',stack:'t',
+             borderRadius:{topRight:6,bottomRight:6},hoverBackgroundColor:'rgba(255,77,106,1)'}
           ]
         },
         options:{
@@ -2587,9 +2657,9 @@ const RL = {
         data:{
           labels:_gargRows.map(f=>f.label),
           datasets:[
-            {label:'Pedidos',data:_gargRows.map(f=>f.count),backgroundColor:'rgba(99,102,241,.75)',borderRadius:5,yAxisID:'y'},
+            {label:'Pedidos',data:_gargRows.map(f=>f.count),backgroundColor:'rgba(59,158,255,.8)',borderRadius:5,yAxisID:'y'},
             {label:'Dias médio',data:_gargRows.map(f=>parseFloat(f.mediaDias.toFixed(1))),
-             type:'line',borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,.1)',
+             type:'line',borderColor:'#ff4d6a',backgroundColor:'rgba(255,77,106,.1)',
              pointRadius:5,pointHoverRadius:7,tension:0.3,fill:false,yAxisID:'y2'}
           ]
         },
@@ -2652,7 +2722,7 @@ const RL = {
           if(r.qtdeAlteracoes>=4)m.push(`<span class="critico-badge" style="background:#fee2e2;color:#991b1b">${r.qtdeAlteracoes} alt.</span>`);
           if(r._tempoUtil!=null&&tMed>0&&r._tempoUtil>tMed*2)m.push(`<span class="critico-badge" style="background:#fef3c7;color:#92400e">Tempo: ${DL.fmtMin(r._tempoUtil)}</span>`);
           if(r.urgencia==='ALTA'&&r.qtdeAlteracoes>=2)m.push(`<span class="critico-badge" style="background:#fee2e2;color:#991b1b">Urgente+ret.</span>`);
-          const scoreColor=r._score<=30?'#ef4444':r._score<=60?'#f59e0b':'#10b981';
+          const scoreColor=r._score<=30?'#ff4d6a':r._score<=60?'#ffcb47':'#00e5a0';
           return`<div class="critico-item ${r._score<30?'':'nivel-medio'}">
             <div class="critico-rank">#${i+1}</div>
             <div class="critico-body">
@@ -2714,7 +2784,7 @@ const RL = {
     const totAp=Object.values(dA).reduce((s,d)=>s+d.total,0);
     const totApOk=Object.values(dA).reduce((s,d)=>s+d.zero,0);
     const acG=totAp>0?totApOk/totAp*100:null;
-    const acBg=acG===null?'#6b7280':acG>=80?'#10b981':acG>=50?'#f59e0b':'#ef4444';
+    const acBg=acG===null?'#5a7080':acG>=80?'#00e5a0':acG>=50?'#ffcb47':'#ff4d6a';
 
     // Salvar dados para os modais dos cards
     RL._cardDataDesigners = { rows, criacao, totCri, tG, totT, totST, totAp, totApOk, acG };
@@ -2737,7 +2807,7 @@ const RL = {
     const acArr=Object.entries(dProd).map(([name,d])=>({name,val:d.total>0?d.zero/d.total*100:0,base:d.total,rows:d.rows,zero:d.zero})).sort((a,b)=>b.val-a.val);
     RL._acertoData = acArr; // para o modal
     if(acArr.length){
-      this.upsert('chartDesignersAcerto',{type:'bar',data:{labels:acArr.map(d=>d.name),datasets:[{label:'% sem alteração (em produção)',data:acArr.map(d=>d.val),backgroundColor:acArr.map(d=>d.val>=80?'#10b981':d.val>=50?'#f59e0b':'#ef4444'),borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.parsed.x.toFixed(0)}% sem alt. | ${acArr[ctx.dataIndex].zero}/${acArr[ctx.dataIndex].base} pedidos em produção`}}},onClick:(evt,els)=>{if(els.length) RL.showModalSemAlteracao(acArr[els[0].index]);},scales:{x:{beginAtZero:true,max:100,title:{display:true,text:'% sem alteração — base: em produção (clique para detalhes)'},ticks:{callback:v=>v+'%'}}}}});
+      this.upsert('chartDesignersAcerto',{type:'bar',data:{labels:acArr.map(d=>d.name),datasets:[{label:'% sem alteração (em produção)',data:acArr.map(d=>d.val),backgroundColor:acArr.map(d=>d.val>=80?'#00e5a0':d.val>=50?'#ffcb47':'#ff4d6a'),borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.parsed.x.toFixed(0)}% sem alt. | ${acArr[ctx.dataIndex].zero}/${acArr[ctx.dataIndex].base} pedidos em produção`}}},onClick:(evt,els)=>{if(els.length) RL.showModalSemAlteracao(acArr[els[0].index]);},scales:{x:{beginAtZero:true,max:100,title:{display:true,text:'% sem alteração — base: em produção (clique para detalhes)'},ticks:{callback:v=>v+'%'}}}}});
     } else {
       if(State.charts['chartDesignersAcerto']){State.charts['chartDesignersAcerto'].destroy();delete State.charts['chartDesignersAcerto'];}
       const cv=document.getElementById('chartDesignersAcerto');
@@ -2762,14 +2832,14 @@ const RL = {
     if(!avArr.length){
       this.showEmpty('chartAvancouWrap','Sem pedidos com início de criação registrado.');
     } else {
-      this.upsert('chartAvancou',{type:'bar',data:{labels:avArr.map(d=>d.name),datasets:[{label:'% que avançaram',data:avArr.map(d=>d.pct),backgroundColor:avArr.map(d=>d.pct>=80?'#10b981':d.pct>=50?'#f59e0b':'#ef4444'),borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.parsed.x.toFixed(0)}% avançaram | ${avArr[ctx.dataIndex].avancou.length}/${avArr[ctx.dataIndex].base.length} pedidos`}}},onClick:(evt,els)=>{if(els.length) RL.showModalAvancou(avArr[els[0].index]);},scales:{x:{beginAtZero:true,max:100,title:{display:true,text:'% que avançaram para produção ou entregues (clique para detalhes)'},ticks:{callback:v=>v+'%'}}}}});
+      this.upsert('chartAvancou',{type:'bar',data:{labels:avArr.map(d=>d.name),datasets:[{label:'% que avançaram',data:avArr.map(d=>d.pct),backgroundColor:avArr.map(d=>d.pct>=80?'#00e5a0':d.pct>=50?'#ffcb47':'#ff4d6a'),borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.parsed.x.toFixed(0)}% avançaram | ${avArr[ctx.dataIndex].avancou.length}/${avArr[ctx.dataIndex].base.length} pedidos`}}},onClick:(evt,els)=>{if(els.length) RL.showModalAvancou(avArr[els[0].index]);},scales:{x:{beginAtZero:true,max:100,title:{display:true,text:'% que avançaram para produção ou entregues (clique para detalhes)'},ticks:{callback:v=>v+'%'}}}}});
     }
 
     const vqArr=Object.entries(dS).filter(([,d])=>d.total>=1).map(([name,d])=>({name,tMed:d.tempos.length>0?Math.round(this.median(d.tempos)):0,temBase:d.tempos.length,mAlt:d.total>0?d.totalAlt/d.total:0})).sort((a,b)=>b.tMed-a.tMed);
     const vqCT=vqArr.filter(d=>d.temBase>0);
     this.restoreCanvas('chartVQWrap','chartVelocidadeQualidade','chart-wrapper-tall');
     if(!vqCT.length){this.showEmpty('chartVQWrap','Sem designers com horário de criação registrado.');}
-    else{const tGVQ=this.median(vqCT.map(d=>d.tMed)),aGVQ=this.median(vqCT.map(d=>d.mAlt));const bC=vqArr.map(d=>{if(d.temBase===0)return'#d1d5db';const rp=d.tMed<=tGVQ,pc=d.mAlt<=aGVQ;return rp&&pc?'#10b981':rp&&!pc?'#f59e0b':!rp&&pc?'#60a5fa':'#ef4444';});this.upsert('chartVelocidadeQualidade',{type:'bar',data:{labels:vqArr.map(d=>d.name),datasets:[{type:'bar',label:'Tempo Mediano (min)',data:vqArr.map(d=>d.temBase>0?d.tMed:null),backgroundColor:bC,borderRadius:5,yAxisID:'yL',order:2},{type:'line',label:'Média de Alterações',data:vqArr.map(d=>d.mAlt),borderColor:'#f97316',backgroundColor:'rgba(249,115,22,.15)',borderWidth:2.5,pointRadius:6,pointBackgroundColor:'#f97316',fill:false,tension:0.3,yAxisID:'yR',order:1}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top',labels:{padding:16}},tooltip:{callbacks:{label:ctx=>{if(ctx.dataset.type==='line')return` Média alt.: ${ctx.parsed.y.toFixed(2)}`;return ctx.parsed.y!=null?` Tempo mediano: ${ctx.parsed.y} min`:'Sem horário';}}}} ,scales:{yL:{type:'linear',position:'left',beginAtZero:true,title:{display:true,text:'Tempo Mediano (min)'},grid:{color:'#f0f0f0'}},yR:{type:'linear',position:'right',beginAtZero:true,title:{display:true,text:'Média de Alterações'},grid:{drawOnChartArea:false}},x:{title:{display:true,text:'Designer'}}}}});}
+    else{const tGVQ=this.median(vqCT.map(d=>d.tMed)),aGVQ=this.median(vqCT.map(d=>d.mAlt));const bC=vqArr.map(d=>{if(d.temBase===0)return'#d1d5db';const rp=d.tMed<=tGVQ,pc=d.mAlt<=aGVQ;return rp&&pc?'#00e5a0':rp&&!pc?'#ffcb47':!rp&&pc?'#3b9eff':'#ff4d6a';});this.upsert('chartVelocidadeQualidade',{type:'bar',data:{labels:vqArr.map(d=>d.name),datasets:[{type:'bar',label:'Tempo Mediano (min)',data:vqArr.map(d=>d.temBase>0?d.tMed:null),backgroundColor:bC,borderRadius:5,yAxisID:'yL',order:2},{type:'line',label:'Média de Alterações',data:vqArr.map(d=>d.mAlt),borderColor:'#ff8c42',backgroundColor:'rgba(255,140,66,.15)',borderWidth:2.5,pointRadius:6,pointBackgroundColor:'#ff8c42',fill:false,tension:0.3,yAxisID:'yR',order:1}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top',labels:{padding:16}},tooltip:{callbacks:{label:ctx=>{if(ctx.dataset.type==='line')return` Média alt.: ${ctx.parsed.y.toFixed(2)}`;return ctx.parsed.y!=null?` Tempo mediano: ${ctx.parsed.y} min`:'Sem horário';}}}} ,scales:{yL:{type:'linear',position:'left',beginAtZero:true,title:{display:true,text:'Tempo Mediano (min)'},grid:{color:'#f0f0f0'}},yR:{type:'linear',position:'right',beginAtZero:true,title:{display:true,text:'Média de Alterações'},grid:{drawOnChartArea:false}},x:{title:{display:true,text:'Designer'}}}}});}
 
     const tblArr=Object.entries(dS).map(([name,d])=>{const ap=dA[name];const ac=ap&&ap.total>0?ap.zero/ap.total*100:null;return{name,total:d.total,critico:d.critico,tMed:d.tempos.length>0?Math.round(this.median(d.tempos)):null,tDem:d.tempos.length>0?Math.round(this.pct(d.tempos,90)):null,mAlt:d.total>0?d.totalAlt/d.total:0,ac,bAp:ap?ap.total:0};}).sort((a,b)=>b.total-a.total);
     RL._lastRowsDesigner = rows; // salva para o click
@@ -3166,8 +3236,8 @@ const RL = {
     dados.forEach(d => {
       const criStr  = d.media    > 0 ? d.media.toFixed(1)    : '0.0';
       const altStr  = d.altMedia > 0 ? d.altMedia.toFixed(1) : '0.0';
-      const criBg   = d.media    >= 3 ? '#10b981' : d.media    >= 1.5 ? '#f59e0b' : '#6b7280';
-      const altBg   = d.altMedia >= 3 ? '#10b981' : d.altMedia >= 1.5 ? '#f59e0b' : '#6b7280';
+      const criBg   = d.media    >= 3 ? '#00e5a0' : d.media    >= 1.5 ? '#ffcb47' : '#5a7080';
+      const altBg   = d.altMedia >= 3 ? '#00e5a0' : d.altMedia >= 1.5 ? '#ffcb47' : '#5a7080';
       html += '<tr>'
         + '<td class="col-date" style="text-align:left;padding-left:14px">' + d.label + '</td>'
         + '<td style="text-align:center;font-weight:700">' + d.total + '</td>'
@@ -3468,7 +3538,7 @@ const RL = {
     criacao.forEach(r=>{if(!r.vendedor)return;if(!vend[r.vendedor])vend[r.vendedor]={total:0,alt:0,critico:0,sem:0};vend[r.vendedor].total++;vend[r.vendedor].alt+=r.qtdeAlteracoes;if(r.qtdeAlteracoes>=4)vend[r.vendedor].critico++;if(r.qtdeAlteracoes===0)vend[r.vendedor].sem++;});
     const data=Object.entries(vend).map(([name,d])=>({name,total:d.total,alt:d.alt,critico:d.critico,sem:d.sem,media:d.total?d.alt/d.total:0,pSem:d.total?d.sem/d.total*100:0})).sort((a,b)=>b.alt-a.alt);
     const top10=data.slice(0,10);
-    this.upsert('chartVendedoresRetrabalho',{type:'bar',data:{labels:top10.map(v=>v.name),datasets:[{label:'Total de alterações',data:top10.map(v=>v.alt),backgroundColor:'#ef4444',borderRadius:5},{label:'Artes sem alteração',data:top10.map(v=>v.sem),backgroundColor:'#10b981',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top'},tooltip:{callbacks:{footer:()=>['Clique para ver detalhes']}}},onClick:(evt,els)=>{if(els.length){RL.showDetailVendedor(top10[els[0].index].name,RL._lastRowsVendedor||[]);}},scales:{y:{beginAtZero:true,title:{display:true,text:'Quantidade'}},x:{title:{display:true,text:'Vendedor (clique para detalhes)'}}}}});
+    this.upsert('chartVendedoresRetrabalho',{type:'bar',data:{labels:top10.map(v=>v.name),datasets:[{label:'Total de alterações',data:top10.map(v=>v.alt),backgroundColor:'#ff4d6a',borderRadius:5},{label:'Artes sem alteração',data:top10.map(v=>v.sem),backgroundColor:'#00e5a0',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top'},tooltip:{callbacks:{footer:()=>['Clique para ver detalhes']}}},onClick:(evt,els)=>{if(els.length){RL.showDetailVendedor(top10[els[0].index].name,RL._lastRowsVendedor||[]);}},scales:{y:{beginAtZero:true,title:{display:true,text:'Quantidade'}},x:{title:{display:true,text:'Vendedor (clique para detalhes)'}}}}});
 
     RL._lastRowsVendedor = rows;
     let html=`<thead><tr><th>Vendedor</th><th>Total</th><th>% Sem Alt.</th><th>% 2+ Alt.</th><th>Média Alt.</th><th>4+ Alt.</th></tr></thead><tbody>`;
@@ -3549,7 +3619,7 @@ const RL = {
       {label:'31–60 dias',min:31,max:60},
       {label:'61+ dias',min:61,max:Infinity}
     ];
-    var bColors=['#10b981','#60a5fa','#f59e0b','#fb923c','#ef4444','#7c3aed'];
+    var bColors=['#00e5a0','#3b9eff','#ffcb47','#ff8c42','#ff4d6a','#b57bff'];
     var bucketed=buckets.map(function(b){return{label:b.label,rows:aguardando.filter(function(r){return r._diasParado>=b.min&&r._diasParado<=b.max;}).sort(function(a,b2){return b2._diasParado-a._diasParado;})};});
     var total=aguardando.length;
     var mai15=aguardando.filter(function(r){return r._diasParado>=15;}).length;
@@ -4437,7 +4507,7 @@ const App = {
     const r = RL._criticosData && RL._criticosData[idx];
     if(!r) return;
     const s = r._scoreObj;
-    const scoreColor = s.score<=30?'#ef4444':s.score<=60?'#f59e0b':'#10b981';
+    const scoreColor = s.score<=30?'#ff4d6a':s.score<=60?'#ffcb47':'#00e5a0';
     const scoreBg    = s.score<=30?'#fee2e2':s.score<=60?'#fef3c7':'#d1fae5';
     const scoreLabel = s.score<=30?'Crítico':s.score<=60?'Atenção':'Bom';
 
@@ -4637,10 +4707,13 @@ const App = {
   switchTab(index){
     document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===index));
     document.querySelectorAll('.tab-content').forEach((c,i)=>c.classList.toggle('active',i===index));
+    // ── Sidebar + topbar sync ──
+    document.querySelectorAll('.sb-tab-btn').forEach((b,i)=>b.classList.toggle('active',i===index));
+    const _TITLES=['Visão Geral','Designers','Vendedores','Alertas & Ações'];
+    const _tEl=document.getElementById('topbarTitle');
+    if(_tEl) _tEl.textContent=_TITLES[index]||'';
     State.activeTab=index;
-    // Scroll to top on every tab change
     window.scrollTo({top:0,behavior:'smooth'});
-    // Show skeleton for data-heavy tabs
     if(index===0){ const sk=document.getElementById('skeletonGeral'); if(sk&&!State.rowsFiltered.length) sk.style.display=''; }
     if(index===1){ const sk=document.getElementById('skeletonDesigners'); if(sk&&!State.rowsFiltered.length) sk.style.display=''; }
     if(index===2){ const sk=document.getElementById('skeletonVendedores'); if(sk&&!State.rowsFiltered.length) sk.style.display=''; }
@@ -4789,9 +4862,12 @@ const App = {
   },
 
   _setActiveTab(idx){
-    // Switch tab without triggering full render (just DOM visibility)
     document.querySelectorAll('.tab-content').forEach((c,i)=>c.classList.toggle('active',i===idx));
     document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+    document.querySelectorAll('.sb-tab-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+    const _TITLES=['Visão Geral','Designers','Vendedores','Alertas & Ações'];
+    const _tEl=document.getElementById('topbarTitle');
+    if(_tEl) _tEl.textContent=_TITLES[idx]||'';
   },
 
   // Convert Chart.js canvases in selected blocks to <img> for reliable printing
@@ -5186,6 +5262,46 @@ document.addEventListener('DOMContentLoaded', () => {
   const inp = document.getElementById('loginInput');
   if(inp) inp.addEventListener('keydown', e => { if(e.key === 'Enter') Auth.submit(); });
 });
+
+
+// ── Chart.js global defaults: compact tooltips ──────────────────
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.font.size   = 11;
+Chart.defaults.plugins.tooltip.padding     = 7;
+Chart.defaults.plugins.tooltip.boxPadding  = 3;
+Chart.defaults.plugins.tooltip.titleFont   = { size: 11, weight: '700' };
+Chart.defaults.plugins.tooltip.bodyFont    = { size: 11 };
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(12,15,22,0.92)';
+Chart.defaults.plugins.tooltip.borderColor     = 'rgba(255,255,255,0.08)';
+Chart.defaults.plugins.tooltip.borderWidth     = 1;
+Chart.defaults.plugins.tooltip.cornerRadius    = 7;
+Chart.defaults.plugins.tooltip.titleColor      = '#e8f0f8';
+Chart.defaults.plugins.tooltip.bodyColor       = '#8fa3b3';
+Chart.defaults.plugins.legend.labels.font      = { size: 11 };
+Chart.defaults.plugins.legend.labels.padding   = 12;
+Chart.defaults.scale.grid.color = 'rgba(160,185,210,.1)';
+Chart.defaults.scale.ticks.font = { size: 10 };
+
+
+// ── Sidebar mobile toggle ───────────────────────────────────────
+const SB = {
+  _overlay: null,
+  init(){
+    this._overlay = document.getElementById('sbOverlay');
+  },
+  toggle(){
+    const sb = document.getElementById('appSidebar');
+    if(!sb) return;
+    const open = sb.classList.toggle('sb-open');
+    if(this._overlay) this._overlay.style.display = open ? 'block' : 'none';
+  },
+  close(){
+    const sb = document.getElementById('appSidebar');
+    if(sb) sb.classList.remove('sb-open');
+    if(this._overlay) this._overlay.style.display = 'none';
+  }
+};
+document.addEventListener('DOMContentLoaded', () => { SB.init(); });
 
 App.init();
 </script>
