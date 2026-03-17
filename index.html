@@ -307,7 +307,7 @@ body.dark-mode{
 
 /* Filters */
 /* ── FILTER DRAWER ── */
-.filter-trigger-bar{background:var(--surface-2);border-radius:0;padding:8px 20px;margin-bottom:0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:sticky;top:52px;z-index:190}
+.filter-trigger-bar{background:var(--surface-2);border-radius:0;padding:8px 20px;margin-bottom:0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .btn-filter-open{display:flex;align-items:center;gap:5px;padding:5px 12px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:var(--r);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font)}
 .btn-filter-open:hover{background:var(--surface-2);border-color:var(--accent)}
 .filter-chips-row{display:flex;flex-wrap:wrap;gap:5px;flex:1}
@@ -812,7 +812,7 @@ body.dark-mode .daily-toolbar{background:#1e293b;border-color:#374151}
 .tab-content.active{display:block;padding:18px 20px}
 
 /* ── Filter sticky ───────────────────────────────────────────────── */
-.filter-trigger-bar{position:sticky;top:52px;z-index:190}
+/* filter-trigger-bar: normal flow (no sticky) */
 
 /* ── Pipeline stage ──────────────────────────────────────────────── */
 .pipeline-stage .ps-count{font-size:16px;font-weight:800;letter-spacing:-.3px}
@@ -870,7 +870,7 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
   .sidebar.sb-open{transform:translateX(0)}
   .sb-overlay{display:block}
   .sb-main{margin-left:0;width:100vw}
-  .filter-trigger-bar{top:52px}
+  /* filter-trigger-bar top removed */
 
   /* Topbar: add hamburger */
   .topbar{padding:0 14px}
@@ -906,7 +906,7 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
   .chart-wrapper{height:200px}
   .chart-wrapper-tall{height:260px}
   .topbar{height:48px}
-  .filter-trigger-bar{top:48px}
+  /* filter-trigger-bar top removed */
   .tab-content.active{padding:10px 12px}
   .card{padding:13px 14px}
   .card-value{font-size:22px}
@@ -926,7 +926,7 @@ body.dark-mode .detail-table th{background:var(--surface-2);color:var(--text);bo
 @media(min-width:861px){
   .sb-hamburger{display:none!important}
   .sb-overlay{display:none!important}
-  .filter-trigger-bar{top:52px}
+  /* filter-trigger-bar top removed */
 }
 
 
