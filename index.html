@@ -633,7 +633,8 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
   .sb-content{ display:block!important }
 
   /* ── Show tab contents ── */
-  .tab-content{ display:block!important; }
+  .tab-content{ display:none!important; }
+  .tab-content:not(.print-hide){ display:block!important; }
   .tab-content.print-hide,
   .chart-container.print-hide,
   .table-container.print-hide,
@@ -663,8 +664,8 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
   .table-container,
   .alert-section,
   .ai-director-section{
-    page-break-inside:avoid!important;
-    break-inside:avoid!important;
+    page-break-inside:auto!important;
+    break-inside:auto!important;
   }
 
   /* ── Charts ── */
@@ -683,7 +684,14 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
 
   /* ── Hide/show chart wrappers via JS classes (item 2, replaces :has()) ── */
   .chart-wrapper.print-no-image,
-  .chart-wrapper-tall.print-no-image{ display:none!important }
+  .chart-wrapper-tall.print-no-image{
+    display:none!important;
+    height:0!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+  }
   .chart-wrapper.print-has-image,
   .chart-wrapper-tall.print-has-image{ display:block!important }
 
@@ -692,7 +700,7 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
     background:#fff!important;border:1px solid #e2e8f0!important;
     border-radius:6px!important;padding:10px!important;
     overflow:visible!important;margin-bottom:10px!important;
-    page-break-inside:avoid!important;break-inside:avoid!important;
+    page-break-inside:auto!important;break-inside:auto!important;
   }
   table{ font-size:9px!important;width:100%!important;border-collapse:collapse!important }
   th{ background:#f3f4f6!important;color:#374151!important;padding:4px 6px!important;border:1px solid #e2e8f0!important;font-size:9px!important;font-weight:700!important }
@@ -5202,13 +5210,6 @@ const App = {
     this.closePrintModal();
     this._rememberActiveTab();
 
-    // Step 1: Force ALL tab-contents visible with real dimensions
-    document.querySelectorAll('.tab-content').forEach(t=>{
-      t.style.display = 'block';
-      t.style.padding = '18px 20px';
-      t.style.width = '100%';
-    });
-
     // Step 2: Render all tabs so charts/cards exist in DOM
     const rows = State.rowsFiltered;
     RL.renderGeral(rows);
@@ -5274,29 +5275,47 @@ const App = {
       });
 
       document.body.classList.add('printing');
-      setTimeout(()=>window.print(), 300);
+      setTimeout(()=>{
+        document.querySelectorAll('.print-hide').forEach(el=>el.classList.remove('print-hide'));
+
+        document.querySelectorAll('.print-has-image, .print-no-image').forEach(el=>{
+          el.classList.remove('print-has-image','print-no-image');
+        });
+
+        document.querySelectorAll('.print-chart-img').forEach(img=>img.remove());
+
+        document.querySelectorAll('.chart-wrapper canvas, .chart-wrapper-tall canvas').forEach(c=>{
+          c.style.display = '';
+        });
+
+        window.print();
+      }, 300);
     }, 700);
   },
 
   _applyPrintSelection(selIds){
     const blocks = this._collectPrintableBlocks();
+
     blocks.forEach(b=>{
       if(selIds.has(b.id)){
         b.el.classList.remove('print-hide');
-        // Make sure parent tab-content is visible for print
-        const tab = document.getElementById('tab-'+b.tabIdx);
-        if(tab) tab.classList.remove('print-hide');
-      } else {
+      }else{
         b.el.classList.add('print-hide');
       }
     });
-    // Hide tab-contents that have ALL blocks hidden
+
     for(let i=0;i<4;i++){
       const tab = document.getElementById('tab-'+i);
       if(!tab) continue;
-      const visible = [...tab.querySelectorAll('.chart-container, .table-container, .cards-grid')]
-        .some(el=>!el.classList.contains('print-hide'));
-      if(!visible) tab.classList.add('print-hide');
+
+      const visibleBlocks = [...tab.querySelectorAll('.chart-container, .table-container, .cards-grid')]
+        .filter(el => !el.classList.contains('print-hide'));
+
+      if(visibleBlocks.length === 0){
+        tab.classList.add('print-hide');
+      }else{
+        tab.classList.remove('print-hide');
+      }
     }
   },
 
