@@ -555,44 +555,132 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
 #modalPrint .pm-actions-top{display:flex;gap:8px;margin-bottom:14px}
 #modalPrint .pm-actions-top button{font-size:12px;padding:5px 12px}
 @media print{
-  @page{margin:8mm}
-  body{background:white}
-  .header-actions,.tabs,.filters-bar,.filter-trigger-bar,.pipeline-bar,.debug-panel,.modal-overlay,#syncToast,#modalPrint{display:none!important}
-  .tab-content{display:block!important}
-  .chart-container,.table-container,.card{break-inside:avoid;page-break-inside:avoid}
-  .chart-wrapper,.chart-wrapper-tall{height:260px}
-  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  table{font-size:9px}
-  th,td{padding:3px 5px;word-break:break-word;overflow-wrap:anywhere}
-  .daily-wrap,.table-container{overflow:visible!important}
-  .daily-table{min-width:0!important;width:100%!important;table-layout:fixed}
-  /* PRINT LIGHT — neutraliza dark mode no PDF */
-  body.printing{
-    --bg-body-1:#ffffff;--bg-body-2:#ffffff;
-    --card-bg:#f8fbfe;--header-bg:#f8fbfe;--input-bg:#ffffff;
-    --border:#e5e7eb;--text:#111827;--text-light:#4b5563;
-    --dark:#111827;--light:#f9fafb;
-    --table-header:#f3f4f6;--table-hover:#f9fafb;
-    background:white!important;color:#111827!important
+  @page{margin:12mm 10mm;size:A4}
+
+  /* ── Hide ALL interface chrome ── */
+  .sidebar,
+  .topbar,
+  .filter-trigger-bar,
+  .filter-drawer,
+  .filter-drawer-overlay,
+  .filters-bar,
+  .pipeline-bar,
+  .tabs,
+  .tab-btn,
+  .header,
+  .header-actions,
+  .debug-panel,
+  .modal-overlay,
+  .loading,
+  .chart-info-btn,
+  .chart-info-popup,
+  .sb-collapse-btn,
+  .sb-hamburger,
+  #syncToast,
+  #modalPrint,
+  #modalDetail,
+  #modalAdmin,
+  #modalScore,
+  #modalEquipe,
+  #btnScrollTop,
+  #aiFeedbackBar,
+  #aiMemoryPanel,
+  .aidm-overlay,
+  .sb-overlay,
+  .print-hide
+  { display:none!important }
+
+  /* ── Reset layout so content fills full page width ── */
+  html,body{ background:white!important;color:#111827!important;margin:0;padding:0 }
+
+  .sb-layout{ display:block!important }
+
+  .sb-main{
+    margin-left:0!important;
+    width:100%!important;
+    display:block!important;
+    min-height:unset!important;
   }
-  body.printing .card,body.printing .chart-container,body.printing .table-container,
-  body.printing .header,body.printing .filters-bar{background:#ffffff!important;color:#111827!important}
-  body.printing th,body.printing td{color:#111827!important}
-  body.printing .badge-success{background:#d1fae5!important;color:#065f46!important}
-  body.printing .badge-warning{background:#fef3c7!important;color:#92400e!important}
-  body.printing .badge-danger{background:#fee2e2!important;color:#991b1b!important}
-  body.printing .badge-info{background:#dbeafe!important;color:#1e40af!important}
-  body.printing .badge-gray{background:#f3f4f6!important;color:#374151!important}
-  body.printing .daily-table td{color:#111827!important;background:transparent!important}
-  body.printing .daily-table td.col-date{background:#f3f4f6!important;color:#111827!important}
-  body.printing .daily-table td.col-sep{background:#f9fafb!important}
-  body.printing .daily-clk{color:#2563eb!important}
-  body.printing .daily-top3 .t3-badge{background:rgba(109,40,217,.12)!important;color:#4c1d95!important}
-  body.printing .daily-top3 .t3-link{color:#4c1d95!important}
-  body.printing .daily-top3 .t3-time{color:#6b7280!important}
-  body.printing .daily-badge-exp{background:#fef3c7!important;color:#92400e!important}
-  body.printing .chart-title,body.printing .chart-subtitle{color:#111827!important}
-  body.printing .card-value,body.printing .card-title,body.printing .card-subtitle{color:#111827!important}
+
+  .sb-content{
+    display:block!important;
+    width:100%!important;
+    overflow:visible!important;
+  }
+
+  /* ── Show all tab contents for printing ── */
+  .tab-content{ display:block!important;padding:0!important;width:100%!important }
+  .tab-content.print-hide{ display:none!important }
+
+  /* ── Card and chart layout ── */
+  .cards-grid{
+    display:grid!important;
+    grid-template-columns:repeat(3,1fr)!important;
+    gap:8px!important;
+    margin-bottom:14px!important;
+  }
+  .card{ break-inside:avoid;page-break-inside:avoid;border:1px solid #e5e7eb!important;background:#fff!important;border-radius:8px!important;padding:12px!important }
+  .chart-container{ break-inside:avoid;page-break-inside:avoid;background:#fff!important;border:1px solid #e5e7eb!important;border-radius:8px!important;padding:14px!important;margin-bottom:12px!important }
+  .table-container{ break-inside:avoid;page-break-inside:avoid;background:#fff!important;border:1px solid #e5e7eb!important;border-radius:8px!important;padding:12px!important;overflow:visible!important;margin-bottom:12px!important }
+
+  /* ── Chart sizes ── */
+  .chart-wrapper{ height:220px!important }
+  .chart-wrapper-tall{ height:280px!important }
+
+  /* ── Tables ── */
+  table{ font-size:9px!important;width:100%!important }
+  th{ background:#f3f4f6!important;color:#111827!important;padding:4px 6px!important;border-bottom:1px solid #e5e7eb!important;font-size:9px!important }
+  td{ padding:3px 6px!important;color:#111827!important;border-bottom:1px solid #f3f4f6!important;word-break:break-word!important;overflow-wrap:anywhere!important }
+  .daily-wrap,.table-container{ overflow:visible!important }
+  .daily-table{ min-width:0!important;width:100%!important;table-layout:fixed!important }
+
+  /* ── Color printing ── */
+  *{ -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important }
+
+  /* ── Light mode overrides ── */
+  body,body.dark-mode{
+    --bg-body:#ffffff;
+    --card-bg:#ffffff;
+    --surface:#f8fafc;
+    --surface-2:#f1f5f9;
+    --border:#e5e7eb;
+    --border-strong:#cbd5e1;
+    --text:#111827;
+    --text-light:#4b5563;
+    --text-dim:#6b7280;
+    --dark:#111827;
+    --light:#f9fafb;
+    --table-header:#f3f4f6;
+    --table-hover:#f9fafb;
+  }
+  .card-value,.card-title,.card-subtitle,.chart-title,.chart-subtitle{ color:#111827!important }
+  .badge-success{ background:#d1fae5!important;color:#065f46!important }
+  .badge-warning{ background:#fef3c7!important;color:#92400e!important }
+  .badge-danger{ background:#fee2e2!important;color:#991b1b!important }
+  .badge-info{ background:#dbeafe!important;color:#1e40af!important }
+  .badge-gray{ background:#f3f4f6!important;color:#374151!important }
+  .daily-table td{ color:#111827!important;background:transparent!important }
+  .daily-table td.col-date{ background:#f3f4f6!important;color:#111827!important }
+  .daily-table td.col-sep{ background:#f9fafb!important }
+  .daily-clk{ color:#2563eb!important }
+  .daily-top3 .t3-badge{ background:rgba(109,40,217,.12)!important;color:#4c1d95!important }
+  .daily-top3 .t3-link{ color:#4c1d95!important }
+  .daily-top3 .t3-time{ color:#6b7280!important }
+  .daily-badge-exp{ background:#fef3c7!important;color:#92400e!important }
+  .chart-container:hover,.table-container:hover{ box-shadow:none!important }
+  .print-chart-img{ width:100%!important;height:auto!important;display:block!important }
+
+  /* ── Alert / AI sections ── */
+  .action-item{ background:#fff!important;border-left:3px solid #e5e7eb }
+  .action-item.priority-high{ border-left-color:#ef4444!important }
+  .action-item.priority-medium{ border-left-color:#f59e0b!important }
+  .action-item.priority-low{ border-left-color:#10b981!important }
+  .alert-section-header.comercial{ background:#fee2e2!important;color:#991b1b!important }
+  .alert-section-header.prazo{ background:#fef3c7!important;color:#92400e!important }
+  .alert-section-header.qualidade,.alert-section-header.qualidade2{ background:#ede9fe!important;color:#5b21b6!important }
+  .alert-section-header.operacional{ background:#dbeafe!important;color:#1e40af!important }
+  .alert-section-header.eficiencia{ background:#f0fdf4!important;color:#166534!important }
+  .alert-section-header.preditivo{ background:#faf5ff!important;color:#6b21a8!important }
 }
 @media(max-width:768px){
   .header{flex-direction:column}
