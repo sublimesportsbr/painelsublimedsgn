@@ -599,11 +599,14 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
   /* ── Color ── */
   *{ -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important }
 
-  /* ── Reset layout ── */
+  /* ── Reset layout (item 3) ── */
   html,body{
     background:#fff!important;color:#111827!important;
     margin:0!important;padding:0!important;
     font-size:11px!important;
+    width:auto!important;
+    min-width:0!important;
+    overflow:visible!important;
   }
   body,body.dark-mode{
     --bg-body:#ffffff;--card-bg:#ffffff;--surface:#f8fafc;--surface-2:#f1f5f9;
@@ -612,36 +615,40 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
     --accent:#10b981;--primary:#2563eb;
   }
 
-  /* ── Full-width layout, no sidebar offset ── */
-  .sb-layout{ display:block!important;width:100%!important }
-  .sb-main{ margin-left:0!important;width:100%!important;display:block!important }
-  .sb-content{ display:block!important;width:100%!important;overflow:visible!important }
+  /* ── Full-width layout, no sidebar offset (item 3) ── */
+  #dashboard,
+  .sb-layout,
+  .sb-main,
+  .sb-content,
+  .tab-content{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:visible!important;
+  }
+  .sb-layout{ display:block!important }
+  .sb-main{ margin-left:0!important;display:block!important }
+  .sb-content{ display:block!important }
 
   /* ── Show tab contents ── */
-  .tab-content{
-    display:block!important;
-    padding:0!important;
-    width:100%!important;
-    margin-bottom:8px!important;
-  }
+  .tab-content{ display:block!important; }
   .tab-content.print-hide,
   .chart-container.print-hide,
   .table-container.print-hide,
   .cards-grid.print-hide{ display:none!important }
 
-  /* ── Cards: use flex wrap, no forced breaks ── */
+  /* ── Cards grid (item 4) ── */
   .cards-grid{
-    display:flex!important;
-    flex-wrap:wrap!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,1fr)!important;
     gap:8px!important;
     margin-bottom:14px!important;
-    page-break-inside:auto!important;
-    break-inside:auto!important;
   }
   .card{
-    flex:0 0 calc(33% - 6px)!important;
-    min-width:150px!important;
-    box-sizing:border-box!important;
+    min-width:0!important;
+    width:auto!important;
     background:#fff!important;
     border:1px solid #e2e8f0!important;
     border-top:2px solid #10b981!important;
@@ -651,25 +658,34 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
     break-inside:avoid!important;
   }
 
+  /* ── Break-inside (item 5) ── */
+  .chart-container,
+  .table-container,
+  .alert-section,
+  .ai-director-section{
+    page-break-inside:avoid!important;
+    break-inside:avoid!important;
+  }
+
   /* ── Charts ── */
   .chart-container{
     background:#fff!important;border:1px solid #e2e8f0!important;
     border-radius:6px!important;padding:12px!important;
     margin-bottom:10px!important;
-    page-break-inside:avoid!important;break-inside:avoid!important;
   }
-  /* Chart wrapper: don't force height if canvas was empty */
   .chart-wrapper,.chart-wrapper-tall{
     height:auto!important;
     min-height:0!important;
     position:relative!important;
   }
-  /* Hide empty canvas (will be replaced by img if chart rendered) */
   .chart-wrapper canvas,.chart-wrapper-tall canvas{ display:none!important }
-  /* Chart images take full width */
   .print-chart-img{ width:100%!important;height:auto!important;display:block!important;max-height:240px!important;object-fit:contain!important }
-  /* If no img was generated, hide the chart-wrapper entirely */
-  .chart-wrapper:not(:has(img)),.chart-wrapper-tall:not(:has(img)){ display:none!important }
+
+  /* ── Hide/show chart wrappers via JS classes (item 2, replaces :has()) ── */
+  .chart-wrapper.print-no-image,
+  .chart-wrapper-tall.print-no-image{ display:none!important }
+  .chart-wrapper.print-has-image,
+  .chart-wrapper-tall.print-has-image{ display:block!important }
 
   /* ── Tables ── */
   .table-container{
@@ -5200,10 +5216,10 @@ const App = {
     RL.renderVendedores(rows);
     RL.renderPlanoAcoes(rows);
 
-    // Step 3: Mark non-selected blocks as print-hide
+    // Step 3: Mark non-selected blocks as print-hide (item 1 fix already correct)
     this._applyPrintSelection(selIds);
 
-    // Step 4: Give browser time to layout, then resize charts and capture
+    // Step 4: Give browser time to layout, then process wrappers and print (item 6)
     setTimeout(async ()=>{
       // Force explicit size on all chart canvases so toDataURL works
       document.querySelectorAll('.chart-wrapper canvas, .chart-wrapper-tall canvas').forEach(canvas=>{
@@ -5222,22 +5238,39 @@ const App = {
 
       await new Promise(r=>setTimeout(r,500));
 
-      // Convert canvases to images
+      // Item 6: Remove any old print-has-image / print-no-image classes first
+      document.querySelectorAll('.print-has-image, .print-no-image').forEach(el=>{
+        el.classList.remove('print-has-image','print-no-image');
+      });
+
+      // Item 6 + item 2: process each canvas, classify its wrapper
       this._printImgMap = [];
       document.querySelectorAll('.tab-content:not(.print-hide) canvas').forEach(canvas=>{
-        const container = canvas.closest('.chart-container,.chart-wrapper,.chart-wrapper-tall');
-        if(!container || container.classList.contains('print-hide')) return;
+        // Find the closest chart-wrapper or chart-wrapper-tall
+        const wrapper = canvas.closest('.chart-wrapper, .chart-wrapper-tall');
+        if(!wrapper) return;
+        // Skip if inside a print-hide container
+        if(canvas.closest('.print-hide')) return;
+
         try{
-          const dataUrl = canvas.toDataURL('image/png',1.0);
-          if(!dataUrl || dataUrl.length < 200) return; // skip blank/empty
+          const dataUrl = canvas.toDataURL('image/png', 1.0);
+          if(!dataUrl || dataUrl.length < 200){
+            // No valid image — mark wrapper as no-image (item 2)
+            wrapper.classList.add('print-no-image');
+            return;
+          }
+          // Valid image — create img, hide canvas, mark wrapper (item 2)
           const img = document.createElement('img');
           img.className = 'print-chart-img';
           img.src = dataUrl;
           img.style.cssText = 'width:100%;height:auto;display:block;max-height:280px;object-fit:contain';
           canvas.style.display = 'none';
           canvas.parentNode.insertBefore(img, canvas);
+          wrapper.classList.add('print-has-image');
           this._printImgMap.push({canvas, img, origDisplay:''});
-        }catch(_){}
+        }catch(_){
+          wrapper.classList.add('print-no-image');
+        }
       });
 
       document.body.classList.add('printing');
@@ -5351,6 +5384,10 @@ const App = {
       }catch(_){}
     });
     this._printImgMap = [];
+    // Remove wrapper classification classes added during print prep (item 2)
+    document.querySelectorAll('.print-has-image, .print-no-image').forEach(el=>{
+      el.classList.remove('print-has-image','print-no-image');
+    });
   },
 
   /* ── HELPERS ── */
