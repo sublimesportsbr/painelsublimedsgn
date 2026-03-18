@@ -555,7 +555,7 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
 #modalPrint .pm-actions-top{display:flex;gap:8px;margin-bottom:14px}
 #modalPrint .pm-actions-top button{font-size:12px;padding:5px 12px}
 @media print{
-  @page{margin:12mm 10mm;size:A4}
+  @page{margin:15mm 12mm;size:A4}
 
   /* ── Hide ALL interface chrome ── */
   .sidebar,
@@ -587,103 +587,143 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
   #aiMemoryPanel,
   .aidm-overlay,
   .sb-overlay,
+  .skeletonGeral,
+  #skeletonGeral,
+  #skeletonDesigners,
+  #skeletonVendedores,
+  .debug-panel,
+  .tooltip-icon,
   .print-hide
   { display:none!important }
 
-  /* ── Reset layout so content fills full page width ── */
-  html,body{ background:white!important;color:#111827!important;margin:0;padding:0 }
+  /* ── Color ── */
+  *{ -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important }
 
-  .sb-layout{ display:block!important }
-
-  .sb-main{
-    margin-left:0!important;
-    width:100%!important;
-    display:block!important;
-    min-height:unset!important;
+  /* ── Reset layout ── */
+  html,body{
+    background:#fff!important;color:#111827!important;
+    margin:0!important;padding:0!important;
+    font-size:11px!important;
+  }
+  body,body.dark-mode{
+    --bg-body:#ffffff;--card-bg:#ffffff;--surface:#f8fafc;--surface-2:#f1f5f9;
+    --border:#e2e8f0;--text:#111827;--text-light:#4b5563;--text-dim:#6b7280;
+    --dark:#111827;--light:#f9fafb;--table-header:#f3f4f6;--table-hover:#f9fafb;
+    --accent:#10b981;--primary:#2563eb;
   }
 
-  .sb-content{
-    display:block!important;
-    width:100%!important;
-    overflow:visible!important;
-  }
+  /* ── Full-width layout, no sidebar offset ── */
+  .sb-layout{ display:block!important;width:100%!important }
+  .sb-main{ margin-left:0!important;width:100%!important;display:block!important }
+  .sb-content{ display:block!important;width:100%!important;overflow:visible!important }
 
-  /* ── Show all tab contents for printing ── */
-  .tab-content{ display:block!important;padding:0!important;width:100%!important }
-  .tab-content.print-hide{ display:none!important }
+  /* ── Show tab contents ── */
+  .tab-content{
+    display:block!important;
+    padding:0!important;
+    width:100%!important;
+    margin-bottom:8px!important;
+  }
+  .tab-content.print-hide,
   .chart-container.print-hide,
   .table-container.print-hide,
   .cards-grid.print-hide{ display:none!important }
 
-  /* ── Card and chart layout ── */
+  /* ── Cards: use flex wrap, no forced breaks ── */
   .cards-grid{
-    display:grid!important;
-    grid-template-columns:repeat(3,1fr)!important;
+    display:flex!important;
+    flex-wrap:wrap!important;
     gap:8px!important;
     margin-bottom:14px!important;
+    page-break-inside:auto!important;
+    break-inside:auto!important;
   }
-  .card{ break-inside:avoid;page-break-inside:avoid;border:1px solid #e5e7eb!important;background:#fff!important;border-radius:8px!important;padding:12px!important }
-  .chart-container{ break-inside:avoid;page-break-inside:avoid;background:#fff!important;border:1px solid #e5e7eb!important;border-radius:8px!important;padding:14px!important;margin-bottom:12px!important }
-  .table-container{ break-inside:avoid;page-break-inside:avoid;background:#fff!important;border:1px solid #e5e7eb!important;border-radius:8px!important;padding:12px!important;overflow:visible!important;margin-bottom:12px!important }
+  .card{
+    flex:0 0 calc(33% - 6px)!important;
+    min-width:150px!important;
+    box-sizing:border-box!important;
+    background:#fff!important;
+    border:1px solid #e2e8f0!important;
+    border-top:2px solid #10b981!important;
+    border-radius:6px!important;
+    padding:10px!important;
+    page-break-inside:avoid!important;
+    break-inside:avoid!important;
+  }
 
-  /* ── Chart sizes ── */
-  .chart-wrapper{ height:220px!important }
-  .chart-wrapper-tall{ height:280px!important }
+  /* ── Charts ── */
+  .chart-container{
+    background:#fff!important;border:1px solid #e2e8f0!important;
+    border-radius:6px!important;padding:12px!important;
+    margin-bottom:10px!important;
+    page-break-inside:avoid!important;break-inside:avoid!important;
+  }
+  /* Chart wrapper: don't force height if canvas was empty */
+  .chart-wrapper,.chart-wrapper-tall{
+    height:auto!important;
+    min-height:0!important;
+    position:relative!important;
+  }
+  /* Hide empty canvas (will be replaced by img if chart rendered) */
+  .chart-wrapper canvas,.chart-wrapper-tall canvas{ display:none!important }
+  /* Chart images take full width */
+  .print-chart-img{ width:100%!important;height:auto!important;display:block!important;max-height:240px!important;object-fit:contain!important }
+  /* If no img was generated, hide the chart-wrapper entirely */
+  .chart-wrapper:not(:has(img)),.chart-wrapper-tall:not(:has(img)){ display:none!important }
 
   /* ── Tables ── */
-  table{ font-size:9px!important;width:100%!important }
-  th{ background:#f3f4f6!important;color:#111827!important;padding:4px 6px!important;border-bottom:1px solid #e5e7eb!important;font-size:9px!important }
-  td{ padding:3px 6px!important;color:#111827!important;border-bottom:1px solid #f3f4f6!important;word-break:break-word!important;overflow-wrap:anywhere!important }
-  .daily-wrap,.table-container{ overflow:visible!important }
+  .table-container{
+    background:#fff!important;border:1px solid #e2e8f0!important;
+    border-radius:6px!important;padding:10px!important;
+    overflow:visible!important;margin-bottom:10px!important;
+    page-break-inside:avoid!important;break-inside:avoid!important;
+  }
+  table{ font-size:9px!important;width:100%!important;border-collapse:collapse!important }
+  th{ background:#f3f4f6!important;color:#374151!important;padding:4px 6px!important;border:1px solid #e2e8f0!important;font-size:9px!important;font-weight:700!important }
+  td{ padding:3px 6px!important;color:#111827!important;border:1px solid #f1f5f9!important;word-break:break-word!important }
+  .daily-wrap{ overflow:visible!important }
   .daily-table{ min-width:0!important;width:100%!important;table-layout:fixed!important }
 
-  /* ── Color printing ── */
-  *{ -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important }
+  /* ── Text colors ── */
+  .card-value,.card-title,.card-subtitle{ color:#111827!important }
+  .chart-title{ color:#111827!important;font-size:12px!important }
+  .chart-subtitle{ color:#4b5563!important;font-size:10px!important }
 
-  /* ── Light mode overrides ── */
-  body,body.dark-mode{
-    --bg-body:#ffffff;
-    --card-bg:#ffffff;
-    --surface:#f8fafc;
-    --surface-2:#f1f5f9;
-    --border:#e5e7eb;
-    --border-strong:#cbd5e1;
-    --text:#111827;
-    --text-light:#4b5563;
-    --text-dim:#6b7280;
-    --dark:#111827;
-    --light:#f9fafb;
-    --table-header:#f3f4f6;
-    --table-hover:#f9fafb;
-  }
-  .card-value,.card-title,.card-subtitle,.chart-title,.chart-subtitle{ color:#111827!important }
+  /* ── Badges ── */
   .badge-success{ background:#d1fae5!important;color:#065f46!important }
   .badge-warning{ background:#fef3c7!important;color:#92400e!important }
   .badge-danger{ background:#fee2e2!important;color:#991b1b!important }
   .badge-info{ background:#dbeafe!important;color:#1e40af!important }
   .badge-gray{ background:#f3f4f6!important;color:#374151!important }
+
+  /* ── Alert sections ── */
+  .action-item{ background:#fff!important;border-left:3px solid #e2e8f0!important;padding:8px 10px!important }
+  .action-item.priority-high{ border-left-color:#ef4444!important }
+  .action-item.priority-medium{ border-left-color:#f59e0b!important }
+  .action-item.priority-low{ border-left-color:#10b981!important }
+  .alert-section-header{ padding:8px 12px!important;font-size:11px!important }
+  .alert-section-header.comercial{ background:#fee2e2!important;color:#991b1b!important }
+  .alert-section-header.prazo{ background:#fef3c7!important;color:#92400e!important }
+  .alert-section-header.operacional{ background:#dbeafe!important;color:#1e40af!important }
+  .alert-section-header.qualidade,.alert-section-header.qualidade2{ background:#ede9fe!important;color:#5b21b6!important }
+  .alert-section-header.eficiencia{ background:#f0fdf4!important;color:#166534!important }
+  .alert-section-header.preditivo{ background:#faf5ff!important;color:#6b21a8!important }
+
+  /* ── Daily table ── */
   .daily-table td{ color:#111827!important;background:transparent!important }
   .daily-table td.col-date{ background:#f3f4f6!important;color:#111827!important }
   .daily-table td.col-sep{ background:#f9fafb!important }
   .daily-clk{ color:#2563eb!important }
   .daily-top3 .t3-badge{ background:rgba(109,40,217,.12)!important;color:#4c1d95!important }
   .daily-top3 .t3-link{ color:#4c1d95!important }
-  .daily-top3 .t3-time{ color:#6b7280!important }
   .daily-badge-exp{ background:#fef3c7!important;color:#92400e!important }
-  .chart-container:hover,.table-container:hover{ box-shadow:none!important }
-  .print-chart-img{ width:100%!important;height:auto!important;display:block!important }
 
-  /* ── Alert / AI sections ── */
-  .action-item{ background:#fff!important;border-left:3px solid #e5e7eb }
-  .action-item.priority-high{ border-left-color:#ef4444!important }
-  .action-item.priority-medium{ border-left-color:#f59e0b!important }
-  .action-item.priority-low{ border-left-color:#10b981!important }
-  .alert-section-header.comercial{ background:#fee2e2!important;color:#991b1b!important }
-  .alert-section-header.prazo{ background:#fef3c7!important;color:#92400e!important }
-  .alert-section-header.qualidade,.alert-section-header.qualidade2{ background:#ede9fe!important;color:#5b21b6!important }
-  .alert-section-header.operacional{ background:#dbeafe!important;color:#1e40af!important }
-  .alert-section-header.eficiencia{ background:#f0fdf4!important;color:#166534!important }
-  .alert-section-header.preditivo{ background:#faf5ff!important;color:#6b21a8!important }
+  /* ── AI section ── */
+  .ai-director-section{ border:1px solid #e2e8f0!important;margin-bottom:10px!important }
+  .ai-director-body{ background:#fff!important;padding:10px!important }
+  .ai-director-item{ background:#f9fafb!important;padding:8px!important;margin-bottom:6px!important }
+  .ai-director-item.critica{ background:#fef2f2!important }
+  .ai-director-item.alta{ background:#fffbeb!important }
 }
 @media(max-width:768px){
   .header{flex-direction:column}
@@ -5137,7 +5177,6 @@ const App = {
   },
 
   _doPrint(){
-    // Collect selected ids
     const selIds = new Set(
       [...document.querySelectorAll('#pmList .pm-cb:checked')].map(cb=>cb.dataset.id)
     );
@@ -5147,13 +5186,14 @@ const App = {
     this.closePrintModal();
     this._rememberActiveTab();
 
-    // Step 1: Force ALL tab-contents visible
+    // Step 1: Force ALL tab-contents visible with real dimensions
     document.querySelectorAll('.tab-content').forEach(t=>{
       t.style.display = 'block';
-      t.style.padding = '0';
+      t.style.padding = '18px 20px';
+      t.style.width = '100%';
     });
 
-    // Step 2: Render all tabs so charts/cards actually exist in DOM
+    // Step 2: Render all tabs so charts/cards exist in DOM
     const rows = State.rowsFiltered;
     RL.renderGeral(rows);
     RL.renderDesigners(rows).catch(()=>{});
@@ -5163,34 +5203,46 @@ const App = {
     // Step 3: Mark non-selected blocks as print-hide
     this._applyPrintSelection(selIds);
 
-    // Step 4: Wait for everything to render, resize all charts, convert to img, print
+    // Step 4: Give browser time to layout, then resize charts and capture
     setTimeout(async ()=>{
-      // Resize all charts now that containers are visible
+      // Force explicit size on all chart canvases so toDataURL works
+      document.querySelectorAll('.chart-wrapper canvas, .chart-wrapper-tall canvas').forEach(canvas=>{
+        const wrapper = canvas.parentElement;
+        if(wrapper){
+          const w = wrapper.offsetWidth || 700;
+          const h = wrapper.offsetHeight || 280;
+          if(canvas.width < 10){ canvas.width = w; canvas.height = h; }
+        }
+      });
+
+      // Resize & update all charts
       Object.values(State.charts||{}).forEach(c=>{
         try{ c&&c.resize&&c.resize(); c&&c.update&&c.update('none'); }catch(_){}
       });
-      await new Promise(r=>setTimeout(r,300));
 
-      // Convert canvases to images for reliable print output
+      await new Promise(r=>setTimeout(r,500));
+
+      // Convert canvases to images
       this._printImgMap = [];
       document.querySelectorAll('.tab-content:not(.print-hide) canvas').forEach(canvas=>{
+        const container = canvas.closest('.chart-container,.chart-wrapper,.chart-wrapper-tall');
+        if(!container || container.classList.contains('print-hide')) return;
         try{
           const dataUrl = canvas.toDataURL('image/png',1.0);
-          if(!dataUrl || dataUrl==='data:,' || dataUrl==='data:image/png;base64,') return;
+          if(!dataUrl || dataUrl.length < 200) return; // skip blank/empty
           const img = document.createElement('img');
           img.className = 'print-chart-img';
           img.src = dataUrl;
-          img.style.cssText = 'width:100%;max-width:100%;height:auto;display:block';
-          const origDisplay = canvas.style.display;
+          img.style.cssText = 'width:100%;height:auto;display:block;max-height:280px;object-fit:contain';
           canvas.style.display = 'none';
           canvas.parentNode.insertBefore(img, canvas);
-          this._printImgMap.push({canvas, img, origDisplay});
+          this._printImgMap.push({canvas, img, origDisplay:''});
         }catch(_){}
       });
 
       document.body.classList.add('printing');
-      setTimeout(()=>window.print(), 200);
-    }, 500);
+      setTimeout(()=>window.print(), 300);
+    }, 700);
   },
 
   _applyPrintSelection(selIds){
