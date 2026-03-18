@@ -779,21 +779,21 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
   /* ══════════════════════
      BADGES — forçar legibilidade
   ══════════════════════ */
-  .badge,.badge-success,.badge-warning,.badge-danger,.badge-info,.badge-gray{
-    background:#fff!important; color:#1a1a1a!important;
-    border:1px solid #9ca3af!important;
+  .pr-table .badge,.pr-table .badge-success,.pr-table .badge-warning,
+  .pr-table .badge-danger,.pr-table .badge-info,.pr-table .badge-gray{
+    background:#fff!important;color:#1a1a1a!important;border:1px solid #9ca3af!important;
   }
-  .badge-success{ color:#166534!important;border-color:#16a34a!important }
-  .badge-warning{ color:#854d0e!important;border-color:#ca8a04!important }
-  .badge-danger{  color:#991b1b!important;border-color:#dc2626!important }
-  .badge-info{    color:#1e40af!important;border-color:#2563eb!important }
+  .pr-table .badge-success{ color:#166534!important;border-color:#16a34a!important }
+  .pr-table .badge-warning{ color:#854d0e!important;border-color:#ca8a04!important }
+  .pr-table .badge-danger{  color:#991b1b!important;border-color:#dc2626!important }
+  .pr-table .badge-info{    color:#1e40af!important;border-color:#2563eb!important }
 
   /* ══════════════════════
      TABELAS DIÁRIAS
   ══════════════════════ */
+  .pr-table td{ color:#1a1a1a!important }
   .pr-table td.col-date{
-    background:#f3f4f6!important; color:#111827!important;
-    font-weight:700!important;
+    background:#f3f4f6!important;color:#111827!important;font-weight:700!important;
   }
   .pr-table td.col-date .dia-semana,
   .pr-table td.col-date .dia-num{ color:#374151!important }
@@ -1734,13 +1734,9 @@ body.dark-mode .filter-trigger-bar{
       </div>
       <div id="pmList"><!-- preenchido dinamicamente --></div>
     </div>
-    <div class="modal-actions" style="padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;align-items:center">
-      <div id="printLoadingMsg" style="display:none;flex:1;font-size:12px;color:var(--text-light);align-items:center;gap:8px">
-        <svg style="animation:spin .8s linear infinite;flex-shrink:0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-        Preparando impressão, aguarde…
-      </div>
-      <button class="btn btn-ghost" id="btnPrintCancel" onclick="App.closePrintModal()">Cancelar</button>
-      <button class="btn btn-secondary" id="btnPrintGo" onclick="App._doPrint()"><svg style="display:inline-block;vertical-align:-2px;margin-right:5px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Imprimir selecionados</button>
+    <div class="modal-actions" style="padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="App.closePrintModal()">Cancelar</button>
+      <button class="btn btn-secondary" onclick="App._doPrint()"><svg style="display:inline-block;vertical-align:-2px;margin-right:5px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Imprimir selecionados</button>
     </div>
   </div>
 </div>
@@ -5263,14 +5259,20 @@ const App = {
     if(!selIds.size){ alert('Selecione ao menos um item para imprimir.'); return; }
 
     Store.set('sb_print_selection_v1', [...selIds]);
+    this.closePrintModal();
 
-    // ── Mostrar loading no modal ──
-    const btnGo      = document.getElementById('btnPrintGo');
-    const btnCancel  = document.getElementById('btnPrintCancel');
-    const loadingMsg = document.getElementById('printLoadingMsg');
-    if(btnGo)     { btnGo.disabled = true; btnGo.style.opacity = '0.5'; }
-    if(btnCancel) { btnCancel.disabled = true; btnCancel.style.opacity = '0.5'; }
-    if(loadingMsg){ loadingMsg.style.display = 'flex'; }
+    // ── Tornar todas as abas visíveis antes de renderizar ──
+    // Chart.js precisa de dimensões reais do DOM para desenhar corretamente.
+    // Usamos visibility:hidden + position:absolute para que o layout seja calculado
+    // sem mostrar nada ao usuário durante o processamento.
+    const tabEls = [...document.querySelectorAll('.tab-content')];
+    const tabOrig = tabEls.map(t => ({ display: t.style.display, visibility: t.style.visibility, position: t.style.position, pointerEvents: t.style.pointerEvents }));
+    tabEls.forEach(t => {
+      t.style.display      = 'block';
+      t.style.visibility   = 'hidden';
+      t.style.position     = 'absolute';
+      t.style.pointerEvents= 'none';
+    });
 
     // Renderizar todas as abas para garantir que os dados/canvases existam
     const rows = State.rowsFiltered;
@@ -5279,20 +5281,23 @@ const App = {
     RL.renderVendedores(rows);
     RL.renderPlanoAcoes(rows);
 
-    // Dar tempo para Chart.js renderizar
+    // Dar tempo para Chart.js renderizar e dimensionar todos os canvases
     Object.values(State.charts||{}).forEach(c=>{
       try{ c&&c.resize&&c.resize(); c&&c.update&&c.update('none'); }catch(_){}
     });
-    await new Promise(r=>setTimeout(r,600));
+    await new Promise(r=>setTimeout(r,700));
 
-    // Montar e imprimir
+    // Montar documento de impressão
     await PR.build(selIds, this._collectPrintableBlocks());
 
-    // ── Restaurar botões e fechar modal antes de abrir diálogo de impressão ──
-    if(btnGo)     { btnGo.disabled = false; btnGo.style.opacity = ''; }
-    if(btnCancel) { btnCancel.disabled = false; btnCancel.style.opacity = ''; }
-    if(loadingMsg){ loadingMsg.style.display = 'none'; }
-    this.closePrintModal();
+    // ── Restaurar visibilidade original das abas ──
+    tabEls.forEach((t, i) => {
+      t.style.display      = tabOrig[i].display;
+      t.style.visibility   = tabOrig[i].visibility;
+      t.style.position     = tabOrig[i].position;
+      t.style.pointerEvents= tabOrig[i].pointerEvents;
+    });
+    this.switchTab(State.activeTab);
 
     window.print();
   },
@@ -5879,7 +5884,43 @@ const PR = {
           const img = document.createElement('img');
           img.className = 'pr-chart-img';
           img.src = dataUrl;
-          chartDiv.appendChild(img);
+
+          // ── Gráfico de urgência: adicionar tabela de % ao lado ──
+          const isUrgencia = canvas.id === 'chartUrgencia';
+          if(isUrgencia){
+            const chartObj = State.charts && State.charts['chartUrgencia'];
+            if(chartObj && chartObj.data && chartObj.data.labels){
+              const labels = chartObj.data.labels;
+              const values = chartObj.data.datasets[0].data;
+              const colors = chartObj.data.datasets[0].backgroundColor;
+              const total  = values.reduce((a,b)=>a+b,0);
+              const URG_COLORS_PRINT = { 'ALTA':'#dc2626', 'MÉDIA':'#d97706', 'BAIXA':'#16a34a', 'N/A':'#6b7280' };
+              let tblHtml = '<table style="font-size:8pt;border-collapse:collapse;margin-left:12px;align-self:center;min-width:110px">';
+              labels.forEach((lbl,i)=>{
+                const pct  = total > 0 ? Math.round(values[i]/total*100) : 0;
+                const col  = URG_COLORS_PRINT[lbl] || (Array.isArray(colors) ? colors[i] : '#6b7280');
+                tblHtml += `<tr>
+                  <td style="padding:3px 6px 3px 0;vertical-align:middle">
+                    <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${col};margin-right:5px;vertical-align:middle"></span>
+                    <span style="font-weight:700;color:#111827">${lbl}</span>
+                  </td>
+                  <td style="padding:3px 6px;font-weight:800;color:#111827;font-size:10pt">${pct}%</td>
+                  <td style="padding:3px 0;color:#6b7280;font-size:7.5pt">${values[i]} artes</td>
+                </tr>`;
+              });
+              tblHtml += '</table>';
+              const row = document.createElement('div');
+              row.style.cssText = 'display:flex;align-items:center;gap:0';
+              img.style.cssText = 'max-width:260px;max-height:200px;object-fit:contain;border:1px solid #e5e7eb;border-radius:3px';
+              row.appendChild(img);
+              row.innerHTML += tblHtml;
+              chartDiv.appendChild(row);
+            } else {
+              chartDiv.appendChild(img);
+            }
+          } else {
+            chartDiv.appendChild(img);
+          }
           // Tabela de dados abaixo do gráfico se houver
           if(tableInside){
             chartDiv.appendChild(this._cloneTable(tableInside));
@@ -5962,6 +6003,7 @@ const PR = {
     const wrap = document.createElement('div');
     wrap.className = 'pr-table';
     const clone = table.cloneNode(true);
+
     // Remover links interativos, mantendo texto
     clone.querySelectorAll('a').forEach(a=>{
       const span = document.createElement('span');
@@ -5983,17 +6025,28 @@ const PR = {
       if(!s) return;
       const fixed = s
         .replace(/color\s*:\s*var\(--text-light\)/g,  'color:#555555')
-        .replace(/color\s*:\s*var\(--text-dim\)/g,    'color:#666666')
+        .replace(/color\s*:\s*var\(--text-dim\)/g,    'color:#555555')
         .replace(/color\s*:\s*var\(--text\)/g,        'color:#1a1a1a')
         .replace(/color\s*:\s*var\(--dark\)/g,        'color:#111827')
         .replace(/color\s*:\s*var\(--primary\)/g,     'color:#1d4ed8')
         .replace(/color\s*:\s*var\(--purple\)/g,      'color:#5b21b6')
         .replace(/color\s*:\s*var\(--secondary\)/g,   'color:#047857')
         .replace(/color\s*:\s*var\([^)]+\)/g,         'color:#1a1a1a')
-        .replace(/background\s*:\s*rgba\([^)]+\)/g,   'background:#ffffff')
-        .replace(/background\s*:\s*var\([^)]+\)/g,    'background:#ffffff')
+        // Cores inline com baixo contraste sobre branco → texto escuro
+        .replace(/color\s*:\s*#059669/g,  'color:#047857')   // verde escuro legível
+        .replace(/color\s*:\s*#00b87a/g,  'color:#065f46')
+        .replace(/color\s*:\s*#d97706/g,  'color:#92400e')
+        .replace(/color\s*:\s*rgba\([^)]+\)/g, 'color:#1a1a1a')
+        // Backgrounds semitransparentes → branco
+        .replace(/background\s*:\s*rgba\([^)]+\)/g, 'background:#ffffff')
+        .replace(/background\s*:\s*var\([^)]+\)/g,  'background:#ffffff')
         .replace(/border[^:]*:\s*[^;]*var\([^)]+\)[^;]*/g, 'border:1px solid #d1d5db');
       el.setAttribute('style', fixed);
+    });
+
+    // ── Forçar cor preta em todos os td/span sem cor explícita definida ──
+    clone.querySelectorAll('td,th').forEach(cell=>{
+      if(!cell.style.color) cell.style.color = '#1a1a1a';
     });
 
     // ── col-date (coluna de DATA): fundo cinza claro, texto preto ──
