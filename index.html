@@ -1734,9 +1734,13 @@ body.dark-mode .filter-trigger-bar{
       </div>
       <div id="pmList"><!-- preenchido dinamicamente --></div>
     </div>
-    <div class="modal-actions" style="padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end">
-      <button class="btn btn-ghost" onclick="App.closePrintModal()">Cancelar</button>
-      <button class="btn btn-secondary" onclick="App._doPrint()"><svg style="display:inline-block;vertical-align:-2px;margin-right:5px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Imprimir selecionados</button>
+    <div class="modal-actions" style="padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;align-items:center">
+      <div id="printLoadingMsg" style="display:none;flex:1;font-size:12px;color:var(--text-light);align-items:center;gap:8px">
+        <svg style="animation:spin .8s linear infinite;flex-shrink:0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        Preparando impressão, aguarde…
+      </div>
+      <button class="btn btn-ghost" id="btnPrintCancel" onclick="App.closePrintModal()">Cancelar</button>
+      <button class="btn btn-secondary" id="btnPrintGo" onclick="App._doPrint()"><svg style="display:inline-block;vertical-align:-2px;margin-right:5px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Imprimir selecionados</button>
     </div>
   </div>
 </div>
@@ -5259,7 +5263,14 @@ const App = {
     if(!selIds.size){ alert('Selecione ao menos um item para imprimir.'); return; }
 
     Store.set('sb_print_selection_v1', [...selIds]);
-    this.closePrintModal();
+
+    // ── Mostrar loading no modal ──
+    const btnGo      = document.getElementById('btnPrintGo');
+    const btnCancel  = document.getElementById('btnPrintCancel');
+    const loadingMsg = document.getElementById('printLoadingMsg');
+    if(btnGo)     { btnGo.disabled = true; btnGo.style.opacity = '0.5'; }
+    if(btnCancel) { btnCancel.disabled = true; btnCancel.style.opacity = '0.5'; }
+    if(loadingMsg){ loadingMsg.style.display = 'flex'; }
 
     // ── Tornar todas as abas visíveis antes de renderizar ──
     // Chart.js precisa de dimensões reais do DOM para desenhar corretamente.
@@ -5298,6 +5309,12 @@ const App = {
       t.style.pointerEvents= tabOrig[i].pointerEvents;
     });
     this.switchTab(State.activeTab);
+
+    // ── Restaurar botões e fechar modal ──
+    if(btnGo)     { btnGo.disabled = false; btnGo.style.opacity = ''; }
+    if(btnCancel) { btnCancel.disabled = false; btnCancel.style.opacity = ''; }
+    if(loadingMsg){ loadingMsg.style.display = 'none'; }
+    this.closePrintModal();
 
     window.print();
   },
@@ -6018,6 +6035,25 @@ const PR = {
     });
     // Remover tooltips e ícones decorativos
     clone.querySelectorAll('.tooltip-icon,.tooltip-text,.chart-info-btn').forEach(e=>e.remove());
+
+    // ── Forçar cabeçalhos coloridos (dh-cri, dh-alt, dh-top, dc, da, dt) para cinza neutro ──
+    // O print-color-adjust:exact preserva as cores de fundo da folha de estilos mesmo com !important no @media print,
+    // então precisamos sobrescrever via style inline no clone.
+    clone.querySelectorAll('th').forEach(th=>{
+      const hasDarkBg = th.classList.contains('dh-cri') || th.classList.contains('dh-alt') ||
+                        th.classList.contains('dh-top') || th.classList.contains('dc') ||
+                        th.classList.contains('da')     || th.classList.contains('dt') ||
+                        th.classList.contains('dc-sep') || th.classList.contains('da-sep');
+      if(hasDarkBg){
+        th.style.background   = '#e5e7eb';
+        th.style.color        = '#374151';
+        th.style.borderColor  = '#d1d5db';
+      } else {
+        // Todos os outros th: fundo cinza claro padrão
+        th.style.background = '#f3f4f6';
+        th.style.color      = '#374151';
+      }
+    });
 
     // ── Resolver variáveis CSS e cores problemáticas em estilos inline ──
     clone.querySelectorAll('[style]').forEach(el=>{
