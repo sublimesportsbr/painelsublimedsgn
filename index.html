@@ -555,199 +555,123 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
 #modalPrint .pm-actions-top{display:flex;gap:8px;margin-bottom:14px}
 #modalPrint .pm-actions-top button{font-size:12px;padding:5px 12px}
 @media print{
-  @page{margin:15mm 12mm;size:A4}
+  @page{ margin:14mm 12mm; size:A4 }
 
-  /* ── Hide ALL interface chrome ── */
-  .sidebar,
-  .topbar,
-  .filter-trigger-bar,
-  .filter-drawer,
-  .filter-drawer-overlay,
-  .filters-bar,
-  .pipeline-bar,
-  .tabs,
-  .tab-btn,
-  .header,
-  .header-actions,
-  .debug-panel,
-  .modal-overlay,
-  .loading,
-  .chart-info-btn,
-  .chart-info-popup,
-  .sb-collapse-btn,
-  .sb-hamburger,
-  #syncToast,
-  #modalPrint,
-  #modalDetail,
-  #modalAdmin,
-  #modalScore,
-  #modalEquipe,
-  #btnScrollTop,
-  #aiFeedbackBar,
-  #aiMemoryPanel,
-  .aidm-overlay,
-  .sb-overlay,
-  .skeletonGeral,
-  #skeletonGeral,
-  #skeletonDesigners,
-  #skeletonVendedores,
-  .debug-panel,
-  .tooltip-icon,
-  .print-hide
-  { display:none!important }
+  /* ── Esconder TODA a interface real ── */
+  body > *:not(#printRoot){ display:none!important }
 
-  /* ── Color ── */
-  *{ -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important }
-
-  /* ── Reset layout (item 3) ── */
-  html,body{
-    background:#fff!important;color:#111827!important;
-    margin:0!important;padding:0!important;
-    font-size:11px!important;
-    width:auto!important;
-    min-width:0!important;
-    overflow:visible!important;
-  }
-  body,body.dark-mode{
-    --bg-body:#ffffff;--card-bg:#ffffff;--surface:#f8fafc;--surface-2:#f1f5f9;
-    --border:#e2e8f0;--text:#111827;--text-light:#4b5563;--text-dim:#6b7280;
-    --dark:#111827;--light:#f9fafb;--table-header:#f3f4f6;--table-hover:#f9fafb;
-    --accent:#10b981;--primary:#2563eb;
-  }
-
-  /* ── Full-width layout, no sidebar offset (item 3) ── */
-  #dashboard,
-  .sb-layout,
-  .sb-main,
-  .sb-content,
-  .tab-content{
+  /* ── Mostrar apenas #printRoot ── */
+  #printRoot{
+    display:block!important;
     width:100%!important;
-    max-width:none!important;
-    min-width:0!important;
     margin:0!important;
     padding:0!important;
-    overflow:visible!important;
-  }
-  .sb-layout{ display:block!important }
-  .sb-main{ margin-left:0!important;display:block!important }
-  .sb-content{ display:block!important }
-
-  /* ── Show tab contents ── */
-  .tab-content{ display:none!important; }
-  .tab-content:not(.print-hide){ display:block!important; }
-  .tab-content.print-hide,
-  .chart-container.print-hide,
-  .table-container.print-hide,
-  .cards-grid.print-hide{ display:none!important }
-
-  /* ── Cards grid (item 4) ── */
-  .cards-grid{
-    display:grid!important;
-    grid-template-columns:repeat(3,1fr)!important;
-    gap:8px!important;
-    margin-bottom:14px!important;
-  }
-  .card{
-    min-width:0!important;
-    width:auto!important;
+    font-family:'JetBrains Mono','Segoe UI',sans-serif!important;
+    font-size:10px!important;
+    color:#111827!important;
     background:#fff!important;
-    border:1px solid #e2e8f0!important;
-    border-top:2px solid #10b981!important;
-    border-radius:6px!important;
-    padding:10px!important;
-    page-break-inside:avoid!important;
-    break-inside:avoid!important;
   }
 
-  /* ── Break-inside (item 5) ── */
-  .chart-container,
-  .table-container,
-  .alert-section,
-  .ai-director-section{
-    page-break-inside:auto!important;
-    break-inside:auto!important;
+  /* ── Cores e color-adjust ── */
+  *{ -webkit-print-color-adjust:exact!important; print-color-adjust:exact!important }
+  html,body{
+    background:#fff!important;margin:0!important;padding:0!important;
+    width:100%!important;overflow:visible!important;
   }
 
-  /* ── Charts ── */
-  .chart-container{
-    background:#fff!important;border:1px solid #e2e8f0!important;
-    border-radius:6px!important;padding:12px!important;
-    margin-bottom:10px!important;
+  /* ── Capa ── */
+  .pr-cover{
+    text-align:center;padding:40px 0 30px;border-bottom:2px solid #e5e7eb;
+    margin-bottom:24px;page-break-after:avoid;break-after:avoid;
   }
-  .chart-wrapper,.chart-wrapper-tall{
-    height:auto!important;
-    min-height:0!important;
-    position:relative!important;
+  .pr-cover-title{ font-size:22px;font-weight:800;color:#111827;margin-bottom:4px }
+  .pr-cover-sub{ font-size:11px;color:#6b7280;letter-spacing:.08em;text-transform:uppercase }
+  .pr-cover-date{ font-size:10px;color:#9ca3af;margin-top:8px }
+
+  /* ── Seção ── */
+  .pr-section{ margin-bottom:18px; }
+  .pr-section-title{
+    font-size:13px;font-weight:800;color:#111827;
+    padding:6px 10px;background:#f3f4f6;border-left:3px solid #10b981;
+    margin-bottom:10px;page-break-after:avoid;break-after:avoid;
   }
-  .chart-wrapper canvas,.chart-wrapper-tall canvas{ display:none!important }
-  .print-chart-img{ width:100%!important;height:auto!important;display:block!important;max-height:240px!important;object-fit:contain!important }
-
-  /* ── Hide/show chart wrappers via JS classes (item 2, replaces :has()) ── */
-  .chart-wrapper.print-no-image,
-  .chart-wrapper-tall.print-no-image{
-    display:none!important;
-    height:0!important;
-    min-height:0!important;
-    margin:0!important;
-    padding:0!important;
-    overflow:hidden!important;
+  .pr-tab-label{
+    font-size:9px;font-weight:700;text-transform:uppercase;
+    letter-spacing:.1em;color:#9ca3af;margin-bottom:6px;
   }
-  .chart-wrapper.print-has-image,
-  .chart-wrapper-tall.print-has-image{ display:block!important }
 
-  /* ── Tables ── */
-  .table-container{
-    background:#fff!important;border:1px solid #e2e8f0!important;
-    border-radius:6px!important;padding:10px!important;
-    overflow:visible!important;margin-bottom:10px!important;
-    page-break-inside:auto!important;break-inside:auto!important;
+  /* ── Cards grid ── */
+  .pr-cards{ display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px; }
+  .pr-card{
+    border:1px solid #e5e7eb;border-top:2px solid #10b981;
+    border-radius:5px;padding:9px 11px;break-inside:avoid;page-break-inside:avoid;
   }
-  table{ font-size:9px!important;width:100%!important;border-collapse:collapse!important }
-  th{ background:#f3f4f6!important;color:#374151!important;padding:4px 6px!important;border:1px solid #e2e8f0!important;font-size:9px!important;font-weight:700!important }
-  td{ padding:3px 6px!important;color:#111827!important;border:1px solid #f1f5f9!important;word-break:break-word!important }
-  .daily-wrap{ overflow:visible!important }
-  .daily-table{ min-width:0!important;width:100%!important;table-layout:fixed!important }
+  .pr-card-title{ font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#6b7280;margin-bottom:4px }
+  .pr-card-value{ font-size:20px;font-weight:800;color:#111827;line-height:1;margin-bottom:2px }
+  .pr-card-sub{ font-size:9px;color:#6b7280 }
 
-  /* ── Text colors ── */
-  .card-value,.card-title,.card-subtitle{ color:#111827!important }
-  .chart-title{ color:#111827!important;font-size:12px!important }
-  .chart-subtitle{ color:#4b5563!important;font-size:10px!important }
+  /* ── Gráfico ── */
+  .pr-chart{ margin-bottom:12px;break-inside:avoid;page-break-inside:avoid; }
+  .pr-chart-title{ font-size:11px;font-weight:700;color:#111827;margin-bottom:6px }
+  .pr-chart-img{ width:100%;height:auto;display:block;max-height:220px;object-fit:contain }
+  .pr-chart-empty{ font-size:9px;color:#9ca3af;font-style:italic;padding:8px 0 }
 
-  /* ── Badges ── */
-  .badge-success{ background:#d1fae5!important;color:#065f46!important }
-  .badge-warning{ background:#fef3c7!important;color:#92400e!important }
-  .badge-danger{ background:#fee2e2!important;color:#991b1b!important }
-  .badge-info{ background:#dbeafe!important;color:#1e40af!important }
-  .badge-gray{ background:#f3f4f6!important;color:#374151!important }
+  /* ── Tabela ── */
+  .pr-table-wrap{ margin-bottom:12px;overflow:visible; }
+  .pr-table-title{ font-size:11px;font-weight:700;color:#111827;margin-bottom:6px;break-after:avoid;page-break-after:avoid }
+  .pr-table table{ width:100%;border-collapse:collapse;font-size:8.5px }
+  .pr-table th{
+    background:#f3f4f6;color:#374151;padding:3px 6px;
+    border:1px solid #e5e7eb;font-weight:700;text-align:left;
+    white-space:nowrap;
+  }
+  .pr-table td{
+    padding:3px 6px;border:1px solid #f1f5f9;color:#111827;
+    word-break:break-word;vertical-align:top;
+  }
+  .pr-table tbody tr:nth-child(even) td{ background:#f9fafb }
 
-  /* ── Alert sections ── */
-  .action-item{ background:#fff!important;border-left:3px solid #e2e8f0!important;padding:8px 10px!important }
-  .action-item.priority-high{ border-left-color:#ef4444!important }
-  .action-item.priority-medium{ border-left-color:#f59e0b!important }
-  .action-item.priority-low{ border-left-color:#10b981!important }
-  .alert-section-header{ padding:8px 12px!important;font-size:11px!important }
-  .alert-section-header.comercial{ background:#fee2e2!important;color:#991b1b!important }
-  .alert-section-header.prazo{ background:#fef3c7!important;color:#92400e!important }
-  .alert-section-header.operacional{ background:#dbeafe!important;color:#1e40af!important }
-  .alert-section-header.qualidade,.alert-section-header.qualidade2{ background:#ede9fe!important;color:#5b21b6!important }
-  .alert-section-header.eficiencia{ background:#f0fdf4!important;color:#166534!important }
-  .alert-section-header.preditivo{ background:#faf5ff!important;color:#6b21a8!important }
+  /* ── Alertas / Itens de ação ── */
+  .pr-alert-section{ margin-bottom:14px; }
+  .pr-alert-header{
+    font-size:10px;font-weight:800;padding:5px 9px;
+    margin-bottom:6px;break-after:avoid;page-break-after:avoid;
+  }
+  .pr-alert-header.comercial{ background:#fee2e2;color:#991b1b }
+  .pr-alert-header.prazo{ background:#fef3c7;color:#92400e }
+  .pr-alert-header.qualidade{ background:#ede9fe;color:#5b21b6 }
+  .pr-alert-header.operacional{ background:#dbeafe;color:#1e40af }
+  .pr-alert-header.eficiencia{ background:#f0fdf4;color:#166534 }
+  .pr-alert-header.preditivo{ background:#faf5ff;color:#6b21a8 }
+  .pr-alert-item{
+    padding:6px 9px;border-left:2px solid #e5e7eb;
+    margin-bottom:5px;break-inside:avoid;page-break-inside:avoid;
+  }
+  .pr-alert-item.priority-high{ border-left-color:#ef4444 }
+  .pr-alert-item.priority-medium{ border-left-color:#f59e0b }
+  .pr-alert-item.priority-low{ border-left-color:#10b981 }
+  .pr-alert-item-title{ font-size:10px;font-weight:700;color:#111827;margin-bottom:2px }
+  .pr-alert-item-body{ font-size:9px;color:#374151;line-height:1.5 }
+  .pr-alert-item-meta{ font-size:8px;color:#9ca3af;margin-top:3px }
 
-  /* ── Daily table ── */
-  .daily-table td{ color:#111827!important;background:transparent!important }
-  .daily-table td.col-date{ background:#f3f4f6!important;color:#111827!important }
-  .daily-table td.col-sep{ background:#f9fafb!important }
-  .daily-clk{ color:#2563eb!important }
-  .daily-top3 .t3-badge{ background:rgba(109,40,217,.12)!important;color:#4c1d95!important }
-  .daily-top3 .t3-link{ color:#4c1d95!important }
-  .daily-badge-exp{ background:#fef3c7!important;color:#92400e!important }
+  /* ── AI ── */
+  .pr-ai-section{ margin-bottom:12px;break-inside:avoid;page-break-inside:avoid }
+  .pr-ai-header{ font-size:10px;font-weight:800;color:#111827;padding:4px 8px;background:#f3f4f6;margin-bottom:5px }
+  .pr-ai-item{ padding:5px 8px;border-left:2px solid #d1d5db;margin-bottom:4px;font-size:9px;color:#374151;line-height:1.5 }
 
-  /* ── AI section ── */
-  .ai-director-section{ border:1px solid #e2e8f0!important;margin-bottom:10px!important }
-  .ai-director-body{ background:#fff!important;padding:10px!important }
-  .ai-director-item{ background:#f9fafb!important;padding:8px!important;margin-bottom:6px!important }
-  .ai-director-item.critica{ background:#fef2f2!important }
-  .ai-director-item.alta{ background:#fffbeb!important }
+  /* ── Separadores ── */
+  .pr-divider{ border:none;border-top:1px solid #e5e7eb;margin:14px 0 }
+
+  /* ── Utilitários ── */
+  .pr-badge{
+    display:inline-block;padding:1px 5px;border-radius:3px;
+    font-size:8px;font-weight:700;
+  }
+  .pr-badge-green{ background:#d1fae5;color:#065f46 }
+  .pr-badge-yellow{ background:#fef3c7;color:#92400e }
+  .pr-badge-red{ background:#fee2e2;color:#991b1b }
+  .pr-badge-blue{ background:#dbeafe;color:#1e40af }
+  .pr-badge-gray{ background:#f3f4f6;color:#374151 }
 }
 @media(max-width:768px){
   .header{flex-direction:column}
@@ -5139,21 +5063,21 @@ const App = {
   printDashboard(){ this.openPrintModal(); },
 
   /* ══════════════════════════════════════════════
-     PRINT SYSTEM
+     PRINT SYSTEM v2 — documento independente
+     Arquitetura: gera #printRoot separado, nunca
+     altera a interface real da tela.
   ══════════════════════════════════════════════ */
 
-  // Collect all printable blocks from all tabs
+  // ── Coleta blocos disponíveis para o modal de seleção ──────────
   _collectPrintableBlocks(){
     const tabNames = ['Visão Geral','Designers','Vendedores','Alertas & Ações'];
     const results = [];
     document.querySelectorAll('.tab-content').forEach((tab,tabIdx)=>{
       const tabLabel = tabNames[tabIdx]||`Aba ${tabIdx+1}`;
-      tab.querySelectorAll('.chart-container, .table-container, .cards-grid').forEach((el,elIdx)=>{
-        const h3 = el.querySelector('h3.chart-title');
-        let label = h3 ? h3.textContent.trim() : '';
-        if(!label){
-          label = el.classList.contains('cards-grid') ? 'Indicadores' : 'Bloco sem título';
-        }
+      tab.querySelectorAll('.chart-container,.table-container,.cards-grid').forEach((el,elIdx)=>{
+        const h3 = el.querySelector('h3.chart-title') || el.querySelector('.chart-title');
+        let label = h3 ? h3.textContent.trim().replace(/^[^\w]+/,'') : '';
+        if(!label) label = el.classList.contains('cards-grid') ? 'Indicadores' : 'Bloco sem título';
         const id = el.id || `pm-block-${tabIdx}-${elIdx}`;
         if(!el.id) el.id = id;
         results.push({ id, label, tabIdx, tabLabel, el });
@@ -5162,33 +5086,26 @@ const App = {
     return results;
   },
 
+  // ── Modal: abrir e preencher lista ─────────────────────────────
   openPrintModal(){
     const blocks = this._collectPrintableBlocks();
-    const saved = Store.get('sb_print_selection_v1') || [];
+    const saved  = Store.get('sb_print_selection_v1') || [];
     const savedSet = new Set(saved);
-
-    // Group by tab
     const byTab = {};
     blocks.forEach(b=>{
       if(!byTab[b.tabLabel]) byTab[b.tabLabel]=[];
       byTab[b.tabLabel].push(b);
     });
-
-    let html = '';
-    Object.entries(byTab).forEach(([tabLabel, items])=>{
-      html += `<div class="pm-section">
-        <div class="pm-section-title">${tabLabel}</div>`;
+    let h = '';
+    Object.entries(byTab).forEach(([tabLabel,items])=>{
+      h += `<div class="pm-section"><div class="pm-section-title">${tabLabel}</div>`;
       items.forEach(b=>{
         const checked = saved.length===0 || savedSet.has(b.id) ? 'checked' : '';
-        html += `<label class="pm-item">
-          <input type="checkbox" class="pm-cb" data-id="${b.id}" ${checked}>
-          <span class="pm-item-label">${b.label}</span>
-        </label>`;
+        h += `<label class="pm-item"><input type="checkbox" class="pm-cb" data-id="${b.id}" ${checked}><span class="pm-item-label">${b.label}</span></label>`;
       });
-      html += `</div>`;
+      h += `</div>`;
     });
-
-    document.getElementById('pmList').innerHTML = html;
+    document.getElementById('pmList').innerHTML = h;
     document.getElementById('modalPrint').classList.add('active');
   },
 
@@ -5200,7 +5117,8 @@ const App = {
     document.querySelectorAll('#pmList .pm-cb').forEach(cb=>cb.checked=val);
   },
 
-  _doPrint(){
+  // ── _doPrint: ponto de entrada principal ───────────────────────
+  async _doPrint(){
     const selIds = new Set(
       [...document.querySelectorAll('#pmList .pm-cb:checked')].map(cb=>cb.dataset.id)
     );
@@ -5208,146 +5126,39 @@ const App = {
 
     Store.set('sb_print_selection_v1', [...selIds]);
     this.closePrintModal();
-    this._rememberActiveTab();
 
-    // Step 2: Render all tabs so charts/cards exist in DOM
+    // Renderizar todas as abas para garantir que os dados/canvases existam
     const rows = State.rowsFiltered;
     RL.renderGeral(rows);
-    RL.renderDesigners(rows).catch(()=>{});
+    await RL.renderDesigners(rows).catch(()=>{});
     RL.renderVendedores(rows);
     RL.renderPlanoAcoes(rows);
 
-    // Step 3: Mark non-selected blocks as print-hide (item 1 fix already correct)
-    this._applyPrintSelection(selIds);
-
-    // Step 4: Give browser time to layout, then process wrappers and print (item 6)
-    setTimeout(async ()=>{
-      // Force explicit size on all chart canvases so toDataURL works
-      document.querySelectorAll('.chart-wrapper canvas, .chart-wrapper-tall canvas').forEach(canvas=>{
-        const wrapper = canvas.parentElement;
-        if(wrapper){
-          const w = wrapper.offsetWidth || 700;
-          const h = wrapper.offsetHeight || 280;
-          if(canvas.width < 10){ canvas.width = w; canvas.height = h; }
-        }
-      });
-
-      // Resize & update all charts
-      Object.values(State.charts||{}).forEach(c=>{
-        try{ c&&c.resize&&c.resize(); c&&c.update&&c.update('none'); }catch(_){}
-      });
-
-      await new Promise(r=>setTimeout(r,500));
-
-      // Item 6: Remove any old print-has-image / print-no-image classes first
-      document.querySelectorAll('.print-has-image, .print-no-image').forEach(el=>{
-        el.classList.remove('print-has-image','print-no-image');
-      });
-
-      // Item 6 + item 2: process each canvas, classify its wrapper
-      this._printImgMap = [];
-      document.querySelectorAll('.tab-content:not(.print-hide) canvas').forEach(canvas=>{
-        // Find the closest chart-wrapper or chart-wrapper-tall
-        const wrapper = canvas.closest('.chart-wrapper, .chart-wrapper-tall');
-        if(!wrapper) return;
-        // Skip if inside a print-hide container
-        if(canvas.closest('.print-hide')) return;
-
-        try{
-          const dataUrl = canvas.toDataURL('image/png', 1.0);
-          if(!dataUrl || dataUrl.length < 200){
-            // No valid image — mark wrapper as no-image (item 2)
-            wrapper.classList.add('print-no-image');
-            return;
-          }
-          // Valid image — create img, hide canvas, mark wrapper (item 2)
-          const img = document.createElement('img');
-          img.className = 'print-chart-img';
-          img.src = dataUrl;
-          img.style.cssText = 'width:100%;height:auto;display:block;max-height:280px;object-fit:contain';
-          canvas.style.display = 'none';
-          canvas.parentNode.insertBefore(img, canvas);
-          wrapper.classList.add('print-has-image');
-          this._printImgMap.push({canvas, img, origDisplay:''});
-        }catch(_){
-          wrapper.classList.add('print-no-image');
-        }
-      });
-
-      document.body.classList.add('printing');
-      setTimeout(()=>{
-        document.querySelectorAll('.print-hide').forEach(el=>el.classList.remove('print-hide'));
-
-        document.querySelectorAll('.print-has-image, .print-no-image').forEach(el=>{
-          el.classList.remove('print-has-image','print-no-image');
-        });
-
-        document.querySelectorAll('.print-chart-img').forEach(img=>img.remove());
-
-        document.querySelectorAll('.chart-wrapper canvas, .chart-wrapper-tall canvas').forEach(c=>{
-          c.style.display = '';
-        });
-
-        window.print();
-      }, 300);
-    }, 700);
-  },
-
-  _applyPrintSelection(selIds){
-    const blocks = this._collectPrintableBlocks();
-
-    blocks.forEach(b=>{
-      if(selIds.has(b.id)){
-        b.el.classList.remove('print-hide');
-      }else{
-        b.el.classList.add('print-hide');
-      }
+    // Dar tempo para Chart.js renderizar
+    Object.values(State.charts||{}).forEach(c=>{
+      try{ c&&c.resize&&c.resize(); c&&c.update&&c.update('none'); }catch(_){}
     });
+    await new Promise(r=>setTimeout(r,600));
 
-    for(let i=0;i<4;i++){
-      const tab = document.getElementById('tab-'+i);
-      if(!tab) continue;
-
-      const visibleBlocks = [...tab.querySelectorAll('.chart-container, .table-container, .cards-grid')]
-        .filter(el => !el.classList.contains('print-hide'));
-
-      if(visibleBlocks.length === 0){
-        tab.classList.add('print-hide');
-      }else{
-        tab.classList.remove('print-hide');
-      }
-    }
+    // Montar e imprimir
+    await PR.build(selIds, this._collectPrintableBlocks());
+    window.print();
   },
 
-  _clearPrintSelection(){
-    document.querySelectorAll('.print-hide').forEach(el=>el.classList.remove('print-hide'));
-  },
-
-  // Returns tab index (0-3) for a given element, or -1
-  _getTabIndexForElement(el){
-    const tab = el.closest('.tab-content');
-    if(!tab) return -1;
-    const m = tab.id.match(/tab-(\d+)/);
-    return m ? parseInt(m[1]) : -1;
-  },
-
-  // Remember which tab is active
-  _rememberActiveTab(){
-    this._printPrevTab = State.activeTab;
-  },
-
+  // ── Métodos legados mantidos como no-op para compatibilidade ───
+  _rememberActiveTab(){ this._printPrevTab = State.activeTab; },
   _restoreActiveTabAfterPrint(){
-    // Remove inline display overrides added before printing
-    document.querySelectorAll('.tab-content').forEach(t=>{
-      t.style.display='';
-      t.style.padding='';
-    });
-    if(this._printPrevTab != null){
-      this.switchTab(this._printPrevTab);
-      this._printPrevTab = null;
-    }
+    document.querySelectorAll('.tab-content').forEach(t=>{ t.style.display=''; });
+    if(this._printPrevTab!=null){ this.switchTab(this._printPrevTab); this._printPrevTab=null; }
   },
-
+  _restorePrintCharts(){ /* no-op — novo sistema não polui a tela */ },
+  _clearPrintSelection(){ /* no-op — novo sistema não usa print-hide na UI */ },
+  _applyPrintSelection(){ /* no-op */ },
+  _preparePrintChartsFromSelection(){ return Promise.resolve(); },
+  _getTabIndexForElement(el){
+    const tab=el.closest('.tab-content'); if(!tab) return -1;
+    const m=tab.id.match(/tab-(\d+)/); return m?parseInt(m[1]):-1;
+  },
   _setActiveTab(idx){
     document.querySelectorAll('.tab-content').forEach((c,i)=>c.classList.toggle('active',i===idx));
     document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
@@ -5357,60 +5168,7 @@ const App = {
     if(_tEl) _tEl.textContent=_TITLES[idx]||'';
   },
 
-  // Convert Chart.js canvases in selected blocks to <img> for reliable printing
-  async _preparePrintChartsFromSelection(selIds){
-    this._printImgMap = [];
-    const blocks = this._collectPrintableBlocks();
-    const selected = blocks.filter(b=>selIds.has(b.id));
-
-    // All tabs are already visible at this point - just resize+update all charts once
-    Object.entries(State.charts||{}).forEach(([id,chart])=>{
-      try{ chart&&chart.resize&&chart.resize(); chart&&chart.update&&chart.update('none'); }catch(_){}
-    });
-
-    // Wait for charts to re-render
-    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-    await new Promise(r=>setTimeout(r,200));
-
-    // Convert canvases in selected blocks to <img>
-    selected.forEach(b=>{
-      b.el.querySelectorAll('canvas').forEach(canvas=>{
-        try{
-          const rect = canvas.getBoundingClientRect();
-          const w = rect.width||canvas.offsetWidth||600;
-          const h = rect.height||canvas.offsetHeight||300;
-          const dataUrl = canvas.toDataURL('image/png',1.0);
-          if(!dataUrl || dataUrl==='data:,' || dataUrl==='data:image/png;base64,') return;
-          const img = document.createElement('img');
-          img.className = 'print-chart-img';
-          img.src = dataUrl;
-          img.style.cssText = 'width:100%;height:auto;display:block';
-          const origDisplay = canvas.style.display;
-          canvas.style.display = 'none';
-          canvas.parentNode.insertBefore(img, canvas);
-          this._printImgMap.push({canvas, img, origDisplay});
-        }catch(_){}
-      });
-    });
-  },
-
-  _restorePrintCharts(){
-    if(!this._printImgMap) return;
-    this._printImgMap.forEach(({canvas,img,origDisplay})=>{
-      try{
-        img.parentNode&&img.parentNode.removeChild(img);
-        canvas.style.display = origDisplay;
-      }catch(_){}
-    });
-    this._printImgMap = [];
-    // Remove wrapper classification classes added during print prep (item 2)
-    document.querySelectorAll('.print-has-image, .print-no-image').forEach(el=>{
-      el.classList.remove('print-has-image','print-no-image');
-    });
-  },
-
-  /* ── HELPERS ── */
-  _cfgParseMap(raw){
+    _cfgParseMap(raw){
     const map={};if(!raw)return map;
     raw.split('\n').forEach(l=>{const[id,...rest]=l.split('=');if(id&&rest.length)map[id.trim()]=rest.join('=').trim();});
     return map;
@@ -5580,12 +5338,7 @@ document.addEventListener('click',e=>{
   if(!e.target.closest('.ms-wrap')) MF.closeAll();
 });
 
-window.addEventListener('afterprint', ()=>{
-  document.body.classList.remove('printing'); // restaura tema do usuário
-  App._restorePrintCharts();
-  App._clearPrintSelection();
-  App._restoreActiveTabAfterPrint();
-});
+// afterprint agora gerenciado pelo PR (Print Renderer v2)
 
 // ═══════════════════════════════════════════════════════════════════
 // buildSnapshot — gera JSON compacto para enviar à IA (sem todos os cards)
@@ -5804,7 +5557,402 @@ const SB = {
 };
 document.addEventListener('DOMContentLoaded', () => { SB.init(); });
 
+/* ══════════════════════════════════════════════════════════════════
+   PR — Print Renderer v2
+   Gera um documento linear dentro de #printRoot.
+   NÃO altera nada da interface real.
+══════════════════════════════════════════════════════════════════ */
+const PR = {
+
+  _root: null,
+
+  // ── Ponto de entrada ────────────────────────────────────────────
+  async build(selIds, allBlocks){
+    this._root = document.getElementById('printRoot');
+    if(!this._root){ console.error('PR: #printRoot não encontrado'); return; }
+    this._root.innerHTML = '';
+
+    const selected = allBlocks.filter(b=>selIds.has(b.id));
+    if(!selected.length) return;
+
+    // Capa
+    this._root.appendChild(this._buildCover());
+
+    // Agrupar por aba para separação visual
+    const byTab = {};
+    selected.forEach(b=>{
+      if(!byTab[b.tabLabel]) byTab[b.tabLabel]=[];
+      byTab[b.tabLabel].push(b);
+    });
+
+    for(const [tabLabel, blocks] of Object.entries(byTab)){
+      const tabDiv = document.createElement('div');
+      tabDiv.className = 'pr-section';
+
+      // Rótulo da aba (discreto)
+      const tabLbl = document.createElement('div');
+      tabLbl.className = 'pr-tab-label';
+      tabLbl.textContent = tabLabel;
+      tabDiv.appendChild(tabLbl);
+
+      for(const block of blocks){
+        const section = await this._buildBlock(block);
+        if(section) tabDiv.appendChild(section);
+
+        const div = document.createElement('hr');
+        div.className = 'pr-divider';
+        tabDiv.appendChild(div);
+      }
+
+      this._root.appendChild(tabDiv);
+    }
+  },
+
+  // ── Capa ─────────────────────────────────────────────────────────
+  _buildCover(){
+    const cover = document.createElement('div');
+    cover.className = 'pr-cover';
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+    const timeStr = now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    cover.innerHTML = `
+      <div class="pr-cover-title">Painel Sublime</div>
+      <div class="pr-cover-sub">Gestão de Design — Relatório</div>
+      <div class="pr-cover-date">Gerado em ${dateStr} às ${timeStr}</div>
+    `;
+    return cover;
+  },
+
+  // ── Roteador de bloco ─────────────────────────────────────────────
+  async _buildBlock(block){
+    const el = block.el;
+    if(el.classList.contains('cards-grid'))      return this._buildCardsGrid(block);
+    if(el.classList.contains('chart-container')) return await this._buildChart(block);
+    if(el.classList.contains('table-container')) return this._buildTable(block);
+    return null;
+  },
+
+  // ── Cards grid ────────────────────────────────────────────────────
+  _buildCardsGrid(block){
+    const wrap = document.createElement('div');
+    wrap.className = 'pr-section';
+
+    const title = document.createElement('div');
+    title.className = 'pr-section-title';
+    title.textContent = block.label;
+    wrap.appendChild(title);
+
+    const grid = document.createElement('div');
+    grid.className = 'pr-cards';
+
+    block.el.querySelectorAll('.card').forEach(card=>{
+      const titleEl = card.querySelector('.card-title');
+      const valueEl = card.querySelector('.card-value');
+      const subEl   = card.querySelector('.card-subtitle,.card-note');
+      const prCard  = document.createElement('div');
+      prCard.className = 'pr-card';
+      prCard.innerHTML = `
+        <div class="pr-card-title">${titleEl?.textContent||''}</div>
+        <div class="pr-card-value">${valueEl?.textContent||'—'}</div>
+        <div class="pr-card-sub">${subEl?.textContent||''}</div>
+      `;
+      grid.appendChild(prCard);
+    });
+
+    wrap.appendChild(grid);
+    return wrap;
+  },
+
+  // ── Gráfico ───────────────────────────────────────────────────────
+  async _buildChart(block){
+    const wrap = document.createElement('div');
+    wrap.className = 'pr-section';
+
+    const titleEl = block.el.querySelector('h3.chart-title,.chart-title');
+    const subEl   = block.el.querySelector('.chart-subtitle');
+
+    const secTitle = document.createElement('div');
+    secTitle.className = 'pr-section-title';
+    secTitle.textContent = block.label;
+    wrap.appendChild(secTitle);
+
+    if(subEl){
+      const sub = document.createElement('div');
+      sub.style.cssText = 'font-size:9px;color:#6b7280;margin-bottom:6px';
+      sub.textContent = subEl.textContent;
+      wrap.appendChild(sub);
+    }
+
+    // Detectar tipo de conteúdo: alert-section / ai-director / table / canvas
+    // Alert sections dentro de chart-container
+    const alertSections = block.el.querySelectorAll('.alert-section');
+    if(alertSections.length){
+      alertSections.forEach(as=>{
+        wrap.appendChild(this._buildAlertSection(as));
+      });
+      return wrap;
+    }
+
+    // AI director sections
+    const aiSections = block.el.querySelectorAll('.ai-director-section');
+    if(aiSections.length){
+      aiSections.forEach(ai=>{
+        wrap.appendChild(this._buildAiSection(ai));
+      });
+      return wrap;
+    }
+
+    // Critico items
+    const criticoItems = block.el.querySelectorAll('.critico-item');
+    if(criticoItems.length){
+      wrap.appendChild(this._buildCriticoList(block.el));
+      return wrap;
+    }
+
+    // Tables inside chart-container
+    const tableInside = block.el.querySelector('table');
+    if(tableInside && !block.el.querySelector('canvas')){
+      wrap.appendChild(this._cloneTable(tableInside));
+      return wrap;
+    }
+
+    // Canvas — capturar como imagem
+    const canvas = block.el.querySelector('canvas');
+    if(canvas){
+      const chartDiv = document.createElement('div');
+      chartDiv.className = 'pr-chart';
+      try{
+        const dataUrl = canvas.toDataURL('image/png',1.0);
+        if(dataUrl && dataUrl.length > 200){
+          const img = document.createElement('img');
+          img.className = 'pr-chart-img';
+          img.src = dataUrl;
+          chartDiv.appendChild(img);
+          // Tabela de dados abaixo do gráfico se houver
+          if(tableInside){
+            chartDiv.appendChild(this._cloneTable(tableInside));
+          }
+        } else {
+          chartDiv.innerHTML = '<div class="pr-chart-empty">Gráfico sem dados</div>';
+        }
+      }catch(_){
+        chartDiv.innerHTML = '<div class="pr-chart-empty">Gráfico não disponível</div>';
+      }
+      wrap.appendChild(chartDiv);
+      return wrap;
+    }
+
+    // Fallback: texto simples do bloco
+    const fallback = document.createElement('div');
+    fallback.style.cssText = 'font-size:9px;color:#6b7280;padding:8px 0';
+    fallback.textContent = 'Conteúdo sem visualização disponível.';
+    wrap.appendChild(fallback);
+    return wrap;
+  },
+
+  // ── Tabela ────────────────────────────────────────────────────────
+  _buildTable(block){
+    const wrap = document.createElement('div');
+    wrap.className = 'pr-table-wrap';
+
+    const title = document.createElement('div');
+    title.className = 'pr-section-title';
+    title.textContent = block.label;
+    wrap.appendChild(title);
+
+    const subEl = block.el.querySelector('.chart-subtitle');
+    if(subEl){
+      const sub = document.createElement('div');
+      sub.style.cssText = 'font-size:9px;color:#6b7280;margin-bottom:6px';
+      sub.textContent = subEl.textContent;
+      wrap.appendChild(sub);
+    }
+
+    // Alert sections dentro de table-container
+    const alertSections = block.el.querySelectorAll('.alert-section');
+    if(alertSections.length){
+      alertSections.forEach(as=> wrap.appendChild(this._buildAlertSection(as)));
+      return wrap;
+    }
+
+    // AI director sections
+    const aiSections = block.el.querySelectorAll('.ai-director-section');
+    if(aiSections.length){
+      aiSections.forEach(ai=> wrap.appendChild(this._buildAiSection(ai)));
+      return wrap;
+    }
+
+    // Tabela real
+    const table = block.el.querySelector('table');
+    if(table){
+      wrap.appendChild(this._cloneTable(table));
+    } else {
+      // Pode ser a tabela de produção diária
+      const daily = block.el.querySelector('.daily-wrap');
+      if(daily){
+        const dailyTable = daily.querySelector('table');
+        if(dailyTable) wrap.appendChild(this._cloneTable(dailyTable));
+      } else {
+        // Monthly avg ou outros
+        const inner = block.el.querySelector('.daily-wrap, #monthlyAvgBody, #dailyProdTable');
+        if(inner){
+          const t = inner.querySelector('table');
+          if(t) wrap.appendChild(this._cloneTable(t));
+        }
+      }
+    }
+
+    return wrap;
+  },
+
+  // ── Clonar tabela de forma compacta ─────────────────────────────
+  _cloneTable(table){
+    const wrap = document.createElement('div');
+    wrap.className = 'pr-table';
+    const clone = table.cloneNode(true);
+    // Remover links interativos, mantendo texto
+    clone.querySelectorAll('a').forEach(a=>{
+      const span = document.createElement('span');
+      span.textContent = a.textContent;
+      a.replaceWith(span);
+    });
+    // Remover botões
+    clone.querySelectorAll('button,.daily-clk[onclick]').forEach(b=>{
+      const span = document.createElement('span');
+      span.textContent = b.textContent;
+      b.replaceWith(span);
+    });
+    // Remover tooltips e ícones decorativos
+    clone.querySelectorAll('.tooltip-icon,.tooltip-text,.chart-info-btn').forEach(e=>e.remove());
+    wrap.appendChild(clone);
+    return wrap;
+  },
+
+  // ── Alert sections ────────────────────────────────────────────────
+  _buildAlertSection(alertSection){
+    const wrap = document.createElement('div');
+    wrap.className = 'pr-alert-section';
+
+    alertSection.querySelectorAll('.alert-section').forEach(section=>{
+      const header = section.querySelector('.alert-section-header');
+      const cls    = header ? [...header.classList].find(c=>c!=='alert-section-header')||'' : '';
+
+      const hDiv = document.createElement('div');
+      hDiv.className = 'pr-alert-header ' + cls;
+      hDiv.textContent = header ? header.textContent.trim() : '';
+      wrap.appendChild(hDiv);
+
+      section.querySelectorAll('.action-item').forEach(item=>{
+        const priClass = [...item.classList].find(c=>c.startsWith('priority-'))||'';
+        const titleEl  = item.querySelector('.action-title');
+        const descEl   = item.querySelector('.action-description');
+        const metaEl   = item.querySelector('.action-metrics');
+
+        const iDiv = document.createElement('div');
+        iDiv.className = 'pr-alert-item ' + priClass;
+        iDiv.innerHTML = `
+          <div class="pr-alert-item-title">${titleEl?.textContent||''}</div>
+          ${descEl ? `<div class="pr-alert-item-body">${descEl.textContent}</div>` : ''}
+          ${metaEl ? `<div class="pr-alert-item-meta">${metaEl.textContent}</div>` : ''}
+        `;
+        wrap.appendChild(iDiv);
+      });
+
+      // Empty state
+      const emptyEl = section.querySelector('.alert-section-empty');
+      if(emptyEl){
+        const e = document.createElement('div');
+        e.style.cssText = 'font-size:9px;color:#9ca3af;padding:5px 8px;font-style:italic';
+        e.textContent = emptyEl.textContent;
+        wrap.appendChild(e);
+      }
+    });
+
+    // Fallback: if the alertSection itself IS the container
+    if(!wrap.children.length){
+      const allItems = alertSection.querySelectorAll('.action-item');
+      allItems.forEach(item=>{
+        const priClass = [...item.classList].find(c=>c.startsWith('priority-'))||'';
+        const iDiv = document.createElement('div');
+        iDiv.className = 'pr-alert-item ' + priClass;
+        const titleEl = item.querySelector('.action-title,.action-header');
+        const descEl  = item.querySelector('.action-description');
+        iDiv.innerHTML = `
+          <div class="pr-alert-item-title">${titleEl?.textContent.trim()||''}</div>
+          ${descEl?`<div class="pr-alert-item-body">${descEl.textContent}</div>`:''}
+        `;
+        wrap.appendChild(iDiv);
+      });
+    }
+
+    return wrap;
+  },
+
+  // ── AI Director sections ──────────────────────────────────────────
+  _buildAiSection(aiSection){
+    const wrap = document.createElement('div');
+    wrap.className = 'pr-ai-section';
+
+    const header = aiSection.querySelector('.ai-director-header');
+    if(header){
+      const h = document.createElement('div');
+      h.className = 'pr-ai-header';
+      h.textContent = header.textContent.trim();
+      wrap.appendChild(h);
+    }
+
+    aiSection.querySelectorAll('.ai-director-item').forEach(item=>{
+      const titleEl = item.querySelector('.ai-director-item-title');
+      const bodyEl  = item.querySelector('.ai-director-item-body');
+      const d = document.createElement('div');
+      d.className = 'pr-ai-item';
+      if(titleEl){ const t=document.createElement('strong'); t.textContent=titleEl.textContent; d.appendChild(t); d.appendChild(document.createElement('br')); }
+      if(bodyEl){ const s=document.createElement('span'); s.textContent=bodyEl.textContent; d.appendChild(s); }
+      wrap.appendChild(d);
+    });
+
+    return wrap;
+  },
+
+  // ── Críticos ─────────────────────────────────────────────────────
+  _buildCriticoList(container){
+    const wrap = document.createElement('div');
+    wrap.className = 'pr-alert-section';
+
+    container.querySelectorAll('.critico-item').forEach(item=>{
+      const titleEl = item.querySelector('.critico-title');
+      const metaEl  = item.querySelector('.critico-meta');
+      const nivelEl = item.querySelector('.critico-badge');
+      const priClass = item.classList.contains('nivel-medio') ? 'priority-medium' : 'priority-high';
+      const d = document.createElement('div');
+      d.className = 'pr-alert-item ' + priClass;
+      d.innerHTML = `
+        <div class="pr-alert-item-title">${titleEl?.textContent||''}</div>
+        ${metaEl?`<div class="pr-alert-item-meta">${metaEl.textContent}</div>`:''}
+      `;
+      wrap.appendChild(d);
+    });
+
+    return wrap;
+  },
+
+  // ── Limpar após impressão ─────────────────────────────────────────
+  clear(){
+    const root = document.getElementById('printRoot');
+    if(root) root.innerHTML = '';
+  }
+};
+
+window.addEventListener('afterprint', ()=>{
+  PR.clear();
+  App._restoreActiveTabAfterPrint();
+});
+
+
 App.init();
 </script>
+
+<!-- DOCUMENTO DE IMPRESSÃO — gerado dinamicamente, visível apenas no print -->
+<div id="printRoot" style="display:none"></div>
 </body>
 </html>
