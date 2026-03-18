@@ -5140,16 +5140,28 @@ const App = {
     );
     if(!selIds.size){ alert('Selecione ao menos um item para imprimir.'); return; }
 
-    // Save selection
     Store.set('sb_print_selection_v1', [...selIds]);
     this.closePrintModal();
+    this._rememberActiveTab();
 
-    // Apply selection visibility + prepare charts then print
-    this._applyPrintSelection(selIds);
-    this._preparePrintChartsFromSelection(selIds).then(()=>{
-      document.body.classList.add('printing'); // força print-light
-      setTimeout(()=>window.print(), 300);
+    // Step 1: Force ALL tab-contents visible so charts can render
+    document.querySelectorAll('.tab-content').forEach(t=>{
+      t.style.display='block';
+      t.style.padding='0';
     });
+
+    // Step 2: Mark non-selected blocks as print-hide
+    this._applyPrintSelection(selIds);
+
+    // Step 3: Resize & render all charts (they were hidden before)
+    Object.values(State.charts||{}).forEach(c=>{ try{ c&&c.resize&&c.resize(); c&&c.update&&c.update('none'); }catch(_){} });
+
+    // Step 4: Wait for layout, convert charts to images, then print
+    setTimeout(async ()=>{
+      await this._preparePrintChartsFromSelection(selIds);
+      document.body.classList.add('printing');
+      setTimeout(()=>window.print(), 400);
+    }, 350);
   },
 
   _applyPrintSelection(selIds){
@@ -5192,6 +5204,11 @@ const App = {
   },
 
   _restoreActiveTabAfterPrint(){
+    // Remove inline display overrides added before printing
+    document.querySelectorAll('.tab-content').forEach(t=>{
+      t.style.display='';
+      t.style.padding='';
+    });
     if(this._printPrevTab != null){
       this.switchTab(this._printPrevTab);
       this._printPrevTab = null;
@@ -5209,67 +5226,39 @@ const App = {
 
   // Convert Chart.js canvases in selected blocks to <img> for reliable printing
   async _preparePrintChartsFromSelection(selIds){
-    this._rememberActiveTab();
-    this._printImgMap = []; // [{canvas, img, origDisplay}]
-
+    this._printImgMap = [];
     const blocks = this._collectPrintableBlocks();
     const selected = blocks.filter(b=>selIds.has(b.id));
 
-    // Group by tab to minimize tab switches
-    const byTab = {};
-    selected.forEach(b=>{
-      if(!byTab[b.tabIdx]) byTab[b.tabIdx]=[];
-      byTab[b.tabIdx].push(b);
+    // All tabs are already visible at this point - just resize+update all charts once
+    Object.entries(State.charts||{}).forEach(([id,chart])=>{
+      try{ chart&&chart.resize&&chart.resize(); chart&&chart.update&&chart.update('none'); }catch(_){}
     });
 
-    for(const [tabIdxStr, tabBlocks] of Object.entries(byTab)){
-      const tabIdx = parseInt(tabIdxStr);
+    // Wait for charts to re-render
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+    await new Promise(r=>setTimeout(r,200));
 
-      // Use switchTab (triggers real render) instead of _setActiveTab (DOM only)
-      this.switchTab(tabIdx);
-
-      // Wait for layout and Chart.js to fully render: 2x rAF + 250ms
-      await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-      await new Promise(r=>setTimeout(r,250));
-
-      // Resize & update all charts in this tab
-      Object.entries(State.charts).forEach(([id,chart])=>{
-        if(!chart) return;
-        const canvas = document.getElementById(id);
-        if(canvas && canvas.closest('#tab-'+tabIdx)){
-          try{ chart.resize(); chart.update('none'); }catch(_){}
-        }
+    // Convert canvases in selected blocks to <img>
+    selected.forEach(b=>{
+      b.el.querySelectorAll('canvas').forEach(canvas=>{
+        try{
+          const rect = canvas.getBoundingClientRect();
+          const w = rect.width||canvas.offsetWidth||600;
+          const h = rect.height||canvas.offsetHeight||300;
+          const dataUrl = canvas.toDataURL('image/png',1.0);
+          if(!dataUrl || dataUrl==='data:,' || dataUrl==='data:image/png;base64,') return;
+          const img = document.createElement('img');
+          img.className = 'print-chart-img';
+          img.src = dataUrl;
+          img.style.cssText = 'width:100%;height:auto;display:block';
+          const origDisplay = canvas.style.display;
+          canvas.style.display = 'none';
+          canvas.parentNode.insertBefore(img, canvas);
+          this._printImgMap.push({canvas, img, origDisplay});
+        }catch(_){}
       });
-
-      // One more frame after resize
-      await new Promise(r=>requestAnimationFrame(r));
-
-      // Convert canvases in selected blocks of this tab
-      tabBlocks.forEach(b=>{
-        b.el.querySelectorAll('canvas').forEach(canvas=>{
-          try{
-            const rect = canvas.getBoundingClientRect();
-            const w = rect.width||canvas.offsetWidth||600;
-            const h = rect.height||canvas.offsetHeight||300;
-            const dataUrl = canvas.toDataURL('image/png',1.0);
-            if(!dataUrl || dataUrl==='data:,' || dataUrl==='data:image/png;base64,') return;
-            const img = document.createElement('img');
-            img.className = 'print-chart-img';
-            img.src = dataUrl;
-            img.style.width = w+'px';
-            img.style.maxWidth = '100%';
-            img.style.height = 'auto';
-            const origDisplay = canvas.style.display;
-            canvas.style.display = 'none';
-            canvas.parentNode.insertBefore(img, canvas);
-            this._printImgMap.push({canvas, img, origDisplay});
-          }catch(_){}
-        });
-      });
-    }
-
-    // Restore active tab in DOM (print CSS will show all anyway)
-    this._setActiveTab(this._printPrevTab??State.activeTab);
+    });
   },
 
   _restorePrintCharts(){
