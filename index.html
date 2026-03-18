@@ -611,6 +611,9 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
   /* ── Show all tab contents for printing ── */
   .tab-content{ display:block!important;padding:0!important;width:100%!important }
   .tab-content.print-hide{ display:none!important }
+  .chart-container.print-hide,
+  .table-container.print-hide,
+  .cards-grid.print-hide{ display:none!important }
 
   /* ── Card and chart layout ── */
   .cards-grid{
@@ -5144,24 +5147,50 @@ const App = {
     this.closePrintModal();
     this._rememberActiveTab();
 
-    // Step 1: Force ALL tab-contents visible so charts can render
+    // Step 1: Force ALL tab-contents visible
     document.querySelectorAll('.tab-content').forEach(t=>{
-      t.style.display='block';
-      t.style.padding='0';
+      t.style.display = 'block';
+      t.style.padding = '0';
     });
 
-    // Step 2: Mark non-selected blocks as print-hide
+    // Step 2: Render all tabs so charts/cards actually exist in DOM
+    const rows = State.rowsFiltered;
+    RL.renderGeral(rows);
+    RL.renderDesigners(rows).catch(()=>{});
+    RL.renderVendedores(rows);
+    RL.renderPlanoAcoes(rows);
+
+    // Step 3: Mark non-selected blocks as print-hide
     this._applyPrintSelection(selIds);
 
-    // Step 3: Resize & render all charts (they were hidden before)
-    Object.values(State.charts||{}).forEach(c=>{ try{ c&&c.resize&&c.resize(); c&&c.update&&c.update('none'); }catch(_){} });
-
-    // Step 4: Wait for layout, convert charts to images, then print
+    // Step 4: Wait for everything to render, resize all charts, convert to img, print
     setTimeout(async ()=>{
-      await this._preparePrintChartsFromSelection(selIds);
+      // Resize all charts now that containers are visible
+      Object.values(State.charts||{}).forEach(c=>{
+        try{ c&&c.resize&&c.resize(); c&&c.update&&c.update('none'); }catch(_){}
+      });
+      await new Promise(r=>setTimeout(r,300));
+
+      // Convert canvases to images for reliable print output
+      this._printImgMap = [];
+      document.querySelectorAll('.tab-content:not(.print-hide) canvas').forEach(canvas=>{
+        try{
+          const dataUrl = canvas.toDataURL('image/png',1.0);
+          if(!dataUrl || dataUrl==='data:,' || dataUrl==='data:image/png;base64,') return;
+          const img = document.createElement('img');
+          img.className = 'print-chart-img';
+          img.src = dataUrl;
+          img.style.cssText = 'width:100%;max-width:100%;height:auto;display:block';
+          const origDisplay = canvas.style.display;
+          canvas.style.display = 'none';
+          canvas.parentNode.insertBefore(img, canvas);
+          this._printImgMap.push({canvas, img, origDisplay});
+        }catch(_){}
+      });
+
       document.body.classList.add('printing');
-      setTimeout(()=>window.print(), 400);
-    }, 350);
+      setTimeout(()=>window.print(), 200);
+    }, 500);
   },
 
   _applyPrintSelection(selIds){
