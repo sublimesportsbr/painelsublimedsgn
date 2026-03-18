@@ -775,6 +775,20 @@ body.dark-mode .ai-director-item.baixa{background:rgba(16,185,129,.06)}
   a{ color:#1a1a1a!important;text-decoration:none!important }
   .daily-clk,.pedido-link{ color:#1a1a1a!important;text-decoration:none!important;
     border-bottom:none!important }
+
+  /* ══════════════════════
+     BADGES — forçar legibilidade
+  ══════════════════════ */
+  .badge,.badge-success,.badge-warning,.badge-danger,.badge-info,.badge-gray{
+    background:#fff!important;
+    color:#1a1a1a!important;
+    border:1px solid #9ca3af!important;
+  }
+  .badge-success{ color:#166534!important;border-color:#16a34a!important }
+  .badge-warning{ color:#854d0e!important;border-color:#ca8a04!important }
+  .badge-danger{  color:#991b1b!important;border-color:#dc2626!important }
+  .badge-info{    color:#1e40af!important;border-color:#2563eb!important }
+  .badge-gray{    color:#374151!important;border-color:#9ca3af!important }
 }
 @media(max-width:768px){
   .header{flex-direction:column}
@@ -5238,6 +5252,18 @@ const App = {
 
     // Renderizar todas as abas para garantir que os dados/canvases existam
     const rows = State.rowsFiltered;
+
+    // ── Tornar todas as abas visíveis ANTES de renderizar (Chart.js precisa de dimensões reais) ──
+    const tabEls = document.querySelectorAll('.tab-content');
+    const origDisplay = [];
+    tabEls.forEach((t,i)=>{
+      origDisplay[i] = t.style.display;
+      t.style.display = 'block';
+      t.style.visibility = 'hidden'; // visível para layout mas invisível ao usuário
+      t.style.position = 'absolute';
+      t.style.pointerEvents = 'none';
+    });
+
     RL.renderGeral(rows);
     await RL.renderDesigners(rows).catch(()=>{});
     RL.renderVendedores(rows);
@@ -5251,6 +5277,17 @@ const App = {
 
     // Montar e imprimir
     await PR.build(selIds, this._collectPrintableBlocks());
+
+    // ── Restaurar visibilidade das abas ──
+    tabEls.forEach((t,i)=>{
+      t.style.display = origDisplay[i];
+      t.style.visibility = '';
+      t.style.position = '';
+      t.style.pointerEvents = '';
+    });
+    // Reativar aba correta
+    this.switchTab(State.activeTab);
+
     window.print();
   },
 
@@ -5933,6 +5970,24 @@ const PR = {
     });
     // Remover tooltips e ícones decorativos
     clone.querySelectorAll('.tooltip-icon,.tooltip-text,.chart-info-btn').forEach(e=>e.remove());
+
+    // ── Normalizar badges para impressão: fundo neutro + texto escuro ──
+    clone.querySelectorAll('.badge,.badge-success,.badge-warning,.badge-danger,.badge-info,.badge-gray,.pr-badge,.pr-badge-green,.pr-badge-yellow,.pr-badge-red,.pr-badge-blue,.pr-badge-gray').forEach(b=>{
+      // Detectar cor semântica pela classe e aplicar borda colorida + fundo branco
+      let borderColor = '#9ca3af';
+      let textColor   = '#1a1a1a';
+      if(b.classList.contains('badge-success')||b.classList.contains('pr-badge-green')){
+        borderColor='#16a34a'; textColor='#166534';
+      } else if(b.classList.contains('badge-warning')||b.classList.contains('pr-badge-yellow')){
+        borderColor='#ca8a04'; textColor='#854d0e';
+      } else if(b.classList.contains('badge-danger')||b.classList.contains('pr-badge-red')){
+        borderColor='#dc2626'; textColor='#991b1b';
+      } else if(b.classList.contains('badge-info')||b.classList.contains('pr-badge-blue')){
+        borderColor='#2563eb'; textColor='#1e40af';
+      }
+      b.style.cssText = `background:#fff!important;color:${textColor}!important;border:1px solid ${borderColor}!important;padding:1px 5px!important;border-radius:3px!important;font-size:7pt!important;font-weight:700!important;display:inline-block!important`;
+    });
+
     wrap.appendChild(clone);
     return wrap;
   },
