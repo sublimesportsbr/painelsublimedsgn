@@ -6356,10 +6356,10 @@ const Motivos = {
         comments = resp.comments;
       }
 
-      // 3. Filtrar comentários com conteúdo real (>10 chars, não automáticos)
+      // 3. Filtrar comentários com conteúdo real (>4 chars, não automáticos)
       const IGNORE = /^(card (moved|archived|created)|checklist|attachment)/i;
       const usable = comments
-        .filter(c => c.text && c.text.trim().length > 10 && !IGNORE.test(c.text.trim()))
+        .filter(c => c.text && c.text.trim().length > 4 && !IGNORE.test(c.text.trim()))
         .map(c => ({ cardId: c.cardId, text: c.text.trim().slice(0, 400) }));
 
       if(!usable.length){
@@ -6434,60 +6434,79 @@ const Motivos = {
 
   async _classifyBatch(batch, rows){
     const catKeys = this._CAT.map(c => c.key).concat(['NAO_ALTERACAO']);
-    const catDescs = [
-      'CLIENTE_COR: cliente pediu mudança de cor de qualquer elemento',
-      'CLIENTE_POSICIONAMENTO: cliente pediu mover, reposicionar algo',
-      'CLIENTE_TAMANHO: cliente pediu aumentar, diminuir, redimensionar',
-      'CLIENTE_ADICAO: cliente pediu adicionar novo elemento (logo, patrocínio, ícone, figura, texto)',
-      'CLIENTE_ESTETICO: cliente pediu ajuste visual/estético sem ser cor, tamanho ou posição (ex: fonte, acabamento, detalhes)',
-      'ERRO_EXECUCAO: algo foi executado errado em relação ao que já estava definido',
-      'ERRO_BRIEFING: faltou informação, veio informação errada ou incompleta no briefing',
-      'ERRO_INTERPRETACAO: informação existia mas foi interpretada de forma ambígua ou incorreta',
-      'AJUSTE_TECNICO: limitação técnica ou necessidade de produção (ex: resolução, sangria, formato)',
-      'OUTRO: não se encaixa em nenhuma categoria acima',
-      'NAO_ALTERACAO: comentário não é um pedido de alteração (mensagem geral, confirmação, pergunta, etc.)'
+
+    const lines = batch.map((c, i) => `${i+1}|${c.cardId}|${c.text.replace(/\n/g,' ').slice(0,300)}`).join('\n');
+
+    // Prompt enxuto — instrui a retornar APENAS o array sem nenhum texto extra
+    const prompt = [
+      'Classifique cada comentário abaixo em UMA categoria.',
+      '',
+      'CATEGORIAS (use exatamente estas chaves):',
+      'CLIENTE_COR = cliente pediu mudança de cor',
+      'CLIENTE_POSICIONAMENTO = cliente pediu mover/reposicionar algo',
+      'CLIENTE_TAMANHO = cliente pediu aumentar/diminuir/redimensionar',
+      'CLIENTE_ADICAO = cliente pediu adicionar elemento (logo, patrocínio, imagem, texto)',
+      'CLIENTE_ESTETICO = ajuste visual/estético do cliente (fonte, acabamento, detalhe)',
+      'ERRO_EXECUCAO = algo foi executado errado vs o que estava definido',
+      'ERRO_BRIEFING = faltou informação ou veio informação errada no briefing',
+      'ERRO_INTERPRETACAO = informação existia mas foi interpretada de forma errada',
+      'AJUSTE_TECNICO = limitação técnica ou necessidade de produção',
+      'OUTRO = não se encaixa em nenhuma categoria acima',
+      'NAO_ALTERACAO = NÃO é pedido de alteração (confirmação, pergunta, comentário geral)',
+      '',
+      'FORMATO DE SAÍDA: retorne APENAS um array JSON, sem markdown, sem texto antes ou depois.',
+      'Cada item: {"i":NUMERO,"cat":"CATEGORIA"}',
+      'O número i corresponde ao número antes do | em cada linha.',
+      '',
+      'COMENTÁRIOS:',
+      lines,
+      '',
+      'Responda SOMENTE com o array JSON.'
     ].join('\n');
-
-    const lines = batch.map((c, i) => `${i+1}. [${c.cardId}] ${c.text}`).join('\n');
-
-    const prompt = `Você é especialista em gestão de design de uniformes esportivos.
-
-Classifique cada comentário abaixo em UMA das categorias:
-${catDescs}
-
-COMENTÁRIOS:
-${lines}
-
-Retorne APENAS um array JSON válido, sem markdown, sem texto antes ou depois.
-Formato: [{"cardId":"ID","category":"CATEGORIA"},...]
-Um objeto por comentário, na mesma ordem.`;
 
     const resp = await App._apiFetch('/api/ai', {
       method: 'POST',
       body: JSON.stringify({ prompt, memory: {} })
     });
-    if(resp.error) throw new Error(resp.error);
+    if(resp && resp.error) throw new Error(resp.error);
 
-    // resp pode ser o JSON diretamente (objeto/array) ou string
-    let parsed;
+    // Extrair array JSON da resposta — o /api/ai já faz cleanJSON e retorna o objeto parseado
+    let parsed = null;
+
+    // resp pode já ser o array (se /api/ai parseou e retornou direto)
     if(Array.isArray(resp)){
       parsed = resp;
-    } else if(typeof resp === 'object' && resp !== null){
-      // Tentar achar array dentro da resposta
-      const vals = Object.values(resp);
-      parsed = vals.find(v => Array.isArray(v)) || [];
-    } else {
-      // Tentar parse de string
-      const raw = String(resp).replace(/```json|```/g,'').trim();
-      const arrMatch = raw.match(/\[[\s\S]*\]/);
-      parsed = arrMatch ? JSON.parse(arrMatch[0]) : [];
+    }
+    // resp pode ser um objeto com propriedade que contém o array
+    else if(resp && typeof resp === 'object'){
+      // Tentar achar array dentro do objeto
+      const candidate = Object.values(resp).find(v => Array.isArray(v));
+      if(candidate) parsed = candidate;
+      // Ou o objeto inteiro pode ser a resposta em string crua
+      else if(typeof resp.text === 'string'){
+        const raw = resp.text.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
+        const m = raw.match(/\[[\s\S]*\]/);
+        if(m){ try{ parsed = JSON.parse(m[0]); }catch(_){} }
+      }
+    }
+    // resp pode ser string
+    else if(typeof resp === 'string'){
+      const raw = resp.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
+      const m = raw.match(/\[[\s\S]*\]/);
+      if(m){ try{ parsed = JSON.parse(m[0]); }catch(_){} }
     }
 
-    // Mapear resultado de volta usando índice se cardId não vier
+    if(!Array.isArray(parsed)) parsed = [];
+
+    // Mapear resultado usando índice i
     return batch.map((c, i) => {
-      const found = parsed.find(p => p.cardId === c.cardId) || parsed[i];
-      const category = found?.category || 'OUTRO';
-      return { cardId: c.cardId, text: c.text, category: catKeys.includes(category) ? category : 'OUTRO' };
+      const found = parsed.find(p => p.i === i+1 || p.i === String(i+1));
+      const category = found?.cat || found?.category || 'OUTRO';
+      return {
+        cardId: c.cardId,
+        text:   c.text,
+        category: catKeys.includes(category) ? category : 'OUTRO'
+      };
     });
   },
 
