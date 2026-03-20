@@ -6342,38 +6342,18 @@ const Motivos = {
         return;
       }
 
-      // 2. Buscar comentários via /api/comments
+      // 2. Buscar comentários via /api/card-comments (endpoint dedicado)
       if(statusEl) statusEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px"><span class="motivos-dots"><span></span><span></span><span></span></span> Buscando comentários (${rows.length} pedidos)…</span>`;
 
       const cardIds = rows.map(r => r._trelloId);
       let comments = [];
-      try{
-        const resp = await App._apiFetch('/api/comments', {
-          method: 'POST',
-          body: JSON.stringify({ cardIds })
-        });
-        if(resp && Array.isArray(resp.comments)){
-          comments = resp.comments;
-        } else if(resp && Array.isArray(resp.actions)){
-          // fallback: formato antigo com actions
-          comments = resp.actions
-            .filter(a => a.type === 'commentCard')
-            .map(a => ({ cardId: a.data?.card?.id, text: a.data?.text || '' }));
-        }
-      }catch(e){
-        // Se /api/comments não suportar cardIds, buscar pelo período
-        const fromISO = new Date(Date.now() - 180 * 24 * 3600000).toISOString();
-        const toISO   = new Date().toISOString();
-        const resp2 = await App._apiFetch('/api/comments', {
-          method: 'POST',
-          body: JSON.stringify({ fromISO, toISO })
-        });
-        if(resp2 && Array.isArray(resp2.actions)){
-          const cardSet = new Set(cardIds);
-          comments = resp2.actions
-            .filter(a => a.type === 'commentCard' && cardSet.has(a.data?.card?.id))
-            .map(a => ({ cardId: a.data?.card?.id, text: a.data?.text || '' }));
-        }
+
+      const resp = await App._apiFetch('/api/card-comments', {
+        method: 'POST',
+        body: JSON.stringify({ cardIds })
+      });
+      if(resp && Array.isArray(resp.comments)){
+        comments = resp.comments;
       }
 
       // 3. Filtrar comentários com conteúdo real (>10 chars, não automáticos)
